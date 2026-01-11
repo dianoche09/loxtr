@@ -1,0 +1,12 @@
+{
+    "name": "loxtr-root",
+    "version": "1.0.0",
+    "private": true,
+    "workspaces": [
+        "frontend"
+    ],
+    "scripts": {
+        "build": "cd frontend && npm run build",
+        "install": "cd frontend && npm install --legacy-peer-deps"
+    }
+}
