@@ -1,0 +1,17 @@
+{% extends "emails/base_email.html" %}
+
+{% block content %}
+<h2>Application Received</h2>
+<p>Dear {{ application.contact_name }},</p>
+<p>Your partnership application for {{ application.company_name }} has been successfully received.</p>
+<p>Our team will review your application and get back to you within 2-3 business days.</p>
+
+<p><strong>Application Details:</strong></p>
+<ul>
+    <li>Reference ID: APP-{{ application.created_at.year }}-{{ application.id|stringformat:"06d" }}</li>
+    <li>Program: {{ application.get_application_type_display }}</li>
+    <li>Product Category: {{ application.product_category }}</li>
+</ul>
+
+<p>For any questions, please contact us at <a href="mailto:info@loxtr.com">info@loxtr.com</a>.</p>
+{% endblock %}

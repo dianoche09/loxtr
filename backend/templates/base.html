@@ -1,0 +1,166 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    {# ============================================ #}
+    {# BASIC META TAGS #}
+    {# ============================================ #}
+    <title>{% block title %}{{ seo.title }}{% endblock %}</title>
+    <meta name="description" content="{% block description %}{{ seo.description }}{% endblock %}">
+    {% if seo.keywords %}
+    <meta name="keywords" content="{{ seo.keywords }}">
+    {% endif %}
+    
+    {# ============================================ #}
+    {# CANONICAL URL (CRITICAL!) #}
+    {# ============================================ #}
+    <link rel="canonical" href="{% block canonical %}{{ seo.canonical_url }}{% endblock %}">
+    
+    {# ============================================ #}
+    {# HREFLANG TAGS (CRITICAL FOR INTERNATIONAL SEO!) #}
+    {# ============================================ #}
+    {% for hreflang in seo.hreflang_tags %}
+    <link rel="alternate" hreflang="{{ hreflang.lang }}" href="{{ hreflang.url }}">
+    {% endfor %}
+    
+    {# ============================================ #}
+    {# ROBOTS META #}
+    {# ============================================ #}
+    <meta name="robots" content="{{ seo.robots }}">
+    
+    {# ============================================ #}
+    {# OPEN GRAPH (Facebook, LinkedIn) #}
+    {# ============================================ #}
+    <meta property="og:title" content="{% block og_title %}{{ seo.og_title }}{% endblock %}">
+    <meta property="og:description" content="{% block og_description %}{{ seo.og_description|default:seo.description }}{% endblock %}">
+    <meta property="og:image" content="{% block og_image %}{{ seo.og_image }}{% endblock %}">
+    <meta property="og:url" content="{{ seo.canonical_url }}">
+    <meta property="og:type" content="{{ seo.og_type }}">
+    <meta property="og:site_name" content="{{ site_name }}">
+    <meta property="og:locale" content="{% if LANGUAGE_CODE == 'tr' %}tr_TR{% else %}en_US{% endif %}">
+    
+    {# ============================================ #}
+    {# TWITTER CARD #}
+    {# ============================================ #}
+    <meta name="twitter:card" content="{{ seo.twitter_card }}">
+    <meta name="twitter:title" content="{% block twitter_title %}{{ seo.twitter_title|default:seo.title }}{% endblock %}">
+    <meta name="twitter:description" content="{% block twitter_description %}{{ seo.twitter_description|default:seo.description }}{% endblock %}">
+    {% if seo.twitter_image %}
+    <meta name="twitter:image" content="{{ seo.twitter_image }}">
+    {% endif %}
+    
+    {# ============================================ #}
+    {# STRUCTURED DATA (JSON-LD) #}
+    {# ============================================ #}
+    {% block structured_data %}
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "{{ site_name }}",
+      "url": "{{ site_url }}",
+      "logo": "{{ site_url }}/static/images/logo.png",
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "telephone": "+90-212-XXX-XX-XX",
+        "contactType": "Sales",
+        "areaServed": "TR",
+        "availableLanguage": ["en", "tr"]
+      },
+      "sameAs": [
+        "https://www.linkedin.com/company/loxtr",
+        "https://www.youtube.com/@loxtr",
+        "https://www.instagram.com/loxtr"
+      ]
+    }
+    </script>
+    
+    {# Page-specific structured data #}
+    {% if seo.schema_json %}
+    <script type="application/ld+json">
+    {{ seo.schema_json|safe }}
+    </script>
+    {% endif %}
+    {% endblock %}
+    
+    {# ============================================ #}
+    {# FAVICON #}
+    {# ============================================ #}
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'images/favicon-32x32.png' %}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'images/favicon-16x16.png' %}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'images/apple-touch-icon.png' %}">
+    
+    {# ============================================ #}
+    {# CSS #}
+    {# ============================================ #}
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    {% block extra_css %}{% endblock %}
+    
+    {# ============================================ #}
+    {# GOOGLE ANALYTICS (if enabled) #}
+    {# ============================================ #}
+    {% if GOOGLE_ANALYTICS_ID %}
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id={{ GOOGLE_ANALYTICS_ID }}"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', '{{ GOOGLE_ANALYTICS_ID }}');
+    </script>
+    {% endif %}
+    
+    {# ============================================ #}
+    {# GOOGLE TAG MANAGER (if enabled) #}
+    {# ============================================ #}
+    {% if GOOGLE_TAG_MANAGER_ID %}
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','{{ GOOGLE_TAG_MANAGER_ID }}');</script>
+    {% endif %}
+</head>
+<body class="{% block body_class %}{% endblock %}">
+    
+    {# Google Tag Manager (noscript) #}
+    {% if GOOGLE_TAG_MANAGER_ID %}
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id={{ GOOGLE_TAG_MANAGER_ID }}"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    {% endif %}
+    
+    {# ============================================ #}
+    {# HEADER #}
+    {# ============================================ #}
+    {% include 'includes/header.html' %}
+    
+    {# ============================================ #}
+    {# MAIN CONTENT #}
+    {# ============================================ #}
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+    
+    {# ============================================ #}
+    {# FOOTER #}
+    {# ============================================ #}
+    {% include 'includes/footer.html' %}
+    
+    {# ============================================ #}
+    {# WHATSAPP BUTTON (TR IP only) #}
+    {# ============================================ #}
+    {% if request.visitor_type == 'LOCAL' and ENABLE_WHATSAPP_BUTTON %}
+        {% include 'includes/whatsapp_button.html' %}
+    {% endif %}
+    
+    {# ============================================ #}
+    {# JAVASCRIPT #}
+    {# ============================================ #}
+    <script src="{% static 'js/main.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

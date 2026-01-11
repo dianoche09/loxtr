@@ -1,0 +1,74 @@
+/**
+ * View Switcher Styles
+ */
+
+.view-switcher {
+    display: flex;
+    gap: 8px;
+    padding: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    backdrop-filter: blur(10px);
+}
+
+.view-option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    border: 2px solid transparent;
+    border-radius: 6px;
+    background: transparent;
+    color: #f5f5f7;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.view-option:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.view-option.active {
+    background: #ffcc00;
+    color: #0a1128;
+    border-color: #ffcc00;
+    cursor: default;
+}
+
+.view-option:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.flag-icon {
+    font-size: 18px;
+    line-height: 1;
+}
+
+.view-label {
+    white-space: nowrap;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+    .view-switcher {
+        gap: 4px;
+        padding: 6px;
+    }
+
+    .view-option {
+        padding: 8px 12px;
+        font-size: 13px;
+    }
+
+    .view-label {
+        display: none;
+    }
+
+    .flag-icon {
+        font-size: 20px;
+    }
+}

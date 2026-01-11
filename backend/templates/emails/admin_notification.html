@@ -1,0 +1,31 @@
+{% extends "emails/base_email.html" %}
+
+{% block content %}
+<h2>New Lead Alert</h2>
+<p>A new partnership application has been submitted on the website.</p>
+
+<table style="width: 100%; border-collapse: collapse;">
+    <tr>
+        <td><strong>Company:</strong></td>
+        <td>{{ application.company_name }}</td>
+    </tr>
+    <tr>
+        <td>
+        <td><strong>Contact:</strong></td>
+        <td>{{ application.contact_name }}</td>
+    </tr>
+    <tr>
+        <td><strong>Email:</strong></td>
+        <td>{{ application.email }}</td>
+    </tr>
+    <tr>
+        <td><strong>Program:</strong></td>
+        <td>{{ application.get_application_type_display }}</td>
+    </tr>
+</table>
+
+<p style="margin-top: 20px;">
+    <a href="https://www.loxtr.com/admin/applications/application/{{ application.id }}/change/" class="button">Go to
+        Admin Panel</a>
+</p>
+{% endblock %}
