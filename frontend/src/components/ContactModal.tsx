@@ -47,13 +47,11 @@ const ContactModal: React.FC<ContactModalProps> = ({
 
         const formData = new FormData(e.currentTarget);
         const data = {
-            full_name: formData.get('full_name'),
-            email: formData.get('email'),
-            company_name: formData.get('company_name'),
-            phone: formData.get('phone'),
-            inquiry_type: formData.get('inquiry_type') || 'Quick Application',
-            subject: `App: ${industryName} - ${formData.get('inquiry_type')}`,
-            message: `Context: ${industryName}\nRequest: ${formData.get('message')}`
+            name: formData.get('full_name') as string,
+            email: formData.get('email') as string,
+            company: formData.get('company_name') as string,
+            phone: formData.get('phone') as string,
+            message: `Inquiry Type: ${formData.get('inquiry_type') || 'Quick Application'}\nContext: ${industryName}\nRequest: ${formData.get('message')}`
         };
 
         try {
