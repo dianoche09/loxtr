@@ -45,7 +45,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         // Send email
         const { data, error } = await resend.emails.send({
             from: 'LOXTR Contact <noreply@loxtr.com>',
-            to: ['info@loxtr.com'],
+            to: ['gurkankuzu@yahoo.com'],
             subject: `[Contact Form - ${page || 'Website'}] New message from ${name}`,
             html: `
         <h2>New Contact Form Submission</h2>

@@ -57,12 +57,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             'distribution': 'dealers@loxtr.com',
             'market-entry': 'entry@loxtr.com',
         };
-        const toEmail = recipients[applicationType] || 'info@loxtr.com';
+        const toEmail = recipients[applicationType] || 'gurkankuzu@yahoo.com';
 
         // Send email
         const { error } = await resend.emails.send({
             from: 'LOXTR Applications <noreply@loxtr.com>',
-            to: ['info@loxtr.com', toEmail].filter((v, i, a) => a.indexOf(v) === i), // Remove duplicates
+            to: ['gurkankuzu@yahoo.com'], // For testing only
             subject: `[${applicationType?.toUpperCase() || 'APPLICATION'} - ${page || 'Website'}] New application from ${company}`,
             html: `
         <h2>New Application Submission</h2>

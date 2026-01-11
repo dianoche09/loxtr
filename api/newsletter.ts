@@ -41,7 +41,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         // Send notification email
         const { error } = await resend.emails.send({
             from: 'LOXTR Newsletter <noreply@loxtr.com>',
-            to: ['info@loxtr.com'],
+            to: ['gurkankuzu@yahoo.com'],
             subject: `[Newsletter - ${page || 'Website'}] New subscriber: ${email}`,
             html: `
         <h2>New Newsletter Subscription</h2>
