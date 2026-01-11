@@ -2,11 +2,15 @@
     "name": "loxtr-root",
     "version": "1.0.0",
     "private": true,
-    "workspaces": [
-        "frontend"
-    ],
     "scripts": {
-        "build": "cd frontend && npm run build",
-        "install": "cd frontend && npm install --legacy-peer-deps"
+        "build": "npm install --prefix frontend --legacy-peer-deps && npm run build --prefix frontend",
+        "install": "npm install --prefix frontend --legacy-peer-deps"
+    },
+    "dependencies": {
+        "resend": "^6.7.0"
+    },
+    "devDependencies": {
+        "@vercel/node": "^5.5.16",
+        "typescript": "~5.9.3"
     }
 }
