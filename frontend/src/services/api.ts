@@ -2,10 +2,11 @@
  * API Client
  * 
  * Centralized API service using fetch.
- * Handles authentication, error handling, and request formatting.
+ * Uses Vercel Serverless Functions for form submissions.
  */
 
-const API_BASE_URL: string = (import.meta as any).env.VITE_API_BASE_URL || 'https://www.loxtr.com/api/v1';
+// For Vercel deployment, use relative paths for API routes
+const API_BASE_URL: string = '/api';
 
 class APIClient {
     baseURL: string;
@@ -102,6 +103,14 @@ class APIClient {
         if (path.startsWith('/en/')) return 'en';
         return 'en';
     }
+
+    /**
+     * Get current page name for form tracking
+     */
+    getCurrentPage(): string {
+        if (typeof window === 'undefined') return 'Unknown';
+        return window.location.pathname || 'Homepage';
+    }
 }
 
 // Create and export singleton instance
@@ -110,36 +119,71 @@ const api = new APIClient(API_BASE_URL);
 export default api;
 
 /**
- * Convenience exports for specific endpoints
+ * Form submission APIs - use Vercel Serverless Functions
  */
 
-export const geoAPI = {
-    detect: () => api.get('/geo/detect/'),
-};
-
-export const brandsAPI = {
-    list: (params?: Record<string, any>) => api.get('/brands/', params),
-    detail: (id: string | number) => api.get(`/brands/${id}/`),
-    featured: () => api.get('/brands/featured/'),
-};
-
-export const productsAPI = {
-    list: (params?: Record<string, any>) => api.get('/products/', params),
-    detail: (id: string | number) => api.get(`/products/${id}/`),
-};
-
-export const categoriesAPI = {
-    list: () => api.get('/categories/'),
+export const contactAPI = {
+    submit: (data: any) => api.post('/contact', {
+        ...data,
+        page: api.getCurrentPage()
+    }),
 };
 
 export const applicationsAPI = {
-    submit: (data: any) => api.post('/applications/submit/', data),
+    submit: (data: any) => api.post('/application', {
+        ...data,
+        page: api.getCurrentPage()
+    }),
 };
 
-export const contactAPI = {
-    submit: (data: any) => api.post('/contact/submit/', data),
+export const newsletterAPI = {
+    subscribe: (email: string) => api.post('/newsletter', {
+        email,
+        page: api.getCurrentPage()
+    }),
+};
+
+/**
+ * Static data APIs - these don't need backend, data is in frontend
+ */
+
+export const geoAPI = {
+    // Geo detection via browser - no backend needed
+    detect: async () => {
+        try {
+            // Use browser's language as fallback
+            const lang = navigator.language?.split('-')[0] || 'en';
+            return {
+                country_code: 'UNKNOWN',
+                visitor_type: 'GLOBAL',
+                default_language: lang === 'tr' ? 'tr' : 'en',
+            };
+        } catch {
+            return {
+                country_code: 'UNKNOWN',
+                visitor_type: 'GLOBAL',
+                default_language: 'en',
+            };
+        }
+    },
+};
+
+// These are not used in current implementation - keeping for compatibility
+export const brandsAPI = {
+    list: async () => ({ results: [] }),
+    detail: async () => null,
+    featured: async () => ({ results: [] }),
+};
+
+export const productsAPI = {
+    list: async () => ({ results: [] }),
+    detail: async () => null,
+};
+
+export const categoriesAPI = {
+    list: async () => ({ results: [] }),
 };
 
 export const searchAPI = {
-    query: (q: string, params?: Record<string, any>) => api.get('/search/', { q, ...params }),
+    query: async () => [],
 };

@@ -1,17 +1,43 @@
 {
     "version": 2,
-    "name": "loxtr-frontend",
+    "name": "loxtr",
     "framework": "vite",
     "buildCommand": "npm run build",
     "outputDirectory": "dist",
     "installCommand": "npm install --legacy-peer-deps",
+    "functions": {
+        "api/*.ts": {
+            "runtime": "@vercel/node@3.0.0"
+        }
+    },
     "rewrites": [
+        {
+            "source": "/api/:path*",
+            "destination": "/api/:path*"
+        },
         {
             "source": "/(.*)",
             "destination": "/index.html"
         }
     ],
     "headers": [
+        {
+            "source": "/api/(.*)",
+            "headers": [
+                {
+                    "key": "Access-Control-Allow-Origin",
+                    "value": "*"
+                },
+                {
+                    "key": "Access-Control-Allow-Methods",
+                    "value": "GET, POST, OPTIONS"
+                },
+                {
+                    "key": "Access-Control-Allow-Headers",
+                    "value": "Content-Type"
+                }
+            ]
+        },
         {
             "source": "/(.*)",
             "headers": [
