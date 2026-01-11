@@ -1,13 +1,14 @@
 {
   "company": {
     "name": "LOXTR",
-    "legal_name": "LOXTR Dış Ticaret Ltd. Şti.",
+    "legal_name_en": "LOXTR Global Trade & Logistics Solutions",
+    "legal_name_tr": "LOXTR Dış Ticaret ve Lojistik Çözümleri Ltd. Şti.",
     "tagline": "Locate • Obtain • Xport",
     "founded_year": 2024,
-    "phone_main": "+90 212 XXX XX XX",
-    "phone_support": "+90 212 XXX XX XX",
-    "whatsapp_number": "905XXXXXXXXX",
-    "whatsapp_display": "+90 5XX XXX XX XX",
+    "phone_main": "+90 530 763 5710",
+    "phone_support": "+90 530 763 5710",
+    "whatsapp_number": "905307635710",
+    "whatsapp_display": "+90 530 763 5710",
     "email_info": "info@loxtr.com",
     "email_sales": "sales@loxtr.com",
     "email_entry": "entry@loxtr.com",
@@ -15,14 +16,15 @@
     "email_support": "support@loxtr.com",
     "email_dealers": "dealers@loxtr.com",
     "email_partnerships": "partnerships@loxtr.com",
-    "address_line1": "Maslak Mahallesi, Büyükdere Caddesi",
-    "address_line2": "No: 123, Kat: 5, Daire: 12",
-    "address_city": "Sarıyer",
-    "address_postal": "34398",
-    "address_state": "İstanbul",
+    "address_line1": "Next Level Loft Ofis",
+    "address_line2": "Dumlupınar Bulvarı No:3",
+    "address_city": "Çankaya",
+    "address_postal": "06510",
+    "address_state": "Ankara",
     "address_country": "Turkey",
-    "address_full": "Maslak Mahallesi, Büyükdere Caddesi No: 123, Kat: 5, Daire: 12, 34398 Sarıyer, İstanbul, Turkey",
-    "warehouse_address": "Organize Sanayi Bölgesi, Depo No: 45, Tuzla, İstanbul",
+    "address_full_en": "Next Level Loft Office, Dumlupınar Boulevard No:3, Çankaya, Ankara, Turkey",
+    "address_full_tr": "Next Level Loft Ofis, Dumlupınar Bulvarı No:3, Çankaya, Ankara, Türkiye",
+    "warehouse_address": "OSTİM Sanayi Bölgesi, Ankara",
     "office_hours_weekday_en": "Monday - Friday: 9:00 AM - 6:00 PM (Istanbul Time)",
     "office_hours_weekday_tr": "Pazartesi - Cuma: 09:00 - 18:00 (İstanbul Saati)",
     "office_hours_saturday_en": "Saturday: By appointment",
@@ -41,22 +43,22 @@
     "tse_certificate": null
   },
   "social_media": {
-    "linkedin_url": "https://www.linkedin.com/company/loxtr",
-    "linkedin_handle": "@loxtr",
-    "youtube_url": "https://www.youtube.com/@loxtr",
-    "youtube_handle": "@loxtr",
-    "instagram_url": "https://www.instagram.com/loxtr",
-    "instagram_handle": "@loxtr",
-    "twitter_url": null,
+    "linkedin_url": "https://www.linkedin.com/company/loxtrcom",
+    "linkedin_handle": "@loxtrcom",
+    "youtube_url": "https://www.youtube.com/@loxtrcom",
+    "youtube_handle": "@loxtrcom",
+    "instagram_url": "https://www.instagram.com/loxtrcom",
+    "instagram_handle": "@loxtrcom",
+    "twitter_url": "https://x.com/loxtrcom",
     "facebook_url": null
   },
   "website_urls": {
-    "production": "https://www.loxtr.com",
-    "staging": "https://staging.loxtr.com",
-    "dev": "http://localhost:8000",
-    "api_base": "https://www.loxtr.com/api/v1",
-    "cdn": "https://cdn.loxtr.com",
-    "media": "https://media.loxtr.com"
+    "production": "https://loxtr.vercel.app",
+    "staging": "https://loxtr-dev.vercel.app",
+    "dev": "http://localhost:5173",
+    "api_base": "/api",
+    "cdn": "https://loxtr.vercel.app",
+    "media": "https://loxtr.vercel.app/images"
   },
   "brand_colors": {
     "primary_navy": "#0a1128",
@@ -70,9 +72,19 @@
     "info_blue": "#007aff"
   },
   "typography": {
-    "heading_fonts": ["Oswald Bold", "Roboto Condensed Bold", "Inter ExtraBold"],
-    "body_fonts": ["Inter Regular", "Roboto Regular"],
-    "monospace_fonts": ["Roboto Mono", "Fira Code"],
+    "heading_fonts": [
+      "Oswald Bold",
+      "Roboto Condensed Bold",
+      "Inter ExtraBold"
+    ],
+    "body_fonts": [
+      "Inter Regular",
+      "Roboto Regular"
+    ],
+    "monospace_fonts": [
+      "Roboto Mono",
+      "Fira Code"
+    ],
     "h1_desktop": "56-64px",
     "h1_mobile": "36-42px",
     "h2_desktop": "42-48px",
@@ -83,53 +95,27 @@
     "body_mobile": "14-16px"
   },
   "tech_stack": {
-    "backend_framework": "Django 5.0+",
-    "backend_language": "Python 3.11",
-    "api_framework": "Django REST Framework",
-    "database": "PostgreSQL 15+",
-    "cache": "Redis 7+",
-    "task_queue": "Celery",
-    "web_server": "Nginx",
-    "container": "Docker",
-    "orchestration": "Docker Compose",
-    "frontend": "Antigravity (React)",
+    "architecture": "Vercel Native / Serverless",
+    "frontend_framework": "React 19+ (Vite)",
+    "language": "TypeScript",
+    "backend": "Vercel Serverless Functions (Node.js)",
     "styling": "Tailwind CSS / Custom CSS",
-    "geoip": "GeoIP2 / Cloudflare Headers",
-    "file_storage": "AWS S3 / MinIO",
-    "email_service": "SendGrid / AWS SES"
+    "email_service": "Resend API",
+    "deployment": "Vercel",
+    "geo_detection": "Edge Middleware / Frontend Fallback",
+    "caching": "Vercel Edge Cache",
+    "animations": "Framer Motion",
+    "icons": "Lucide React"
   },
   "seo_config": {
-    "google_analytics_id": "G-XXXXXXXXXX",
-    "google_tag_manager_id": "GTM-XXXXXXX",
-    "google_site_verification": "your_verification_code",
-    "bing_site_verification": "your_bing_verification_code",
+    "google_analytics_id": "PENDING",
+    "google_tag_manager_id": null,
+    "google_site_verification": null,
+    "bing_site_verification": null,
     "facebook_pixel_id": null,
     "linkedin_partner_id": null,
-    "default_og_image": "https://www.loxtr.com/static/images/og-default.jpg",
+    "default_og_image": "https://loxtr.vercel.app/images/og-default.jpg",
     "twitter_card_type": "summary_large_image"
-  },
-  "database_config": {
-    "db_name": "loxtr_db",
-    "db_user": "loxtr_user",
-    "db_host": "postgres",
-    "db_port": 5432
-  },
-  "redis_config": {
-    "host": "redis",
-    "port": 6379,
-    "db": 0
-  },
-  "aws_config": {
-    "region": "eu-central-1",
-    "s3_bucket_media": "loxtr-media",
-    "s3_bucket_backups": "loxtr-backups",
-    "cloudfront_distribution": "cdn.loxtr.com"
-  },
-  "rate_limits": {
-    "contact_form": "5/hour",
-    "application_form": "3/hour",
-    "api_general": "100/hour",
-    "api_auth": "1000/hour"
   },
   "business_stats": {
     "active_brands": 15,
@@ -159,226 +145,5 @@
     "median_age": 32,
     "urban_population_percent": 76,
     "trade_agreements": 56
-  },
-  "meta_defaults": {
-    "site_name": "LOXTR",
-    "default_title_en": "LOXTR - Global Brands. Turkish Market.",
-    "default_title_tr": "LOXTR - Global Markalar. Türkiye Pazarı.",
-    "default_description_en": "Official distributor of global brands in Turkey. Bringing innovation to local markets.",
-    "default_description_tr": "Türkiye'de global markaların resmi distribütörü. Yeniliği yerel pazarlara getiriyoruz."
-  },
-  "currencies": {
-    "base": "USD",
-    "supported": ["USD", "EUR", "TRY"],
-    "symbols": {
-      "USD": "$",
-      "EUR": "€",
-      "TRY": "₺"
-    }
-  },
-  "feature_flags": {
-    "enable_geo_detection": true,
-    "enable_whatsapp_button": true,
-    "enable_export_program": true,
-    "enable_dealer_portal": false,
-    "enable_multi_currency": false,
-    "enable_payment_gateway": false
-  },
-  "whatsapp_config": {
-    "number": "905XXXXXXXXX",
-    "display": "+90 5XX XXX XX XX",
-    "default_message_tr": "Merhaba LOXTR, ürünleriniz hakkında bilgi almak istiyorum.",
-    "default_message_en": "Hello LOXTR, I'm interested in your products.",
-    "button_color": "#25D366",
-    "button_size_mobile": "60px",
-    "button_size_desktop": "56px"
-  },
-  "stock_statuses": {
-    "in_stock": {
-      "en": "In Stock",
-      "tr": "Stokta",
-      "color": "#34c759"
-    },
-    "low_stock": {
-      "en": "Low Stock",
-      "tr": "Sınırlı Stok",
-      "color": "#ffcc00"
-    },
-    "out_of_stock": {
-      "en": "Out of Stock",
-      "tr": "Stokta Yok",
-      "color": "#ff3b30"
-    },
-    "pre_order": {
-      "en": "Pre-Order",
-      "tr": "Ön Sipariş",
-      "color": "#007aff"
-    },
-    "discontinued": {
-      "en": "Discontinued",
-      "tr": "Üretim Durduruldu",
-      "color": "#6b7280"
-    }
-  },
-  "application_statuses": {
-    "new": {
-      "en": "New",
-      "tr": "Yeni"
-    },
-    "under_review": {
-      "en": "Under Review",
-      "tr": "İnceleniyor"
-    },
-    "meeting_scheduled": {
-      "en": "Meeting Scheduled",
-      "tr": "Görüşme Planlandı"
-    },
-    "accepted": {
-      "en": "Accepted",
-      "tr": "Kabul Edildi"
-    },
-    "rejected": {
-      "en": "Rejected",
-      "tr": "Reddedildi"
-    },
-    "on_hold": {
-      "en": "On Hold",
-      "tr": "Beklemede"
-    }
-  },
-  "industries_served": [
-    {
-      "en": "Electronics & Consumer Tech",
-      "tr": "Elektronik & Tüketici Teknolojisi",
-      "icon": "📱"
-    },
-    {
-      "en": "Industrial Equipment & Automation",
-      "tr": "Endüstriyel Ekipman & Otomasyon",
-      "icon": "⚙️"
-    },
-    {
-      "en": "Construction & Building Materials",
-      "tr": "İnşaat & Yapı Malzemeleri",
-      "icon": "🏗️"
-    },
-    {
-      "en": "Medical & Laboratory Equipment",
-      "tr": "Medikal & Laboratuvar Ekipmanları",
-      "icon": "🏥"
-    },
-    {
-      "en": "Automotive Aftermarket",
-      "tr": "Otomotiv Yan Sanayi",
-      "icon": "🚗"
-    },
-    {
-      "en": "Tools & Professional Equipment",
-      "tr": "Aletler & Profesyonel Ekipman",
-      "icon": "🔧"
-    }
-  ],
-  "partnership_models": [
-    {
-      "type": "exclusive",
-      "title": {
-        "en": "Exclusive Distribution",
-        "tr": "Münhasır Distribütörlük"
-      },
-      "description": {
-        "en": "We become your sole distributor in Turkey with full market exclusivity.",
-        "tr": "Türkiye'de tam pazar münhasırlığı ile tek distribütörünüz oluyoruz."
-      }
-    },
-    {
-      "type": "authorized",
-      "title": {
-        "en": "Authorized Distribution",
-        "tr": "Yetkili Distribütörlük"
-      },
-      "description": {
-        "en": "Non-exclusive agreement allowing multiple partners while we focus on specific market segments.",
-        "tr": "Belirli pazar segmentlerine odaklanırken birden fazla ortağa izin veren münhasır olmayan anlaşma."
-      }
-    },
-    {
-      "type": "oem",
-      "title": {
-        "en": "OEM & Custom Solutions",
-        "tr": "OEM & Özel Çözümler"
-      },
-      "description": {
-        "en": "For manufacturers seeking localized branding or custom configurations for the Turkish market.",
-        "tr": "Türkiye pazarı için yerelleştirilmiş markalama veya özel konfigürasyonlar arayan üreticiler için."
-      },
-      "optional": true
-    },
-    {
-      "type": "joint_venture",
-      "title": {
-        "en": "Joint Ventures",
-        "tr": "Ortak Girişimler"
-      },
-      "description": {
-        "en": "For strategic long-term partnerships, we explore co-investment opportunities in market development.",
-        "tr": "Stratejik uzun vadeli ortaklıklar için pazar geliştirmede ortak yatırım fırsatları araştırıyoruz."
-      }
-    }
-  ],
-  "env_variables": [
-    "DJANGO_SECRET_KEY",
-    "DEBUG",
-    "ALLOWED_HOSTS",
-    "DATABASE_URL",
-    "DB_NAME",
-    "DB_USER",
-    "DB_PASSWORD",
-    "DB_HOST",
-    "DB_PORT",
-    "REDIS_URL",
-    "REDIS_PASSWORD",
-    "CELERY_BROKER_URL",
-    "CELERY_RESULT_BACKEND",
-    "GEOIP_DATABASE_PATH",
-    "ENABLE_GEO_DETECTION",
-    "USE_CLOUDFLARE_GEO",
-    "AWS_ACCESS_KEY_ID",
-    "AWS_SECRET_ACCESS_KEY",
-    "AWS_STORAGE_BUCKET_NAME",
-    "AWS_S3_REGION_NAME",
-    "AWS_S3_CUSTOM_DOMAIN",
-    "USE_S3",
-    "EMAIL_BACKEND",
-    "SENDGRID_API_KEY",
-    "DEFAULT_FROM_EMAIL",
-    "EMAIL_HOST",
-    "EMAIL_PORT",
-    "EMAIL_USE_TLS",
-    "GOOGLE_ANALYTICS_ID",
-    "GOOGLE_TAG_MANAGER_ID",
-    "GOOGLE_SITE_VERIFICATION",
-    "BING_SITE_VERIFICATION",
-    "LINKEDIN_COMPANY_URL",
-    "YOUTUBE_CHANNEL_URL",
-    "INSTAGRAM_URL",
-    "SENTRY_DSN",
-    "SENTRY_ENVIRONMENT",
-    "SENTRY_TRACES_SAMPLE_RATE",
-    "SECURE_SSL_REDIRECT",
-    "SESSION_COOKIE_SECURE",
-    "CSRF_COOKIE_SECURE",
-    "RATELIMIT_ENABLE",
-    "CONTACT_FORM_RATE_LIMIT",
-    "APPLICATION_FORM_RATE_LIMIT",
-    "ENABLE_EXPORT_PROGRAM",
-    "ENABLE_WHATSAPP_BUTTON",
-    "ENABLE_DEALER_PORTAL",
-    "ENABLE_MULTI_CURRENCY",
-    "WHATSAPP_BUSINESS_NUMBER",
-    "WHATSAPP_BUSINESS_NAME",
-    "LOG_LEVEL",
-    "LOG_FILE",
-    "BACKUP_S3_BUCKET",
-    "BACKUP_RETENTION_DAYS"
-  ]
+  }
 }

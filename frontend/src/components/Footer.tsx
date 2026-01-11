@@ -32,20 +32,12 @@ const Footer = () => {
 
         setNewsletterStatus('loading');
         try {
-            const response = await fetch('http://localhost:8000/api/v1/newsletter/subscribe/', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email: newsletterEmail })
-            });
+            const { newsletterAPI } = await import('../services/api');
+            await newsletterAPI.subscribe(newsletterEmail);
 
-            if (response.ok) {
-                setNewsletterStatus('success');
-                setNewsletterEmail('');
-                setTimeout(() => setNewsletterStatus('idle'), 3000);
-            } else {
-                setNewsletterStatus('error');
-                setTimeout(() => setNewsletterStatus('idle'), 3000);
-            }
+            setNewsletterStatus('success');
+            setNewsletterEmail('');
+            setTimeout(() => setNewsletterStatus('idle'), 3000);
         } catch (error) {
             setNewsletterStatus('error');
             setTimeout(() => setNewsletterStatus('idle'), 3000);
@@ -230,7 +222,7 @@ const Footer = () => {
                 {/* Bottom Bar */}
                 <div className="pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center text-white/40 text-sm">
                     <div className="mb-4 md:mb-0">
-                        © {new Date().getFullYear()} LOXTR DIŞ TİCARET LTD. ŞTİ. {content.rights}
+                        © {new Date().getFullYear()} {lang === 'tr' ? CONFIG.company.legal.tr : CONFIG.company.legal.en}. {content.rights}
                     </div>
 
                     {/* Trust Badges (Visual Only) */}

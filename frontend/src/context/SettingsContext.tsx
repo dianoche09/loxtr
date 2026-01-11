@@ -12,16 +12,19 @@ const DEFAULT_SETTINGS: SiteSettings = {
     company_name: "LOXTR",
     tagline: "Locate • Obtain • Xport",
     company_email: "info@loxtr.com",
-    company_phone: "+90 5XX XXX XX XX",
-    whatsapp_number: "905XXXXXXXXX",
-    office_address_en: "Istanbul, Turkey",
-    office_address_tr: "İstanbul, Türkiye",
+    company_phone: "+90 530 763 5710",
+    whatsapp_number: "905307635710",
+    office_address_en: "Next Level Loft Office, No:3, Cankaya, Ankara, Turkey",
+    office_address_tr: "Next Level Loft Ofis, No:3, Çankaya, Ankara, Türkiye",
     working_hours_en: "Mon-Fri: 09:00 - 18:00",
     working_hours_tr: "Pzt-Cum: 09:00 - 18:00",
     enable_newsletter: true,
     enable_whatsapp_button: true,
     enable_live_chat: false,
     maintenance_mode: false,
+    linkedin_url: "https://linkedin.com/company/loxtrcom",
+    instagram_url: "https://instagram.com/loxtrcom",
+    youtube_url: "https://youtube.com/@loxtrcom"
 };
 
 const SettingsContext = createContext<SettingsContextType | undefined>(undefined);

@@ -24,14 +24,23 @@ export const CONFIG = {
         name: "LOXTR",
         tagline: "Locate • Obtain • Xport",
         email: "info@loxtr.com",
-        whatsapp: "+90 5XX XXX XX XX"
+        phone: "+90 530 763 5710",
+        whatsapp: "+90 530 763 5710",
+        legal: {
+            en: "LOXTR Global Trade & Logistics Solutions",
+            tr: "LOXTR Dış Ticaret ve Lojistik Çözümleri Ltd. Şti."
+        },
+        address: {
+            en: "Next Level Loft Office, No:3, Cankaya, Ankara, Turkey",
+            tr: "Next Level Loft Ofis, No:3, Çankaya, Ankara, Türkiye"
+        }
     },
     socials: {
-        linkedin: "",
-        instagram: "",
-        youtube: "",
-        twitter: "",
-        facebook: ""
+        linkedin: "https://linkedin.com/company/loxtrcom",
+        instagram: "https://instagram.com/loxtrcom",
+        youtube: "https://youtube.com/@loxtrcom",
+        twitter: "https://x.com/loxtrcom",
+        facebook: "https://facebook.com/loxtrcom"
     },
     hero: {
         en: {

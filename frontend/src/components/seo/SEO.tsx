@@ -31,7 +31,7 @@ const SEO: React.FC<SEOProps> = ({
     structuredData,
     noIndex = false,
 }) => {
-    const siteUrl = 'https://www.loxtr.com';
+    const siteUrl = 'https://loxtr.vercel.app';
     const defaultOgImage = `${siteUrl}/static/images/og-default.jpg`;
 
     // Generate hreflang URLs

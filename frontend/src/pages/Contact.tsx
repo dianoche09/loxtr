@@ -87,28 +87,18 @@ const Contact = () => {
         setStatus('loading');
 
         try {
-            const response = await fetch('http://localhost:8000/api/v1/contact/submit/', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    full_name: formData.name,
-                    email: formData.email,
-                    phone: formData.phone,
-                    company_name: formData.company,
-                    message: formData.message,
-                    inquiry_type: 'Contact Page',
-                    source_page: '/contact'
-                })
+            const { contactAPI } = await import('../services/api');
+            await contactAPI.submit({
+                name: formData.name,
+                email: formData.email,
+                phone: formData.phone,
+                company: formData.company,
+                message: formData.message
             });
 
-            if (response.ok) {
-                setStatus('success');
-                setFormData({ name: '', email: '', phone: '', company: '', message: '' });
-                setTimeout(() => setStatus('idle'), 5000);
-            } else {
-                setStatus('error');
-                setTimeout(() => setStatus('idle'), 3000);
-            }
+            setStatus('success');
+            setFormData({ name: '', email: '', phone: '', company: '', message: '' });
+            setTimeout(() => setStatus('idle'), 5000);
         } catch (error) {
             setStatus('error');
             setTimeout(() => setStatus('idle'), 3000);

@@ -359,42 +359,38 @@ Contact us for a detailed proposal."
 
 ## 6. TECHNOLOGY STACK
 
-### 6.1 Backend Stack (FIXED)
+### 6.1 Architecture (Vercel Native)
 
 ```
-Framework:      Django 5.0+ (Python 3.11)
-API Layer:      Django REST Framework 3.14+
-Database:       PostgreSQL 15+
-Cache:          Redis 7+
-Queue:          Celery 5.3+
-Web Server:     Nginx 1.24+
-Email:          SendGrid / AWS SES
-File Storage:   AWS S3 / MinIO
-Admin UI:       Django Jazzmin (modern dark theme)
+Architecture:   Serverless / Edge Architecture
+Deployment:     Vercel
+Frontend:       React 19+ (Vite)
+API Layer:      Vercel Serverless Functions (Node.js/TypeScript)
+Email Service:  Resend API (Form forwarding)
+Database:       None (Serverless / Static driven)
 ```
 
-### 6.2 Frontend Stack (FIXED)
+### 6.2 Frontend Stack
 
 ```
-Framework:      React 18+ with Vite
-Routing:        React Router v6
-Styling:        Tailwind CSS (custom config)
+Framework:      React with Vite (Client-side Rendering)
+Routing:        React Router v7
+Styling:        Vanilla CSS / Tailwind Utilities
 Animations:     Framer Motion
 Icons:          Lucide React
-State:          React hooks + Context API
-SEO:            React Helmet
-HTTP Client:    Fetch API (native)
+State:          React Hooks + Context API
+SEO:            React Helmet Async
+HTTP Client:    Fetch API (Native)
 ```
 
 ### 6.3 Infrastructure
 
 ```
-Containerization: Docker + Docker Compose
-Reverse Proxy:    Nginx
-SSL:              Let's Encrypt (Certbot)
-Monitoring:       Sentry (errors)
-Analytics:        Google Analytics 4
-CDN:              Cloudflare (optional)
+Reverse Proxy:    Vercel Edge Network
+SSL:              Automated (Vercel)
+Geo-Detection:    Edge Middleware / Frontend Logic
+Monitoring:       Vercel Analytics / Sentry
+CI/CD:            GitHub Actions / Vercel Deployments
 ```
 
 ### 6.4 Development Tools
@@ -417,89 +413,34 @@ Documentation:    Markdown + Constitution
 
 The geo-detection system is the heart of LOXTR's dual-interface architecture.
 
-### 7.2 Detection Flow
+### 7.2 Detection Flow (Vercel Native)
 
 ```
-1. Request arrives → Nginx
-2. Cloudflare headers checked:
-   - CF-IPCountry (country code)
-   - CF-Connecting-IP (real IP)
-3. GeoLocationMiddleware processes request
-4. IP → Country lookup (GeoIP2 database)
-5. Decision logic:
-   - Country = "TR" → visitor_type = "LOCAL"
-   - Country ≠ "TR" → visitor_type = "GLOBAL"
-6. Set cookie: loxtr_visitor_type (30 days)
-7. Attach to request: request.visitor_type
-8. Redirect to /tr/ or /en/ (if on root /)
-9. Log visit to GeoVisitor table (async via Celery)
+1. Request arrives via Vercel Edge Network
+2. Edge Headers provide visitor location data:
+   - x-vercel-ip-country (Country Code)
+3. Frontend `GeoContext` processes the state:
+   - Sets `visitorType` based on country header or IP lookup
+4. Decision logic:
+   - Country = "TR" → visitorType = "LOCAL"
+   - Country ≠ "TR" → visitorType = "GLOBAL"
+5. Persistent State:
+   - Store in `localStorage` or Cookie for session persistence
+6. Logic:
+   - Redirect /en/ or /tr/ based on state
 ```
 
 ### 7.3 Implementation
 
-**File:** `backend/middleware/geo_detection.py`
+The system uses a `GeoContext.tsx` provider that handles the detection logic and provides `visitorType` to all components.
 
-```python
-class GeoLocationMiddleware:
-    def __init__(self, get_response):
-        self.get_response = get_response
-        self.geoip_reader = geoip2.database.Reader(
-            settings.GEOIP_DATABASE_PATH
-        )
-    
-    def __call__(self, request):
-        # 1. Check cookie first (user override)
-        cookie_visitor_type = request.COOKIES.get('loxtr_visitor_type')
-        if cookie_visitor_type in ['GLOBAL', 'LOCAL']:
-            request.visitor_type = cookie_visitor_type
-            return self.get_response(request)
-        
-        # 2. Get IP address
-        ip = self.get_client_ip(request)
-        
-        # 3. Check cache
-        cache_key = f'geo_ip:{ip}'
-        cached = cache.get(cache_key)
-        if cached:
-            request.visitor_type = cached
-            return self.get_response(request)
-        
-        # 4. GeoIP lookup
-        try:
-            country_code = self.get_country_code(ip)
-            visitor_type = 'LOCAL' if country_code == 'TR' else 'GLOBAL'
-        except Exception:
-            visitor_type = 'GLOBAL'  # Default fallback
-        
-        # 5. Cache result (1 hour)
-        cache.set(cache_key, visitor_type, timeout=3600)
-        
-        # 6. Attach to request
-        request.visitor_type = visitor_type
-        request.country_code = country_code
-        
-        # 7. Log visit (async)
-        log_visitor.delay(ip, country_code, visitor_type)
-        
-        return self.get_response(request)
-    
-    def get_client_ip(self, request):
-        """Get real IP (Cloudflare-aware)."""
-        # Priority order:
-        cf_ip = request.META.get('HTTP_CF_CONNECTING_IP')
-        if cf_ip:
-            return cf_ip
-        
-        x_forwarded = request.META.get('HTTP_X_FORWARDED_FOR')
-        if x_forwarded:
-            return x_forwarded.split(',')[0].strip()
-        
-        return request.META.get('REMOTE_ADDR')
-    
-    def get_country_code(self, ip):
-        """GeoIP2 lookup."""
-        response = self.geoip_reader.country(ip)
-        return response.country.iso_code
+```typescript
+// From GeoContext.tsx
+const detectGeo = async () => {
+    // 1. Check for manual override
+    // 2. Check for Vercel Geo headers
+    // 3. Fallback to browser language
+}
 ```
 
 ### 7.4 Critical Rules
