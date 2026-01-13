@@ -300,7 +300,7 @@ const Home = () => {
                             >
                                 <div className="mb-8 p-4 bg-navy/5 rounded-2xl inline-block group-hover:bg-yellow transition-colors duration-300">
                                     {/* Clone icon to override its built-in classes for hover effect */}
-                                    {React.cloneElement(model.icon as React.ReactElement, {
+                                    {React.cloneElement(model.icon as React.ReactElement<{ className?: string }>, {
                                         className: "w-10 h-10 text-yellow group-hover:text-navy transition-colors"
                                     })}
                                 </div>
