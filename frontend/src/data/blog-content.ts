@@ -597,6 +597,327 @@ Sadece ürünün üzerine CE yapıştırmak yetmez. Ürünün test raporlarını
 ## Ceza Riski
 Usulsüz CE kullanımı tespit edilirse, ürünleriniz toplatılır ve AB pazarından süresiz men edilirsiniz.
         `
+  },
+
+  // --- PHASE 3: FINAL EN POSTS (9-12) ---
+  {
+    id: 'en-9',
+    slug: 'consumer-behavior-turkey-global-brands',
+    lang: 'en',
+    title: "Consumer Behavior in Turkey: What Global Brands Need to Know",
+    excerpt: "Turkey has a young, tech-savvy population with unique spending habits. Learn how to position your brand for success.",
+    category: "Market Analysis",
+    publishDate: "2026-01-26",
+    readTime: "6 min",
+    image: "/images/blog/about_hero_modern_trade.webp",
+    content: `
+# Consumer Behavior in Turkey: What Global Brands Need to Know
+
+Entering the Turkish market requires more than just translating your ads. You need to understand the *psyche* of the Turkish consumer.
+
+## The "Young Turk" Demographic
+With 50% of the population under 32, trends move fast.
+*   **Mobile First:** If your mobile UX is bad, you don't exist.
+*   **Influencer Power:** Instagram and TikTok drive more sales here than almost anywhere in Europe.
+
+## Installment Culture (Taksit)
+Turkish consumers love credit cards. The concept of "Taksit" (monthly installments) is ingrained. Even a pair of sneakers is bought in 3 installments.
+*   **Insight:** Ensure your payment gateway supports local bank cards and installment plans.
+
+<CtaBanner 
+  title="Localization Services" 
+  text="LOX helps you tailor your marketing and payment strategies for the local market." 
+  buttonText="Enter the Market" 
+  link="/en/partner" 
+  type="partner"
+/>
+
+## Brand Loyalty vs. Price Sensitivity
+Turkish consumers are brand-conscious but highly price-sensitive. They will pay a premium for "perceived quality" but demand value.
+        `
+  },
+  {
+    id: 'en-10',
+    slug: 'ecommerce-turkey-marketplaces-guide',
+    lang: 'en',
+    title: "E-commerce in Turkey: How to Sell Your Products Online",
+    excerpt: "Should you build your own site or list on Trendyol? A complete overview of the Turkish e-commerce landscape.",
+    category: "Digital Trade",
+    publishDate: "2026-01-28",
+    readTime: "7 min",
+    image: "/images/blog/digital-marketing.jpg", // Fallback
+    content: `
+# E-commerce in Turkey: How to Sell Your Products Online
+
+E-commerce in Turkey is booming, with volumes hitting record highs every year. But the landscape is dominated by super-apps.
+
+## The Big Players
+1.  **Trendyol:** The absolute giant. Think Amazon + Fashion. Essential for B2C.
+2.  **Hepsiburada:** Strong in electronics and appliances. Nasdaq listed.
+3.  **Amazon Turkey:** Growing fast, offering the Prime service locals love.
+
+## Logistics Expectations
+Turkish customers expect **Next Day Delivery**. Waiting 3-4 days is considered "slow."
+*   **Solution:** You need local warehousing (fulfillment center) in Istanbul or Kocaeli. Shipping from abroad directly to the customer (cross-border) often results in customs delays and returns.
+
+<CtaBanner 
+  title="E-commerce Fulfillment" 
+  text="Store your inventory in LOX warehouses. We handle picking, packing, and returns for Trendyol & Hepsiburada." 
+  buttonText="Get Fulfillment Rates" 
+  link="/en/distribution" 
+  type="partner"
+/>
+
+## Payment Methods
+Cash on Delivery is dying out, replaced by Credit Cards and Digital Wallets (Papara, Paycell).
+        `
+  },
+  {
+    id: 'en-11',
+    slug: 'overcoming-language-bureaucracy-barriers',
+    lang: 'en',
+    title: "Overcoming Language and Bureaucracy Barriers in Turkey",
+    excerpt: "Turkey ranks low on English proficiency. See how having a local partner bridges the gap with government and suppliers.",
+    category: "Strategy",
+    publishDate: "2026-01-30",
+    readTime: "4 min",
+    image: "/images/blog/about_team_meeting_premium.png",
+    content: `
+# Overcoming Language and Bureaucracy Barriers
+
+Turkey is an exciting market, but it has a high "barrier to entry" for non-Turkish speakers.
+
+## The Language Gap
+Outside of tourism and top-tier management, English proficiency is low.
+*   Government offices? Turkish only.
+*   Factory floor managers? Turkish only.
+*   Truck drivers? Turkish only.
+
+## The "Red Tape"
+Bureaucracy can be heavy. A simple permit might require signatures from 3 different ministries.
+*   **The Issue:** Forms change frequently. What worked 6 months ago might use a new template today.
+
+<CtaBanner 
+  title="Your Local Representative" 
+  text="LOX becomes your Turkish branch office. we speak the language and know the laws." 
+  buttonText="Hire Us" 
+  link="/en/partner" 
+  type="partner"
+/>
+
+## Building Trust
+Turks prefer face-to-face communication. Emails often go unanswered. A phone call or a tea meeting solves problems instantly. We do those meetings for you.
+        `
+  },
+  {
+    id: 'en-12',
+    slug: 'internal-logistics-turkey-port-to-shelf',
+    lang: 'en',
+    title: "From Port to Shelf: Understanding Internal Logistics in Turkey",
+    excerpt: "Navigating the Bosphorus bridges and Anatolian highways. A guide to domestic trucking and warehousing.",
+    category: "Logistics",
+    publishDate: "2026-02-01",
+    readTime: "5 min",
+    image: "/images/blog/shipping-container.jpg",
+    content: `
+# From Port to Shelf: Understanding Internal Logistics
+
+Your goods arrived at Ambarli Port. Now what? Getting them to a shelf in Ankara or Erzurum requires a local logistics network.
+
+## The Istanbul Bottleneck
+Istanbul connects two continents, but traffic can be a nightmare.
+*   **Strategy:** Smart logistics companies use night-time trucking and specialized warehouses on the outskirts (like Gebze and Hadimkoy) to avoid city center gridlock.
+
+## Domestic Transportation
+Turkey relies heavily on **Road Transport**. The rail network is improving but still limited for door-to-door retail distribution.
+
+<CtaBanner 
+  title="Nationwide Distribution" 
+  text="LOX covers all 81 provinces. From pallet to package, we deliver." 
+  buttonText="View Coverage" 
+  link="/en/distribution" 
+  type="partner"
+/>
+
+## Warehousing Solutions
+Bonded warehouses allows you to store goods without paying taxes until you sell them. This improves cash flow significantly.
+        `
+  },
+
+  // --- PHASE 3: FINAL TR POSTS (8-12) ---
+  {
+    id: 'tr-8',
+    slug: 'insaat-kimyasallari-ihracati-firsatlar',
+    lang: 'tr',
+    title: "İnşaat Kimyasalları İhracatı: Hedef Pazarlar ve Fırsatlar",
+    excerpt: "Türk inşaat sektörü daralırken, Afrika ve Türki Cumhuriyetler sizi bekliyor. Boya, yalıtım ve yapıştırıcı ihracatı rehberi.",
+    category: "Sektörel",
+    publishDate: "2026-01-25",
+    readTime: "5 dk",
+    image: "/images/blog/industries/construction.webp",
+    content: `
+# İnşaat Kimyasalları İhracatı: Hedef Pazarlar
+
+İç piyasadaki daralma, inşaat malzemesi üreticilerini ihracata zorluyor. Neyse ki Türk markalarının bölgede çok güçlü bir imajı var.
+
+## Hedef Pazar: Afrika
+Afrika kıtasında "Made in Turkey", Avrupa kalitesinde ama Çin fiyatına yakın bir algıya sahip.
+*   **Gana, Senegal, Kenya:** Hızla kentleşen bu ülkelerde boya ve yalıtım malzemesine devasa talep var.
+
+## Hedef Pazar: Türki Cumhuriyetler
+Özbekistan ve Kazakistan'daki inşaat projelerinin çoğunu Türk müteahhitler yapıyor. Onlara malzeme satmak, ihracatın en kolay yoludur.
+
+<CtaBanner 
+  title="Yeni Pazarlara Açılın" 
+  text="Sizi Afrika ve Asya'daki distribütörlerle tanıştıralım. Numune gönderimi ve sözleşme bizden." 
+  buttonText="Pazar Araştırması İste" 
+  link="/tr/partner" 
+  type="seller"
+/>
+
+## Dikkat Edilmesi Gerekenler
+Afrika'ya ihracatta **ECTN/BESC** gibi yükleme belgeleri (waiver) zorunludur. Bunları atlamayın.
+        `
+  },
+  {
+    id: 'tr-9',
+    slug: 'navlun-fiyatlari-lojistik-maliyet-dusurme',
+    lang: 'tr',
+    title: "Navlun Fiyatlarını Etkileyen Faktörler ve Lojistik Maliyetleri Düşürme",
+    excerpt: "Konteyner fiyatları tavan yaptığında ne yapmalısınız? Parsiyel (LCL) yükleme ve rota optimizasyonu tüyoları.",
+    category: "Lojistik",
+    publishDate: "2026-01-27",
+    readTime: "6 dk",
+    image: "/images/blog/logistics-hub.jpg",
+    content: `
+# Navlun Fiyatlarını Etkileyen Faktörler
+
+Rekabetçi ihracat için ürün fiyatı kadar lojistik maliyeti de önemlidir.
+
+## Maliyet Düşürme Tüyoları
+1.  **LCL (Parsiyel) Kullanın:** Konteyneri dolduramıyorsanız, parsiyel yükleme yapın. LOXTR olarak yüklerinizi konsolide ederek birim maliyeti düşürürüz.
+2.  **Intermodal Taşıma:** Sadece tır yerine, Ro-Ro + Tren kombinasyonlarını kullanmak maliyeti %20 düşürebilir (süreyi uzatsa da).
+3.  **Yıllık Anlaşma:** Forwarder firmanızla spot fiyat yerine yıllık hacim taahhüdü vererek sabit fiyat alın.
+
+<CtaBanner 
+  title="Lojistik Teklifi Alın" 
+  text="En uygun navlun fiyatları ve rota planlaması için LOXTR lojistik ekibinden teklif alın." 
+  buttonText="Teklif İste" 
+  link="/tr/contact" 
+  type="seller"
+/>
+
+## Sigorta Detayı
+Nakliye sigortası (All Risk) mal bedelinin binde biri civarındadır. Bu küçük maliyetten kaçıp tüm malınızı riske atmayın.
+        `
+  },
+  {
+    id: 'tr-10',
+    slug: 'markanizi-globallestirmek-turquality',
+    lang: 'tr',
+    title: "Markanızı Globalleştirmek: Turquality ve Ötesi",
+    excerpt: "Fason üreticilikten marka olmaya geçiş. Devletin Turquality programı nasıl çalışır?",
+    category: "Markalaşma",
+    publishDate: "2026-01-29",
+    readTime: "5 dk",
+    image: "/images/blog/about_team_meeting_premium.png",
+    content: `
+# Markanızı Globalleştirmek: Turquality ve Ötesi
+
+Yıllarca başkalarına üretim yaptınız. Artık kendi markanızı dünyaya duyurma vakti.
+
+## Turquality Nedir?
+Dünyanın devlet destekli ilk ve tek markalaşma programıdır.
+*   **Ne Sağlar?** Yurtdışında açacağınız mağazanın kirasından, tutacağınız moda tasarımcısının maaşına kadar %50 destek verir.
+*   **Amaç:** "10 Yılda 10 Dünya Markası" yaratmaktır.
+
+## Nasıl Başvurulur?
+Kurumsal altyapınızın (İnvanter yönetimi, İK süreçleri vb.) denetime hazır olması gerekir.
+
+<CtaBanner 
+  title="Marka Yolculuğu" 
+  text="Sıfırdan global marka yaratmak zorlu bir süreçtir. LOXTR, stratejik partneriniz olarak yanınızda." 
+  buttonText="Danışmanlık Alın" 
+  link="/tr/partner" 
+  type="seller"
+/>
+
+## Küçük Başlayın, Büyük Düşünün
+Turquality'ye girmeden önce, "e-Turquality" olarak bilinen e-ihracat destekleriyle başlayarak dijitalde markanızı test edin.
+        `
+  },
+  {
+    id: 'tr-11',
+    slug: 'b2b-platformlar-mi-loxtr-mi',
+    lang: 'tr',
+    title: "B2B İhracat Platformları mı, İhracat Yönetim Şirketi (LOX) mi?",
+    excerpt: "Alibaba üyeliği müşteri bulmak için yeterli mi? Platformlar ile aktif ihracat yönetimi arasındaki farklar.",
+    category: "Karşılaştırma",
+    publishDate: "2026-01-31",
+    readTime: "4 dk",
+    image: "/images/blog/digital-marketing.jpg",
+    content: `
+# B2B İhracat Platformları mı, İhracat Yönetim Şirketi mi?
+
+Pek çok firma "Alibaba üyeliği aldım, ihracat patlayacak" diye düşünür, ama sonuç hüsran olabilir.
+
+## B2B Platformlar (Pasif Pazarlama)
+Siz ürününüzü koyarsınız ve müşterinin sizi bulmasını beklersiniz.
+*   **Sorun:** Asyalı rakiplerle sadece fiyat rekabetine girersiniz. Gelen taleplerin çoğu "spam" veya çok düşük adetlidir.
+
+## İhracat Yönetim Şirketi - LOX (Aktif Satış)
+Biz müşteriyi beklemiyoruz; biz müşteriye gidiyoruz.
+*   Hedef pazarın dilini konuşan satış ekibi.
+*   Yerinde ziyaretler.
+*   Gümrük ve lojistik dahil "kapı teslim" hizmet.
+
+<CtaBanner 
+  title="Aktif İhracata Geçin" 
+  text="Profil oluşturup beklemeyin. LOX sizin için sahaya insin ve gerçek alıcılarla masaya otursun." 
+  buttonText="Farkı Görün" 
+  link="/tr/about" 
+  type="seller"
+/>
+
+## Sonuç
+B2B platformlar bir "katalogdur". LOXTR ise sizin "satış departmanınızdır".
+        `
+  },
+  {
+    id: 'tr-12',
+    slug: 'lox-ile-calismanin-avantajlari',
+    lang: 'tr',
+    title: "LOX İle Çalışmanın Avantajları: Siz Üretin, Biz Satalım",
+    excerpt: "Sıfır ihracat departmanı maliyetiyle global pazarlara açılın. LOXTR iş modeli size ne kazandırır?",
+    category: "Hizmetlerimiz",
+    publishDate: "2026-02-02",
+    readTime: "3 dk",
+    image: "/images/blog/hero_bg_flag.webp",
+    content: `
+# LOX İle Çalışmanın Avantajları: Siz Üretin, Biz Satalım
+
+İhracat yapmak istiyor ama personel, dil, gümrük ve seyahat masraflarından korkuyor musunuz? LOXTR modelini tanıyın.
+
+## Sizin Dış Ticaret Departmanınız
+Bünyenizde 5.000$ maaşlı bir ihracat müdürü çalıştırmak yerine, LOX ile çalışarak tüm bir ekibe (Satış, Pazarlama, Lojistik, Hukuk) sahip olursunuz.
+
+## Risk Bizde, Kazanç Sizde
+*   Tahsilat riskini yönetiyoruz (Sigorta & L/C).
+*   Gümrük risklerini biz üstleniyoruz.
+*   Lojistik operasyonu bizde.
+
+<CtaBanner 
+  title="Bizimle Tanışın" 
+  text="Üretim gücünüzü global satış ağımızla birleştirelim. Hemen bir toplantı planla." 
+  buttonText="İşbirliği Başlat" 
+  link="/tr/contact" 
+  type="seller"
+/>
+
+## Odaklanın
+Siz en iyi bildiğiniz işi yapın: **Kaliteli Üretim.**
+Gerisini LOXTR halleder.
+        `
   }
 ];
 

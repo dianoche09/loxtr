@@ -238,4 +238,40 @@
     <xhtml:link rel="alternate" hreflang="tr" href="https://www.loxtr.com/tr/sektorler/cosmetics"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://www.loxtr.com/en/industries/cosmetics"/>
   </url>
+  <url>
+    <loc>https://www.loxtr.com/en/blog/why-turkey-target-market-2026</loc>
+    <lastmod>2026-01-13</lastmod>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.loxtr.com/en/blog/why-turkey-target-market-2026"/>
+  </url>
+  <url>
+    <loc>https://www.loxtr.com/en/blog/gateway-to-emea</loc>
+    <lastmod>2026-01-13</lastmod>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.loxtr.com/en/blog/gateway-to-emea"/>
+  </url>
+  <url>
+    <loc>https://www.loxtr.com/en/blog/navigating-turkish-customs</loc>
+    <lastmod>2026-01-13</lastmod>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.loxtr.com/en/blog/navigating-turkish-customs"/>
+  </url>
+  <url>
+    <loc>https://www.loxtr.com/tr/blog/ihracata-baslarken-yapilan-hatalar</loc>
+    <lastmod>2026-01-13</lastmod>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://www.loxtr.com/tr/blog/ihracata-baslarken-yapilan-hatalar"/>
+  </url>
+  <url>
+    <loc>https://www.loxtr.com/tr/blog/yurtdisi-musteri-bulma-yontemleri</loc>
+    <lastmod>2026-01-13</lastmod>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://www.loxtr.com/tr/blog/yurtdisi-musteri-bulma-yontemleri"/>
+  </url>
+  <url>
+    <loc>https://www.loxtr.com/tr/blog/ihracat-destekleri-2026</loc>
+    <lastmod>2026-01-13</lastmod>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://www.loxtr.com/tr/blog/ihracat-destekleri-2026"/>
+  </url>
 </urlset>
