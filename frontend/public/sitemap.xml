@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <!-- Core English Pages -->
+  <url>
+    <loc>https://www.loxtr.com/en</loc>
+    <lastmod>2026-01-13</lastmod>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://www.loxtr.com/tr"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.loxtr.com/en"/>
+  </url>
+  <url>
+    <loc>https://www.loxtr.com/en/solutions</loc>
+    <lastmod>2026-01-13</lastmod>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://www.loxtr.com/tr/cozumler"/>
+  </url>
+  <url>
+    <loc>https://www.loxtr.com/en/industries</loc>
+    <lastmod>2026-01-13</lastmod>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://www.loxtr.com/tr/sektorler"/>
+  </url>
+  <url>
+    <loc>https://www.loxtr.com/en/partner</loc>
+    <lastmod>2026-01-13</lastmod>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://www.loxtr.com/tr/partner"/>
+  </url>
+  <url>
+    <loc>https://www.loxtr.com/en/distribution</loc>
+    <lastmod>2026-01-13</lastmod>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://www.loxtr.com/tr/distribution"/>
+  </url>
+  <url>
+    <loc>https://www.loxtr.com/en/about</loc>
+    <lastmod>2026-01-13</lastmod>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://www.loxtr.com/tr/about"/>
+  </url>
+  <url>
+    <loc>https://www.loxtr.com/en/contact</loc>
+    <lastmod>2026-01-13</lastmod>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://www.loxtr.com/tr/contact"/>
+  </url>
+  
+  <!-- Core Turkish Pages -->
+  <url>
+    <loc>https://www.loxtr.com/tr</loc>
+    <lastmod>2026-01-13</lastmod>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://www.loxtr.com/tr"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.loxtr.com/en"/>
+  </url>
+  <url>
+    <loc>https://www.loxtr.com/tr/cozumler</loc>
+    <lastmod>2026-01-13</lastmod>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.loxtr.com/en/solutions"/>
+  </url>
+  <url>
+    <loc>https://www.loxtr.com/tr/sektorler</loc>
+    <lastmod>2026-01-13</lastmod>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.loxtr.com/en/industries"/>
+  </url>
+  <url>
+    <loc>https://www.loxtr.com/tr/partner</loc>
+    <lastmod>2026-01-13</lastmod>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.loxtr.com/en/partner"/>
+  </url>
+  <url>
+    <loc>https://www.loxtr.com/tr/distribution</loc>
+    <lastmod>2026-01-13</lastmod>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.loxtr.com/en/distribution"/>
+  </url>
+  <url>
+    <loc>https://www.loxtr.com/tr/export-solutions</loc>
+    <lastmod>2026-01-13</lastmod>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://www.loxtr.com/tr/about</loc>
+    <lastmod>2026-01-13</lastmod>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.loxtr.com/en/about"/>
+  </url>
+  <url>
+    <loc>https://www.loxtr.com/tr/contact</loc>
+    <lastmod>2026-01-13</lastmod>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.loxtr.com/en/contact"/>
+  </url>
+
+  <!-- Industries (EN) -->
+  <url><loc>https://www.loxtr.com/en/industries/consumer-electronics</loc><priority>0.7</priority></url>
+  <url><loc>https://www.loxtr.com/en/industries/industrial-machinery</loc><priority>0.7</priority></url>
+  <url><loc>https://www.loxtr.com/en/industries/medical-healthcare</loc><priority>0.7</priority></url>
+  <url><loc>https://www.loxtr.com/en/industries/automotive-parts</loc><priority>0.7</priority></url>
+  <url><loc>https://www.loxtr.com/en/industries/construction-materials</loc><priority>0.7</priority></url>
+  <url><loc>https://www.loxtr.com/en/industries/textile-apparel</loc><priority>0.7</priority></url>
+  <url><loc>https://www.loxtr.com/en/industries/food-beverage</loc><priority>0.7</priority></url>
+  <url><loc>https://www.loxtr.com/en/industries/cosmetics</loc><priority>0.7</priority></url>
+
+  <!-- Industries (TR) -->
+  <url><loc>https://www.loxtr.com/tr/sektorler/consumer-electronics</loc><priority>0.7</priority></url>
+  <url><loc>https://www.loxtr.com/tr/sektorler/industrial-machinery</loc><priority>0.7</priority></url>
+  <url><loc>https://www.loxtr.com/tr/sektorler/medical-healthcare</loc><priority>0.7</priority></url>
+  <url><loc>https://www.loxtr.com/tr/sektorler/automotive-parts</loc><priority>0.7</priority></url>
+  <url><loc>https://www.loxtr.com/tr/sektorler/construction-materials</loc><priority>0.7</priority></url>
+  <url><loc>https://www.loxtr.com/tr/sektorler/textile-apparel</loc><priority>0.7</priority></url>
+  <url><loc>https://www.loxtr.com/tr/sektorler/food-beverage</loc><priority>0.7</priority></url>
+  <url><loc>https://www.loxtr.com/tr/sektorler/cosmetics</loc><priority>0.7</priority></url>
+</urlset>
