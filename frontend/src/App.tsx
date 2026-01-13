@@ -69,12 +69,14 @@ function Layout() {
       { label: "Services", path: "/solutions" },
       { label: "Industries", path: "/industries" },
       { label: "About", path: "/about" },
+      { label: "Insights", path: "/blog" },
       { label: "Contact", path: "/contact" }
     ],
     tr: [
       { label: "Hizmetler", path: "/cozumler" },
       { label: "Sektörler", path: "/sektorler" },
       { label: "Hakkımızda", path: "/about" },
+      { label: "Akademi", path: "/blog" },
       { label: "İletişim", path: "/contact" }
     ]
   };
