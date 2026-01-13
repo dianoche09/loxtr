@@ -295,8 +295,11 @@ const PartnerProgram = () => {
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                         {CONFIG.partnershipModels[lang].map((model, i) => (
                             <div key={i} className="bg-white p-10 rounded-3xl border border-gray-100 shadow-xl hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 group">
-                                <div className="mb-8 p-4 bg-navy/5 rounded-2xl inline-block group-hover:bg-yellow group-hover:text-navy transition-colors duration-300">
-                                    {model.icon}
+                                <div className="mb-8 p-4 bg-navy/5 rounded-2xl inline-block group-hover:bg-yellow transition-colors duration-300">
+                                    {/* Clone icon to override its built-in classes for hover effect */}
+                                    {React.cloneElement(model.icon as React.ReactElement, {
+                                        className: "w-10 h-10 text-yellow group-hover:text-navy transition-colors"
+                                    })}
                                 </div>
                                 <h3 className="text-2xl font-bold mb-4 text-navy uppercase tracking-tight">{model.title}</h3>
                                 <p className="text-gray-600 mb-8 leading-relaxed font-light">{model.desc}</p>

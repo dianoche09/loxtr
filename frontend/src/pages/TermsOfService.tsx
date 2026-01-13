@@ -75,11 +75,11 @@ const TermsOfService = () => {
     };
 
     return (
-        <div className="bg-white min-h-screen pt-20">
+        <div className="bg-white min-h-screen">
             <SEO title={t.title} description="Legal terms and conditions." />
 
             {/* HERO SECTION */}
-            <section className="bg-navy py-16 border-b border-white/10">
+            <section className="bg-navy pt-32 pb-16 border-b border-white/10">
                 <div className="container mx-auto px-6 max-w-6xl">
                     <h1 className="text-4xl md:text-5xl font-heading font-bold mb-4 text-white">{t.hero.title}</h1>
                     <p className="text-xl text-white/70 max-w-2xl font-light">{t.hero.desc}</p>

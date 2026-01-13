@@ -1,7 +1,7 @@
 import { useState, Fragment } from 'react';
 import { motion } from 'framer-motion';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
-import { ArrowLeft, Box, TrendingUp, Wallet, Globe, Activity, Info } from 'lucide-react';
+import { ArrowLeft, Box, TrendingUp, Wallet, Globe, Activity, Info, ArrowRight } from 'lucide-react';
 import SEO from '../components/seo/SEO';
 import { CONFIG } from '../siteConfig';
 import ContactModal from '../components/ContactModal';
@@ -250,6 +250,25 @@ const IndustryDetail = () => {
                 </section>
 
             </div>
+
+            {/* NEW BANNER: PARTNERSHIP */}
+            <section className="py-24 bg-white text-navy mt-24">
+                <div className="container mx-auto px-6 text-center">
+                    <h2 className="text-4xl md:text-5xl font-heading font-bold mb-6">
+                        {lang === 'en' ? "Ready to Enter Turkish Market?" : "Türkiye Pazarına Girmeye Hazır mısınız?"}
+                    </h2>
+                    <p className="text-xl text-navy/60 mb-10 max-w-2xl mx-auto">
+                        {lang === 'en' ? "Get a free distribution capacity assessment" : "Ücretsiz dağıtım kapasitesi değerlendirmesi alın"}
+                    </p>
+                    <button
+                        onClick={() => setIsModalOpen(true)}
+                        className="bg-navy text-white font-bold px-12 py-5 rounded-lg hover:bg-yellow hover:text-navy transition-all inline-flex items-center space-x-3 shadow-xl"
+                    >
+                        <span className="text-lg">{lang === 'en' ? "Request Assessment" : "Değerlendirme Talep Et"}</span>
+                        <ArrowRight className="w-6 h-6" />
+                    </button>
+                </div>
+            </section>
         </div>
     );
 };

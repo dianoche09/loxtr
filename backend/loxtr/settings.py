@@ -262,6 +262,9 @@ elif 'ses' in EMAIL_BACKEND.lower():
     EMAIL_HOST_USER = env('AWS_SES_ACCESS_KEY_ID')
     EMAIL_HOST_PASSWORD = env('AWS_SES_SECRET_ACCESS_KEY')
 
+# RESEND API KEY
+RESEND_API_KEY = env('RESEND_API_KEY', default=None)
+
 # ============================================
 # SECURITY SETTINGS (Production)
 # ============================================

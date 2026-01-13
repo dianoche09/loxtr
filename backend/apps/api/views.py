@@ -19,8 +19,34 @@ from .serializers import (
 )
 from utils.cache_utils import cache_api_response
 import logging
+import resend
+from django.conf import settings
 
 logger = logging.getLogger(__name__)
+
+def send_resend_notification(subject, html_content):
+    """
+    Send notification via Resend.
+    """
+    if not settings.RESEND_API_KEY:
+        logger.warning("RESEND_API_KEY is not set. Skipping email notification.")
+        return
+
+    resend.api_key = settings.RESEND_API_KEY
+    
+    try:
+        # construct email body
+        params = {
+            "from": "LOXTR Notifications <onboarding@resend.dev>",
+            "to": ["info@loxtr.com"],
+            "subject": subject,
+            "html": html_content,
+        }
+        
+        email = resend.Emails.send(params)
+        logger.info(f"Email sent via Resend: {email}")
+    except Exception as e:
+        logger.error(f"Failed to send Resend email: {e}")
 
 # ============================================
 # PAGINATION
@@ -120,7 +146,24 @@ def submit_application(request):
     """
     serializer = ApplicationSerializer(data=request.data)
     if serializer.is_valid():
-        serializer.save(ip_address=request.META.get('REMOTE_ADDR'))
+        instance = serializer.save(ip_address=request.META.get('REMOTE_ADDR'))
+        
+        # Send notification
+        try:
+            html = f"""
+            <h2>New Application Received</h2>
+            <p><strong>Type:</strong> {instance.get_application_type_display()}</p>
+            <p><strong>Company:</strong> {instance.company_name}</p>
+            <p><strong>Contact:</strong> {instance.contact_name} ({instance.email})</p>
+            <p><strong>Country:</strong> {instance.country}</p>
+            <p><strong>Product:</strong> {instance.product_category}</p>
+            <br>
+            <a href="https://loxtr.com/admin/applications/application/{instance.id}/change/">View in Admin</a>
+            """
+            send_resend_notification(f"New Application: {instance.company_name}", html)
+        except Exception as e:
+            logger.error(f"Error in app notification: {e}")
+
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -149,7 +192,24 @@ def submit_contact(request):
     """
     serializer = ContactSerializer(data=request.data)
     if serializer.is_valid():
-        serializer.save(ip_address=request.META.get('REMOTE_ADDR'))
+        instance = serializer.save(ip_address=request.META.get('REMOTE_ADDR'))
+        
+        # Send Notification
+        try:
+            html = f"""
+            <h2>New Contact Inquiry</h2>
+            <p><strong>Name:</strong> {instance.full_name}</p>
+            <p><strong>Company:</strong> {instance.company_name}</p>
+            <p><strong>Email:</strong> {instance.email}</p>
+            <p><strong>Type:</strong> {instance.inquiry_type}</p>
+            <p><strong>Message:</strong><br>{instance.message}</p>
+            <br>
+            <a href="https://loxtr.com/admin/contact/contactsubmission/{instance.id}/change/">View in Admin</a>
+            """
+            send_resend_notification(f"Contact Inquiry: {instance.full_name}", html)
+        except Exception as e:
+            logger.error(f"Error in contact notification: {e}")
+            
         return Response({'success': True, 'message': 'Message sent successfully'}, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -173,6 +233,17 @@ def subscribe_newsletter(request):
         return Response({'success': True, 'message': 'Already subscribed'}, status=status.HTTP_200_OK)
         
     NewsletterSubscription.objects.create(email=email, is_active=True)
+    
+    # Send Notification
+    try:
+        html = f"""
+        <h2>New Newsletter Subscriber</h2>
+        <p><strong>Email:</strong> {email}</p>
+        """
+        send_resend_notification(f"New Subscriber: {email}", html)
+    except Exception as e:
+        logger.error(f"Error in newsletter notification: {e}")
+
     return Response({'success': True, 'message': 'Subscribed successfully'}, status=status.HTTP_201_CREATED)
 
 # ============================================

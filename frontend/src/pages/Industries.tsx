@@ -83,7 +83,7 @@ const Industries = () => {
                                 transition={{ delay: i * 0.05 }}
                                 whileHover={{ y: -5, borderColor: '#facc15' }}
                                 className="bg-charcoal border border-white/10 rounded-xl p-6 group cursor-pointer transition-all duration-300 shadow-xl"
-                                onClick={() => navigate(`/${lang}/industries/${item.slug}`)}
+                                onClick={() => navigate(`/${lang}${lang === 'en' ? '/industries' : '/sektorler'}/${item.slug}`)}
                             >
                                 <div className="flex items-center justify-between mb-6">
                                     <div className="p-3 bg-navy rounded-lg text-yellow group-hover:bg-yellow group-hover:text-navy transition-colors">
@@ -138,6 +138,25 @@ const Industries = () => {
                             </div>
                         ))}
                     </div>
+                </div>
+            </section>
+
+            {/* NEW BANNER: PARTNERSHIP */}
+            <section className="py-24 bg-white text-navy">
+                <div className="container mx-auto px-6 text-center">
+                    <h2 className="text-4xl md:text-5xl font-heading font-bold mb-6">
+                        {lang === 'en' ? "Ready to Enter Turkish Market?" : "Türkiye Pazarına Girmeye Hazır mısınız?"}
+                    </h2>
+                    <p className="text-xl text-navy/60 mb-10 max-w-2xl mx-auto">
+                        {lang === 'en' ? "Get a free distribution capacity assessment" : "Ücretsiz dağıtım kapasitesi değerlendirmesi alın"}
+                    </p>
+                    <button
+                        onClick={() => setContactModalOpen(true)}
+                        className="bg-navy text-white font-bold px-12 py-5 rounded-lg hover:bg-yellow hover:text-navy transition-all inline-flex items-center space-x-3 shadow-xl"
+                    >
+                        <span className="text-lg">{lang === 'en' ? "Request Assessment" : "Değerlendirme Talep Et"}</span>
+                        <ArrowRight className="w-6 h-6" />
+                    </button>
                 </div>
             </section>
 

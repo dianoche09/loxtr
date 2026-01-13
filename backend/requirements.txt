@@ -98,3 +98,4 @@ uritemplate==4.2.0
 urllib3==2.3.0
 websockets==15.0.1
 yarl==1.22.0
+resend==0.8.0

@@ -14,8 +14,7 @@ import {
     Warehouse,
     Truck,
     Store,
-    ShieldCheck,
-    CreditCard
+    ShieldCheck
 } from 'lucide-react';
 import React from 'react';
 
@@ -72,11 +71,6 @@ export const CONFIG = {
                 title: "COMPLIANCE",
                 desc: "Full management of TSE, CE, and Customs regulations.",
                 icon: React.createElement(ShieldCheck, { className: "w-8 h-8 text-yellow" })
-            },
-            {
-                title: "FINANCIAL TRUST",
-                desc: "Secure payment systems and escrow-protected trade.",
-                icon: React.createElement(CreditCard, { className: "w-8 h-8 text-yellow" })
             }
         ],
         tr: [
@@ -94,11 +88,6 @@ export const CONFIG = {
                 title: "MEVZUAT UYUMU",
                 desc: "TSE, CE ve Gümrük düzenlemelerinin tam yönetimi.",
                 icon: React.createElement(ShieldCheck, { className: "w-8 h-8 text-yellow" })
-            },
-            {
-                title: "FİNANSAL GÜVEN",
-                desc: "Güvenli ödeme sistemleri ve korumalı ticaret.",
-                icon: React.createElement(CreditCard, { className: "w-8 h-8 text-yellow" })
             }
         ]
     },
