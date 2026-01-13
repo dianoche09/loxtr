@@ -20,6 +20,8 @@ import PrivacyPolicy from './pages/PrivacyPolicy';
 import About from './pages/About';
 import FAQ from './pages/FAQ';
 import Contact from './pages/Contact';
+import Blog from './pages/Blog';
+import BlogPostPage from './pages/BlogPost';
 import NotFound from './pages/NotFound';
 import ScrollToTop from './ScrollToTop';
 import Logo from './components/Logo';
@@ -280,6 +282,8 @@ function App() {
               <Route path="terms" element={<TermsOfService />} />
               <Route path="privacy" element={<PrivacyPolicy />} />
               <Route path="export-solutions" element={<ExportSolutions />} />
+              <Route path="blog" element={<Blog />} />
+              <Route path="blog/:slug" element={<BlogPostPage />} />
               <Route path="*" element={<NotFound />} />
             </Route>
 
@@ -297,6 +301,8 @@ function App() {
               <Route path="terms" element={<TermsOfService />} />
               <Route path="privacy" element={<PrivacyPolicy />} />
               <Route path="export-solutions" element={<ExportSolutions />} />
+              <Route path="blog" element={<Blog />} />
+              <Route path="blog/:slug" element={<BlogPostPage />} />
               <Route path="*" element={<NotFound />} />
             </Route>
 

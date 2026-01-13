@@ -14,12 +14,14 @@
     "postbuild": "node scripts/generate-sitemap.js"
   },
   "dependencies": {
+    "@tailwindcss/typography": "^0.5.19",
     "clsx": "^2.1.1",
     "framer-motion": "^12.24.10",
     "lucide-react": "^0.562.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-helmet-async": "^2.0.5",
+    "react-markdown": "^10.1.0",
     "react-router-dom": "^7.12.0",
     "resend": "^6.7.0",
     "tailwind-merge": "^3.4.0"

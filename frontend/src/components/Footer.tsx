@@ -61,6 +61,7 @@ const Footer = () => {
                 links: [
                     { label: "About Us", path: "/about" },
                     { label: "Contact", path: "/contact" },
+                    { label: "Blog", path: "/blog" },
                     { label: "FAQ", path: "/faq" },
                     { label: "Privacy Policy", path: "/privacy" },
                     { label: "Terms of Service", path: "/terms" }
@@ -93,6 +94,7 @@ const Footer = () => {
                 links: [
                     { label: "Hakkımızda", path: "/about" },
                     { label: "İletişim", path: "/contact" },
+                    { label: "Blog", path: "/blog" },
                     { label: "SSS", path: "/faq" },
                     { label: "Gizlilik Politikası", path: "/privacy" },
                     { label: "Kullanım Koşulları", path: "/terms" }

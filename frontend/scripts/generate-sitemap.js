@@ -63,6 +63,21 @@ async function getDynamicRoutes() {
     }));
 }
 
+// Manually added blog posts list for sitemap purposes
+// In a real app, this should import from data/blog-content.ts but we are in Node environment (module type: module) so we can't easily import TS files.
+// We will duplicate the slugs here for now or read the file as string and parse regex (too brittle).
+// Hardcoding the slugs is the safest quick way for now.
+const BLOG_SLUGS = [
+    // EN
+    'why-turkey-target-market-2026',
+    'gateway-to-emea',
+    'navigating-turkish-customs',
+    // TR
+    'ihracata-baslarken-yapilan-hatalar',
+    'yurtdisi-musteri-bulma-yontemleri',
+    'ihracat-destekleri-2026'
+];
+
 function generateUrlEntry(loc, lastmod, priority, alternates = []) {
     let xml = `  <url>\n`;
     xml += `    <loc>${loc}</loc>\n`;
@@ -133,6 +148,37 @@ async function generateSitemap() {
             { lang: 'tr', url: trUrl },
             { lang: 'en', url: enUrl }
         ]);
+    });
+
+    // 3. Generate Blog Routes
+    // Note: Blog posts are language specific. An EN post might not have a direct TR translation or slug might differ.
+    // Our blog-content.ts handles lang specifically.
+    // For simplicity in this script, we assume no direct alternates for blog posts unless we map them.
+    // The user didn't specify strict 1:1 mapping for blog posts yet, just "12 EN, 12 TR".
+    // So we will list them individually without alternates or with self-ref only.
+
+    // However, to be cleaner, we should check the lang of the slug. 
+    // Since we hardcoded the slugs above mixed, let's just loop and guess or check knowing the list.
+
+    const EN_BLOGS = [
+        'why-turkey-target-market-2026',
+        'gateway-to-emea',
+        'navigating-turkish-customs'
+    ];
+    const TR_BLOGS = [
+        'ihracata-baslarken-yapilan-hatalar',
+        'yurtdisi-musteri-bulma-yontemleri',
+        'ihracat-destekleri-2026'
+    ];
+
+    EN_BLOGS.forEach(slug => {
+        const url = `${BASE_URL}/en/blog/${slug}`;
+        sitemapContent += generateUrlEntry(url, today, '0.6', [{ lang: 'en', url }]);
+    });
+
+    TR_BLOGS.forEach(slug => {
+        const url = `${BASE_URL}/tr/blog/${slug}`;
+        sitemapContent += generateUrlEntry(url, today, '0.6', [{ lang: 'tr', url }]);
     });
 
     sitemapContent += `</urlset>`;
