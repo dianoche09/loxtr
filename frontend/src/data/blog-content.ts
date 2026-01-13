@@ -25,7 +25,7 @@ export const BLOG_POSTS: BlogPost[] = [
     category: "Market Analysis",
     publishDate: "2026-01-10",
     readTime: "5 min",
-    image: "/images/blog/istanbul-skyline.jpg",
+    image: "/images/blog/why-turkey-target-market-2026.jpg",
     content: `
 # Why Turkey Should Be Your Next Target Market in 2026
 
@@ -75,7 +75,7 @@ The window of opportunity to establish brand loyalty in this market is open now.
     category: "Logistics",
     publishDate: "2026-01-12",
     readTime: "4 min",
-    image: "/images/blog/logistics-hub.jpg",
+    image: "/images/blog/gateway-to-emea.jpg",
     content: `
 # The Gateway to EMEA: Using Turkey as a Regional Hub
 
@@ -116,7 +116,7 @@ Within a 4-hour flight radius from Istanbul, you can reach over **1.5 billion pe
     category: "Regulations",
     publishDate: "2026-01-14",
     readTime: "6 min",
-    image: "/images/blog/customs-paperwork.jpg",
+    image: "/images/blog/navigating-turkish-customs.jpg",
     content: `
 # Navigating Turkish Customs: A Guide for Foreign Exporters
 
@@ -155,7 +155,7 @@ We act as your **Importer of Record**, handling all the bureaucracy so you can f
     category: "İhracat Rehberi",
     publishDate: "2026-01-11",
     readTime: "5 dk",
-    image: "/images/blog/shipping-container.jpg",
+    image: "/images/blog/ihracata-baslarken-yapilan-hatalar.jpg",
     content: `
 # İhracata Başlarken Yapılan 5 Kritik Hata ve Çözümleri
 
@@ -199,7 +199,7 @@ Web siteniz İngilizce değilse, LinkedIn'de yoksanız, uluslararası alıcı si
     category: "Pazarlama",
     publishDate: "2026-01-13",
     readTime: "6 dk",
-    image: "/images/blog/digital-marketing.jpg",
+    image: "/images/blog/yurtdisi-musteri-bulma-yontemleri.jpg",
     content: `
 # Yurtdışı Müşteri Bulma Yöntemleri: Dijital Çağda İhracat
 
@@ -235,7 +235,7 @@ Eğer kendi ihracat departmanınızı kuracak bütçeniz yoksa, LOX gibi bir ihr
     category: "Teşvikler",
     publishDate: "2026-01-15",
     readTime: "4 dk",
-    image: "/images/blog/financial-growth.jpg",
+    image: "/images/blog/ihracat-destekleri-2026.jpg",
     content: `
 # İhracat Destekleri 2026
 
@@ -272,7 +272,7 @@ Bu desteklerden yararlanmak için **DYS (Destek Yönetim Sistemi)** kaydınızı
     category: "Sector Analysis",
     publishDate: "2026-01-16",
     readTime: "5 min",
-    image: "/images/blog/industries_hero.webp",
+    image: "/images/blog/booming-sectors-turkey-international-partners.jpg",
     content: `
 # 5 Booming Sectors in Turkey Looking for International Partners
 
@@ -311,7 +311,7 @@ Turkey is the "China of Europe" for industrial machinery. High customization cap
     category: "Market Analysis",
     publishDate: "2026-01-18",
     readTime: "6 min",
-    image: "/images/blog/hero_bg.webp",
+    image: "/images/blog/cost-advantage-manufacturing-turkey-vs-eastern-europe.jpg",
     content: `
 # The Cost Advantage: Manufacturing in Turkey vs. Eastern Europe
 
@@ -344,7 +344,7 @@ Turkey's energy mix is diversifying, and its proximity to major EU markets means
     category: "Logistics",
     publishDate: "2026-01-20",
     readTime: "4 min",
-    image: "/images/blog/distribution_hero_new.webp",
+    image: "/images/blog/understanding-incoterms-2020-guide.jpg",
     content: `
 # Understanding Incoterms 2020: A Quick Guide for International Buyers
 
@@ -380,7 +380,7 @@ Always clarify Incoterms in your contract *before* issuing a Purchase Order.
     category: "Risk Management",
     publishDate: "2026-01-22",
     readTime: "5 min",
-    image: "/images/blog/about_hero_modern_trade.webp",
+    image: "/images/blog/how-to-verify-turkish-suppliers.jpg",
     content: `
 # How to Verify Turkish Suppliers: A Step-by-Step Guide
 
@@ -419,7 +419,7 @@ A reputable supplier will happily provide contacts of current clients in your re
     category: "Sourcing",
     publishDate: "2026-01-24",
     readTime: "5 min",
-    image: "/images/blog/about_team_meeting_premium.png", // Fallback to png if webp not exact match or use generic
+    image: "/images/blog/private-label-manufacturing-turkey.jpg", // Fallback to png if webp not exact match or use generic
     content: `
 # Private Label Manufacturing in Turkey: How to Start Your Brand
 
@@ -461,7 +461,7 @@ Turkey is the hidden champion of Private Label making. Many high-end European co
     category: "İhracat Rehberi",
     publishDate: "2026-01-17",
     readTime: "5 dk",
-    image: "/images/blog/export_card_bg.webp",
+    image: "/images/blog/mikro-ihracat-nedir-rehber.jpg",
     content: `
 # Mikro İhracat Nedir? KOBİ'ler İçin Adım Adım Rehber
 
@@ -497,7 +497,7 @@ E-fatura mükellefi olan tüm şahıs ve limited şirketleri mikro ihracat yapab
     category: "Mevzuat",
     publishDate: "2026-01-19",
     readTime: "6 dk",
-    image: "/images/blog/hero_bg_flag.webp",
+    image: "/images/blog/gumruk-islemlerinde-dikkat-edilmesi-gerekenler.jpg",
     content: `
 # Gümrük İşlemlerinde Dikkat Edilmesi Gerekenler
 
@@ -533,7 +533,7 @@ Avrupa Birliği'ne sanayi ürünü satıyorsanız, ATR belgesi olmazsa olmazdır
     category: "Finans",
     publishDate: "2026-01-21",
     readTime: "7 dk",
-    image: "/images/blog/distribution_hero_new.webp",
+    image: "/images/blog/akreditifli-odeme-nedir.jpg",
     content: `
 # Akreditifli Ödeme (L/C) Nedir?
 
@@ -570,7 +570,7 @@ Akreditif güvenlidir ancak banka masrafları yüksektir. 50.000$ altı işlemle
     category: "Sertifikasyon",
     publishDate: "2026-01-23",
     readTime: "5 dk",
-    image: "/images/blog/customs-paperwork.jpg", // Fallback or existing
+    image: "/images/blog/avrupa-pazarina-giris-standartlar.jpg", // Fallback or existing
     content: `
 # Avrupa Pazarına Giriş: Standartlar ve CE Belgesi
 
@@ -609,7 +609,7 @@ Usulsüz CE kullanımı tespit edilirse, ürünleriniz toplatılır ve AB pazar�
     category: "Market Analysis",
     publishDate: "2026-01-26",
     readTime: "6 min",
-    image: "/images/blog/about_hero_modern_trade.webp",
+    image: "/images/blog/consumer-behavior-turkey-global-brands.jpg",
     content: `
 # Consumer Behavior in Turkey: What Global Brands Need to Know
 
@@ -645,7 +645,7 @@ Turkish consumers are brand-conscious but highly price-sensitive. They will pay 
     category: "Digital Trade",
     publishDate: "2026-01-28",
     readTime: "7 min",
-    image: "/images/blog/digital-marketing.jpg", // Fallback
+    image: "/images/blog/ecommerce-turkey-marketplaces-guide.jpg", // Fallback
     content: `
 # E-commerce in Turkey: How to Sell Your Products Online
 
@@ -681,7 +681,7 @@ Cash on Delivery is dying out, replaced by Credit Cards and Digital Wallets (Pap
     category: "Strategy",
     publishDate: "2026-01-30",
     readTime: "4 min",
-    image: "/images/blog/about_team_meeting_premium.png",
+    image: "/images/blog/overcoming-language-bureaucracy-barriers.jpg",
     content: `
 # Overcoming Language and Bureaucracy Barriers
 
@@ -718,7 +718,7 @@ Turks prefer face-to-face communication. Emails often go unanswered. A phone cal
     category: "Logistics",
     publishDate: "2026-02-01",
     readTime: "5 min",
-    image: "/images/blog/shipping-container.jpg",
+    image: "/images/blog/internal-logistics-turkey-port-to-shelf.jpg",
     content: `
 # From Port to Shelf: Understanding Internal Logistics
 
@@ -754,7 +754,7 @@ Bonded warehouses allows you to store goods without paying taxes until you sell 
     category: "Sektörel",
     publishDate: "2026-01-25",
     readTime: "5 dk",
-    image: "/images/blog/industries/construction.webp",
+    image: "/images/blog/insaat-kimyasallari-ihracati-firsatlar.jpg",
     content: `
 # İnşaat Kimyasalları İhracatı: Hedef Pazarlar
 
@@ -788,7 +788,7 @@ Afrika'ya ihracatta **ECTN/BESC** gibi yükleme belgeleri (waiver) zorunludur. B
     category: "Lojistik",
     publishDate: "2026-01-27",
     readTime: "6 dk",
-    image: "/images/blog/logistics-hub.jpg",
+    image: "/images/blog/navlun-fiyatlari-lojistik-maliyet-dusurme.jpg",
     content: `
 # Navlun Fiyatlarını Etkileyen Faktörler
 
@@ -820,7 +820,7 @@ Nakliye sigortası (All Risk) mal bedelinin binde biri civarındadır. Bu küç�
     category: "Markalaşma",
     publishDate: "2026-01-29",
     readTime: "5 dk",
-    image: "/images/blog/about_team_meeting_premium.png",
+    image: "/images/blog/markanizi-globallestirmek-turquality.jpg",
     content: `
 # Markanızı Globalleştirmek: Turquality ve Ötesi
 
@@ -855,7 +855,7 @@ Turquality'ye girmeden önce, "e-Turquality" olarak bilinen e-ihracat destekleri
     category: "Karşılaştırma",
     publishDate: "2026-01-31",
     readTime: "4 dk",
-    image: "/images/blog/digital-marketing.jpg",
+    image: "/images/blog/b2b-platformlar-mi-loxtr-mi.jpg",
     content: `
 # B2B İhracat Platformları mı, İhracat Yönetim Şirketi mi?
 
@@ -892,7 +892,7 @@ B2B platformlar bir "katalogdur". LOXTR ise sizin "satış departmanınızdır".
     category: "Hizmetlerimiz",
     publishDate: "2026-02-02",
     readTime: "3 dk",
-    image: "/images/blog/hero_bg_flag.webp",
+    image: "/images/blog/lox-ile-calismanin-avantajlari.jpg",
     content: `
 # LOX İle Çalışmanın Avantajları: Siz Üretin, Biz Satalım
 
