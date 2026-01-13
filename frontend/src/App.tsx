@@ -27,6 +27,7 @@ import Footer from './components/Footer';
 import ContactModal from './components/ContactModal';
 import WhatsAppButton from './components/geo/WhatsAppButton';
 import ExitPopup from './components/ExitPopup';
+import CookieConsent from './components/CookieConsent';
 
 function Layout() {
   const { } = useGeo();
@@ -214,6 +215,7 @@ function Layout() {
       <Footer />
       <WhatsAppButton />
       <ExitPopup lang={lang} />
+      <CookieConsent />
       <ContactModal
         isOpen={partnerModalOpen}
         onClose={() => setPartnerModalOpen(false)}
