@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Calendar, Clock, ArrowRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { BlogPost } from '../data/blog-content';
+import type { BlogPost } from '../../data/blog-content';
 
 interface BlogCardProps {
     post: BlogPost;
