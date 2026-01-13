@@ -32,7 +32,7 @@ const ExitPopup: React.FC<ExitPopupProps> = ({ lang }) => {
         setStatus('loading');
 
         try {
-            const response = await fetch('http://localhost:8000/api/v1/newsletter/subscribe/', {
+            const response = await fetch('/api/newsletter', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email })

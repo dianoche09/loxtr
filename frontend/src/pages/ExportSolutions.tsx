@@ -76,7 +76,7 @@ const ExportSolutions = () => {
 
                     {/* Real Image (if available) */}
                     <img
-                        src="/images/export_hero_ship.png"
+                        src="/images/industries_hero.webp"
                         alt="Global Trade"
                         className="absolute inset-0 w-full h-full object-cover opacity-40 mix-blend-overlay"
                         onError={(e) => { e.currentTarget.style.display = 'none' }}

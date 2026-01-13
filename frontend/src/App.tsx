@@ -21,8 +21,6 @@ import About from './pages/About';
 import FAQ from './pages/FAQ';
 import Contact from './pages/Contact';
 import NotFound from './pages/NotFound';
-import CaseStudies from './pages/CaseStudies';
-import CaseStudyDetail from './pages/CaseStudyDetail';
 import ScrollToTop from './ScrollToTop';
 import Logo from './components/Logo';
 import Footer from './components/Footer';
@@ -113,7 +111,6 @@ function Layout() {
                     'partner': 'partner',
                     'distribution': 'distribution',
                     'faq': 'faq',
-                    'case-studies': 'case-studies',
                     'export-solutions': 'export-solutions'
                   },
                   tr: {
@@ -124,7 +121,6 @@ function Layout() {
                     'partner': 'partner',
                     'distribution': 'distribution',
                     'faq': 'faq',
-                    'case-studies': 'case-studies',
                     'export-solutions': 'export-solutions'
                   }
                 };
@@ -274,8 +270,6 @@ function App() {
               <Route path="solutions" element={<Solutions />} />
               <Route path="industries" element={<Industries />} />
               <Route path="industries/:slug" element={<IndustryDetail />} />
-              <Route path="case-studies" element={<CaseStudies />} />
-              <Route path="case-studies/:slug" element={<CaseStudyDetail />} />
               <Route path="distribution" element={<Distribution />} />
               <Route path="partner" element={<PartnerProgram />} />
               <Route path="about" element={<About />} />
@@ -293,8 +287,6 @@ function App() {
 
               <Route path="sektorler" element={<Industries />} />
               <Route path="sektorler/:slug" element={<IndustryDetail />} />
-              <Route path="case-studies" element={<CaseStudies />} />
-              <Route path="case-studies/:slug" element={<CaseStudyDetail />} />
               <Route path="distribution" element={<Distribution />} />
               <Route path="partner" element={<PartnerProgram />} />
               <Route path="about" element={<About />} />

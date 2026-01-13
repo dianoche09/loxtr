@@ -53,8 +53,7 @@ const Footer = () => {
                 links: [
                     { label: "Market Entry", path: "/solutions" },
                     { label: "Distributorship", path: "/distribution" },
-                    { label: "Partner Program", path: "/partner" },
-                    { label: "Case Studies", path: "/case-studies" }
+                    { label: "Partner Program", path: "/partner" }
                 ]
             },
             links: {
@@ -86,8 +85,7 @@ const Footer = () => {
                 links: [
                     { label: "İhracat Yönetimi", path: "/cozumler" },
                     { label: "Pazar Araştırması", path: "/export-solutions" },
-                    { label: "İhracat Ortaklığı", path: "/partner" },
-                    { label: "Başarı Hikayeleri", path: "/case-studies" }
+                    { label: "İhracat Ortaklığı", path: "/partner" }
                 ]
             },
             links: {
