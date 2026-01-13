@@ -1,0 +1,28 @@
+User-agent: *
+Allow: /
+
+# --- Yönetim ve Üyelik Sayfalarını Engelle ---
+# Müşterilerin girdiği panellerin Google'da çıkmasını istemeyiz.
+Disallow: /admin/
+Disallow: /login/
+Disallow: /register/
+Disallow: /dashboard/
+Disallow: /cart/
+Disallow: /checkout/
+Disallow: /account/
+
+# --- Teknik ve Gereksiz Dosyaları Engelle ---
+# API yanıtlarının veya sistem dosyalarının indekslenmesi SEO puanını düşürür.
+Disallow: /api/
+Disallow: /tmp/
+Disallow: /cgi-bin/
+
+# --- Site İçi Arama Sonuçlarını Engelle ---
+# Google'ın "arama içinde arama" yapmasını engellemek SEO bütçesini korur.
+Disallow: /search
+Disallow: /?q=
+Disallow: /query=
+
+# --- Sitemap (Site Haritası) ---
+# En önemli satır budur. Google botuna haritanın yerini gösterir.
+Sitemap: https://www.loxtr.com/sitemap.xml
