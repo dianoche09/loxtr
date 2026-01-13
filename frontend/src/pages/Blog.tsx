@@ -19,14 +19,14 @@ const Blog = () => {
 
     const t = {
         en: {
-            title: "Insights & Market Analysis",
-            subtitle: "Expert guides on entering the Turkish market, logistics, and supply chain management.",
-            heroTag: "LOXTR BLOG"
+            title: "Why Turkey? Your Guide to Sourcing & Market Entry",
+            subtitle: "Expert insights, sector analysis, and logistics guides for international buyers.",
+            heroTag: "INSIGHTS"
         },
         tr: {
-            title: "İhracat Rehberi ve Analizler",
-            subtitle: "Global pazarlara açılmak, gümrük süreçleri ve lojistik hakkında uzman içerikleri.",
-            heroTag: "LOXTR BLOG"
+            title: "İhracat Akademisi: Üretimden Globale Yolculuk",
+            subtitle: "Dünyaya açılmak isteyen üreticiler için rehberler, teşvikler ve pazar analizleri.",
+            heroTag: "AKADEMİ"
         }
     }[lang];
 
