@@ -52,7 +52,30 @@ const BlogPostPage = () => {
                 ogType="article"
                 ogImage={`https://www.loxtr.com${post.image}`}
                 canonicalUrl={`https://www.loxtr.com/${lang}/blog/${post.slug}`}
-            // Add article schema here if needed in future
+                structuredData={{
+                    "@context": "https://schema.org",
+                    "@type": "Article",
+                    "headline": post.title,
+                    "image": [
+                        `https://www.loxtr.com${post.image}`
+                    ],
+                    "datePublished": post.publishDate,
+                    "dateModified": post.publishDate,
+                    "author": [{
+                        "@type": "Organization",
+                        "name": "LOXTR",
+                        "url": "https://www.loxtr.com"
+                    }],
+                    "publisher": {
+                        "@type": "Organization",
+                        "name": "LOXTR Global Trade",
+                        "logo": {
+                            "@type": "ImageObject",
+                            "url": "https://www.loxtr.com/logo.png"
+                        }
+                    },
+                    "description": post.excerpt
+                }}
             />
 
             {/* Reading Progress Bar */}
