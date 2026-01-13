@@ -100,7 +100,7 @@ const About = () => {
                     initial={{ scale: 1.1 }}
                     animate={{ scale: 1 }}
                     transition={{ duration: 1.5 }}
-                    className="absolute inset-0 bg-[url('/images/about_hero_modern_trade.png')] bg-cover bg-center"
+                    className="absolute inset-0 bg-[url('/images/about_hero_modern_trade.webp')] bg-cover bg-center"
                 />
                 <div className="absolute inset-0 bg-gradient-to-r from-navy via-navy/80 to-transparent"></div>
 

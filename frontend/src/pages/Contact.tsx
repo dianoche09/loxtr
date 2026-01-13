@@ -119,7 +119,7 @@ const Contact = () => {
 
             {/* Hero Section */}
             <section className="relative py-24 px-6 overflow-hidden">
-                <div className="absolute inset-0 bg-[url('/images/contact_hero_bg.png')] bg-cover bg-center opacity-30"></div>
+                <div className="absolute inset-0 bg-[url('/images/contact_hero_bg.webp')] bg-cover bg-center opacity-30"></div>
                 <div className="absolute inset-0 bg-gradient-to-b from-navy/60 to-navy"></div>
                 <div className="container mx-auto relative z-10 text-center max-w-4xl">
                     <motion.div

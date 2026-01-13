@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 
 const LogoMarquee = () => {
     // Using the generated brand logos image
-    const logosImage = "/images/brand_logos_set.png";
+    const logosImage = "/images/brand_logos_set.webp";
 
     return (
         <div className="bg-white py-12 border-b border-gray-100 overflow-hidden">

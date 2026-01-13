@@ -163,7 +163,7 @@ export const CONFIG = {
             name: { en: "Consumer Electronics", tr: "Tüketici Elektroniği" },
             slug: "consumer-electronics",
             icon: React.createElement(Cpu, { className: "w-6 h-6" }),
-            heroImage: "/images/industries/electronics.png",
+            heroImage: "/images/industries/electronics.webp",
             description: {
                 en: "Distribution of global electronics brands to Turkish retailers.",
                 tr: "AB standartlarına uygun yerli teknoloji ürünlerinin ihracatı."

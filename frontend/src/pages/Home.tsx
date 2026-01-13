@@ -41,7 +41,7 @@ const Home = () => {
             <section className="relative h-screen flex items-center overflow-hidden bg-navy">
                 <div className="absolute inset-0">
                     <img
-                        src="/images/hero_bg_flag.png"
+                        src="/images/hero_bg_flag.webp"
                         className="w-full h-full object-cover opacity-40"
                         alt="LOXTR Logistics"
                         onError={(e) => { e.currentTarget.style.display = 'none' }}
