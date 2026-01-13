@@ -137,16 +137,21 @@ async function generateSitemap() {
 
     sitemapContent += `</urlset>`;
 
-    // Write to public folder
+    // Write to public folder (for dev)
     const publicDir = path.resolve(__dirname, '../public');
     if (!fs.existsSync(publicDir)) {
         fs.mkdirSync(publicDir, { recursive: true });
     }
+    fs.writeFileSync(path.join(publicDir, 'sitemap.xml'), sitemapContent);
 
-    const sitemapPath = path.join(publicDir, 'sitemap.xml');
-    fs.writeFileSync(sitemapPath, sitemapContent);
-
-    console.log(`✅ Sitemap generated at: ${sitemapPath}`);
+    // Write to dist folder (for prod) - CRITICAL for Vercel deployment
+    const distDir = path.resolve(__dirname, '../dist');
+    if (fs.existsSync(distDir)) {
+        fs.writeFileSync(path.join(distDir, 'sitemap.xml'), sitemapContent);
+        console.log(`✅ Sitemap generated at: ${path.join(distDir, 'sitemap.xml')}`);
+    } else {
+        console.warn('⚠️ Dist directory not found. Sitemap only written to public.');
+    }
 }
 
 generateSitemap().catch(err => {
