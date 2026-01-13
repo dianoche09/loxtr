@@ -14,7 +14,8 @@ import {
     Warehouse,
     Truck,
     Store,
-    ShieldCheck
+    ShieldCheck,
+    TrendingUp
 } from 'lucide-react';
 import React from 'react';
 
@@ -71,6 +72,11 @@ export const CONFIG = {
                 title: "COMPLIANCE",
                 desc: "Full management of TSE, CE, and Customs regulations.",
                 icon: React.createElement(ShieldCheck, { className: "w-8 h-8 text-yellow" })
+            },
+            {
+                title: "GROWTH SUPPORT",
+                desc: "Dedicated account managers and marketing support for rapid scaling.",
+                icon: React.createElement(TrendingUp, { className: "w-8 h-8 text-yellow" })
             }
         ],
         tr: [
@@ -88,6 +94,11 @@ export const CONFIG = {
                 title: "MEVZUAT UYUMU",
                 desc: "TSE, CE ve Gümrük düzenlemelerinin tam yönetimi.",
                 icon: React.createElement(ShieldCheck, { className: "w-8 h-8 text-yellow" })
+            },
+            {
+                title: "BÜYÜME DESTEĞİ",
+                desc: "Hızlı ölçeklenme için özel hesap yöneticileri ve pazarlama desteği.",
+                icon: React.createElement(TrendingUp, { className: "w-8 h-8 text-yellow" })
             }
         ]
     },

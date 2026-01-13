@@ -168,7 +168,10 @@ const Home = () => {
                                     <div className="absolute -top-24 -right-24 w-48 h-48 bg-yellow/5 rounded-full blur-3xl group-hover:bg-yellow/10 transition-colors" />
 
                                     <div className="relative z-10 w-14 h-14 bg-charcoal/50 rounded-xl flex items-center justify-center mb-6 shadow-xl border border-white/5 group-hover:scale-110 group-hover:bg-yellow group-hover:text-navy transition-all duration-300">
-                                        {feature.icon}
+                                        {/* Clone icon to handle hover state properly */}
+                                        {React.cloneElement(feature.icon as React.ReactElement<{ className?: string }>, {
+                                            className: "w-8 h-8 text-yellow group-hover:text-navy transition-colors"
+                                        })}
                                     </div>
                                     <h3 className="relative z-10 text-xl font-bold mb-3 text-white uppercase group-hover:text-yellow transition-colors">{feature.title}</h3>
                                     <p className="relative z-10 text-white/50 leading-relaxed font-light text-sm">{feature.desc}</p>
