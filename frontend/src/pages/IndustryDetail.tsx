@@ -254,7 +254,7 @@ const IndustryDetail = () => {
             {/* NEW BANNER: PARTNERSHIP */}
             <section className="py-24 bg-white text-navy mt-24">
                 <div className="container mx-auto px-6 text-center">
-                    <h2 className="text-4xl md:text-5xl font-heading font-bold mb-6">
+                    <h2 className="text-4xl md:text-5xl font-heading font-bold mb-6 !text-navy">
                         {lang === 'en' ? "Ready to Enter Turkish Market?" : "Türkiye Pazarına Girmeye Hazır mısınız?"}
                     </h2>
                     <p className="text-xl text-navy/60 mb-10 max-w-2xl mx-auto">

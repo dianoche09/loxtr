@@ -17,13 +17,22 @@ const BlogCard: React.FC<BlogCardProps> = ({ post, lang }) => {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="bg-white rounded-2xl overflow-hidden shadow-lg border border-gray-100 hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 flex flex-col h-full group"
+            className="!bg-white rounded-2xl overflow-hidden shadow-lg border border-gray-100 hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 flex flex-col h-full group"
         >
-            <div className="relative h-64 overflow-hidden">
-                {/* Placeholder gradient if no image, or real image */}
-                <div className={`absolute inset-0 bg-gradient-to-br ${lang === 'en' ? 'from-navy to-blue-900' : 'from-yellow/20 to-orange-500/20'
-                    }`} />
-                <div className="absolute top-4 left-4 bg-white/90 backdrop-blur text-navy font-bold px-3 py-1 rounded text-xs uppercase tracking-wide">
+            <div className="relative h-64 overflow-hidden bg-navy/5">
+                {/* Fallback Background (always present if image fails or is loading) */}
+                <div className={`absolute inset-0 bg-gradient-to-br ${lang === 'en' ? 'from-navy to-blue-900' : 'from-yellow/20 to-orange-500/20'}`} />
+
+                {post.image && (
+                    <img
+                        src={post.image}
+                        alt={post.title}
+                        className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 z-10"
+                        onError={(e) => { e.currentTarget.style.opacity = '0' }}
+                    />
+                )}
+
+                <div className="absolute top-4 left-4 bg-white/90 backdrop-blur text-navy font-bold px-3 py-1 rounded text-xs uppercase tracking-wide z-20">
                     {post.category}
                 </div>
             </div>
@@ -40,7 +49,7 @@ const BlogCard: React.FC<BlogCardProps> = ({ post, lang }) => {
                     </div>
                 </div>
 
-                <h3 className="text-xl font-bold font-heading text-navy mb-3 line-clamp-2 group-hover:text-yellow transition-colors">
+                <h3 className="text-xl font-bold font-heading !text-navy mb-3 line-clamp-2 group-hover:text-yellow transition-colors">
                     {post.title}
                 </h3>
 
@@ -50,7 +59,7 @@ const BlogCard: React.FC<BlogCardProps> = ({ post, lang }) => {
 
                 <div className="mt-auto">
                     <button
-                        onClick={() => navigate(`/${lang}/blog/${post.slug}`)}
+                        onClick={() => navigate(`/${lang}/${lang === 'en' ? 'journal' : 'akademi'}/${post.slug}`)}
                         className="text-navy font-bold text-sm flex items-center space-x-2 group-hover:space-x-4 transition-all"
                     >
                         <span>{lang === 'en' ? 'Read Article' : 'Devamını Oku'}</span>

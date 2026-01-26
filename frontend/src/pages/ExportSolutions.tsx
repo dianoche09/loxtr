@@ -65,21 +65,12 @@ const ExportSolutions = () => {
             <SEO title={t.title} description={t.desc} />
 
             {/* HERO */}
-            <section className="relative h-[75vh] flex items-center overflow-hidden">
+            <section className="relative h-[80vh] flex items-center overflow-hidden bg-navy">
                 <div className="absolute inset-0">
-                    {/* Visual Fallback */}
-                    <div className="w-full h-full bg-gradient-to-r from-navy to-charcoal relative">
-                        <div className="absolute right-0 bottom-0 opacity-10">
-                            <Container className="w-96 h-96 text-white" />
-                        </div>
-                    </div>
-
-                    {/* Real Image (if available) */}
                     <img
-                        src="/images/industries_hero.webp"
-                        alt="Global Trade"
-                        className="absolute inset-0 w-full h-full object-cover opacity-40 mix-blend-overlay"
-                        onError={(e) => { e.currentTarget.style.display = 'none' }}
+                        src="https://images.unsplash.com/photo-1578575437130-527eed3abbec?auto=format&fit=crop&q=80"
+                        alt="Global Logistics & Trade"
+                        className="absolute inset-0 w-full h-full object-cover opacity-30"
                     />
                     <div className="absolute inset-0 bg-gradient-to-r from-navy via-navy/80 to-transparent" />
                 </div>
@@ -90,21 +81,21 @@ const ExportSolutions = () => {
                         animate={{ opacity: 1, x: 0 }}
                         className="max-w-3xl"
                     >
-                        <div className="inline-block bg-yellow/10 border border-yellow/20 text-yellow px-4 py-1.5 rounded text-xs font-bold uppercase tracking-widest mb-8">
+                        <div className="inline-block bg-yellow/20 border border-yellow/30 text-yellow px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest mb-8">
                             {t.hero.tag}
                         </div>
-                        <h1 className="text-5xl md:text-7xl font-heading font-bold mb-8 leading-tight">
+                        <h1 className="text-5xl md:text-7xl font-heading font-bold mb-8 leading-tight text-white uppercase">
                             {t.hero.headline}
                         </h1>
-                        <p className="text-xl text-white/70 mb-10 font-light leading-relaxed max-w-2xl border-l-4 border-yellow pl-6">
+                        <p className="text-xl text-white/80 mb-10 font-light leading-relaxed max-w-2xl border-l-4 border-yellow pl-6">
                             {t.hero.subheadline}
                         </p>
                         <button
                             onClick={() => navigate(`/tr/partner`)}
-                            className="bg-yellow hover:bg-yellow/90 text-navy font-bold px-10 py-4 rounded focus:outline-none flex items-center space-x-3 transition-all uppercase tracking-wide shadow-[0_0_20px_rgba(250,204,21,0.3)] hover:shadow-[0_0_30px_rgba(250,204,21,0.5)]"
+                            className="bg-yellow hover:bg-white text-navy font-black px-12 py-5 rounded-xl transition-all uppercase tracking-widest flex items-center gap-3 text-sm shadow-2xl shadow-yellow/20"
                         >
                             <span>{t.hero.cta}</span>
-                            <ArrowRight className="w-5 h-5" />
+                            <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                         </button>
                     </motion.div>
                 </div>

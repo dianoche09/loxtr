@@ -82,8 +82,14 @@ const Solutions = () => {
             <SEO title={t.title} description={t.desc} />
 
             {/* HERO SECTION */}
-            <section className="relative py-20 px-6 overflow-hidden pt-32">
-                <div className="absolute inset-0 bg-[url('/images/hero_bg.webp')] bg-cover bg-center opacity-30"></div>
+            <section className="relative py-20 px-6 overflow-hidden pt-32 min-h-[60vh] flex items-center">
+                <div className="absolute inset-0">
+                    <img
+                        src="https://images.unsplash.com/photo-1494412574743-019485b7828d?auto=format&fit=crop&q=80"
+                        className="w-full h-full object-cover opacity-20"
+                        alt="Solutions background"
+                    />
+                </div>
                 <div className="absolute inset-0 bg-gradient-to-b from-navy/50 to-navy"></div>
                 <div className="container mx-auto text-center relative z-10 max-w-4xl">
                     <motion.h1
@@ -213,12 +219,12 @@ const Solutions = () => {
                         <div className="h-1 w-24 bg-yellow mx-auto"></div>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                         {CONFIG.features[lang].map((feature, i) => (
                             <motion.div key={i} whileHover={{ y: -5 }} className="bg-navy/50 backdrop-blur-sm p-8 rounded-xl border border-white/10 text-center hover:border-yellow/30 transition-all">
                                 <div className="flex justify-center mb-6">{feature.icon}</div>
-                                <h3 className="text-xl font-bold mb-3">{feature.title}</h3>
-                                <p className="text-white/60">{feature.desc}</p>
+                                <h3 className="text-xl font-bold mb-3 uppercase tracking-tight">{feature.title}</h3>
+                                <p className="text-white/60 text-sm leading-relaxed">{feature.desc}</p>
                             </motion.div>
                         ))}
                     </div>

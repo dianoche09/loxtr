@@ -35,10 +35,10 @@ const BlogPostPage = () => {
                 <h1 className="text-4xl font-bold text-navy mb-4">Post Not Found</h1>
                 <p className="text-gray-500 mb-8">The article you are looking for does not exist or has been moved.</p>
                 <button
-                    onClick={() => navigate(`/${lang}/blog`)}
+                    onClick={() => navigate(`/${lang}/${lang === 'en' ? 'journal' : 'akademi'}`)}
                     className="bg-navy text-white px-6 py-3 rounded-lg font-bold hover:bg-navy/90"
                 >
-                    Back to Blog
+                    {lang === 'en' ? 'Back to Journal' : 'Akademi\'ye Dön'}
                 </button>
             </div>
         );
@@ -51,7 +51,7 @@ const BlogPostPage = () => {
                 description={post.excerpt}
                 ogType="article"
                 ogImage={`https://www.loxtr.com${post.image}`}
-                canonicalUrl={`https://www.loxtr.com/${lang}/blog/${post.slug}`}
+                canonicalUrl={`https://www.loxtr.com/${lang}/${lang === 'en' ? 'journal' : 'akademi'}/${post.slug}`}
                 structuredData={{
                     "@context": "https://schema.org",
                     "@type": "Article",
@@ -88,7 +88,7 @@ const BlogPostPage = () => {
                 {/* Header */}
                 <div className="mb-12 text-center md:text-left">
                     <button
-                        onClick={() => navigate(`/${lang}/blog`)}
+                        onClick={() => navigate(`/${lang}/${lang === 'en' ? 'journal' : 'akademi'}`)}
                         className="inline-flex items-center text-gray-500 hover:text-navy mb-8 transition-colors text-sm font-medium"
                     >
                         <ArrowLeft className="w-4 h-4 mr-2" />
@@ -112,10 +112,21 @@ const BlogPostPage = () => {
                     </p>
                 </div>
 
-                {/* Cover Image Placeholder - could be real image later */}
-                <div className="w-full h-[400px] bg-gradient-to-r from-navy to-charcoal rounded-3xl mb-16 relative overflow-hidden shadow-2xl">
-                    <div className="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
-                    <div className="absolute bottom-0 left-0 p-8 text-white/20 text-9xl font-black leading-none -mb-10 -ml-10 select-none">
+                {/* Cover Image */}
+                <div className="w-full h-[400px] bg-navy rounded-3xl mb-16 relative overflow-hidden shadow-2xl">
+                    {post.image ? (
+                        <img
+                            src={post.image}
+                            alt={post.title}
+                            className="w-full h-full object-cover"
+                            onError={(e) => { e.currentTarget.style.display = 'none' }}
+                        />
+                    ) : (
+                        <div className="absolute inset-0 bg-gradient-to-r from-navy to-charcoal">
+                            <div className="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
+                        </div>
+                    )}
+                    <div className="absolute bottom-0 left-0 p-8 text-white/10 text-9xl font-black leading-none -mb-10 -ml-10 select-none pointer-events-none">
                         LOXTR
                     </div>
                 </div>

@@ -185,7 +185,13 @@ const PartnerProgram = () => {
 
             {/* HERO - Professional Navy (Consistent with other pages) */}
             <section className="relative h-[85vh] flex items-center overflow-hidden bg-navy">
-                <div className="absolute inset-0 bg-[url('/images/partner_hero.webp')] bg-cover bg-center opacity-30"></div>
+                <div className="absolute inset-0">
+                    <img
+                        src="https://images.unsplash.com/photo-1557804506-669a67965ba0?auto=format&fit=crop&q=80"
+                        className="w-full h-full object-cover opacity-20"
+                        alt="Partnership"
+                    />
+                </div>
                 <div className="absolute inset-0 bg-gradient-to-r from-navy via-navy/90 to-transparent"></div>
 
                 <div className="container mx-auto px-6 relative z-10">

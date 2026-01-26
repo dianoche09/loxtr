@@ -45,9 +45,15 @@ const Industries = () => {
             />
 
             {/* 1. HERO SECTION */}
-            <section className="relative py-24 px-6 overflow-hidden pt-32">
-                <div className="absolute inset-0 bg-[url('/images/industries_hero.webp')] bg-cover bg-center opacity-30"></div>
-                <div className="absolute inset-0 bg-gradient-to-b from-navy/60 to-navy"></div>
+            <section className="relative py-24 px-6 overflow-hidden pt-32 min-h-[60vh] flex items-center">
+                <div className="absolute inset-0">
+                    <img
+                        src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80"
+                        className="w-full h-full object-cover opacity-20"
+                        alt="Industrial background"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-b from-navy/60 to-navy"></div>
+                </div>
                 <div className="container mx-auto relative z-10 text-center max-w-4xl">
                     <motion.h1
                         initial={{ opacity: 0, y: 20 }}
@@ -144,7 +150,7 @@ const Industries = () => {
             {/* NEW BANNER: PARTNERSHIP */}
             <section className="py-24 bg-white text-navy">
                 <div className="container mx-auto px-6 text-center">
-                    <h2 className="text-4xl md:text-5xl font-heading font-bold mb-6">
+                    <h2 className="text-4xl md:text-5xl font-heading font-bold mb-6 !text-navy">
                         {lang === 'en' ? "Ready to Enter Turkish Market?" : "Türkiye Pazarına Girmeye Hazır mısınız?"}
                     </h2>
                     <p className="text-xl text-navy/60 mb-10 max-w-2xl mx-auto">

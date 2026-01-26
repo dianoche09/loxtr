@@ -118,9 +118,15 @@ const Contact = () => {
             />
 
             {/* Hero Section */}
-            <section className="relative py-24 px-6 overflow-hidden">
-                <div className="absolute inset-0 bg-[url('/images/contact_hero_bg.webp')] bg-cover bg-center opacity-30"></div>
-                <div className="absolute inset-0 bg-gradient-to-b from-navy/60 to-navy"></div>
+            <section className="relative py-24 px-6 overflow-hidden min-h-[50vh] flex items-center">
+                <div className="absolute inset-0">
+                    <img
+                        src="https://images.unsplash.com/photo-1423666639041-f56000c27a9a?auto=format&fit=crop&q=80"
+                        className="w-full h-full object-cover opacity-20"
+                        alt="Contact background"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-b from-navy/60 to-navy"></div>
+                </div>
                 <div className="container mx-auto relative z-10 text-center max-w-4xl">
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}

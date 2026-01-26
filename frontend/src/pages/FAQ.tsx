@@ -147,12 +147,19 @@ const FAQ = () => {
             <SEO title={t.title} description={t.desc} />
 
             {/* HERO */}
-            <section className="relative py-20 px-6 overflow-hidden bg-navy text-center">
-                <div className="absolute inset-0 bg-gradient-to-b from-navy/80 to-navy"></div>
+            <section className="relative py-24 px-6 overflow-hidden bg-navy text-center min-h-[40vh] flex items-center">
+                <div className="absolute inset-0">
+                    <img
+                        src="https://images.unsplash.com/photo-1454165833767-027ffea9e78b?auto=format&fit=crop&q=80"
+                        className="w-full h-full object-cover opacity-20"
+                        alt="Support background"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-b from-navy/60 to-navy"></div>
+                </div>
 
-                <div className="relative z-10 max-w-3xl mx-auto">
-                    <h1 className="text-4xl md:text-6xl font-heading font-bold mb-6 text-white">{t.hero.title}</h1>
-                    <p className="text-xl text-white/70 font-light">{t.hero.subtitle}</p>
+                <div className="relative z-10 max-w-3xl mx-auto w-full">
+                    <h1 className="text-4xl md:text-6xl font-heading font-bold mb-6 text-white uppercase tracking-tight">{t.hero.title}</h1>
+                    <p className="text-xl text-white/70 font-light max-w-2xl mx-auto">{t.hero.subtitle}</p>
                 </div>
             </section>
 

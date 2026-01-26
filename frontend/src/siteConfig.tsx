@@ -74,8 +74,8 @@ export const CONFIG = {
                 icon: React.createElement(ShieldCheck, { className: "w-8 h-8 text-yellow" })
             },
             {
-                title: "GROWTH SUPPORT",
-                desc: "Dedicated account managers and marketing support for rapid scaling.",
+                title: "MARKET GROWTH",
+                desc: "Performance-based scaling and digital trade intelligence.",
                 icon: React.createElement(TrendingUp, { className: "w-8 h-8 text-yellow" })
             }
         ],
@@ -96,8 +96,8 @@ export const CONFIG = {
                 icon: React.createElement(ShieldCheck, { className: "w-8 h-8 text-yellow" })
             },
             {
-                title: "BÜYÜME DESTEĞİ",
-                desc: "Hızlı ölçeklenme için özel hesap yöneticileri ve pazarlama desteği.",
+                title: "PAZAR BÜYÜMESİ",
+                desc: "Performans odaklı ölçeklendirme ve dijital ticaret zekası.",
                 icon: React.createElement(TrendingUp, { className: "w-8 h-8 text-yellow" })
             }
         ]

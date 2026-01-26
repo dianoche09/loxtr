@@ -3,9 +3,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   Menu,
   X,
-  ChevronRight
+  ChevronRight,
+  Sparkles
 } from 'lucide-react';
-import { BrowserRouter, Routes, Route, useLocation, useNavigate, Outlet } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useLocation, useNavigate, Outlet, Navigate } from 'react-router-dom';
 import { useGeo } from './context/GeoContext';
 import { SettingsProvider, useSettings } from './context/SettingsContext';
 import Home from './pages/Home';
@@ -30,6 +31,30 @@ import ContactModal from './components/ContactModal';
 import WhatsAppButton from './components/geo/WhatsAppButton';
 import ExitPopup from './components/ExitPopup';
 import CookieConsent from './components/CookieConsent';
+
+// CRM Imports
+import { AuthProvider, useAuth } from './contexts/crm/AuthContext';
+import { SidebarProvider } from './contexts/crm/SidebarContext';
+import CRMLayout from './components/crm/Layout';
+import DashboardPage from './pages/crm/DashboardPage';
+import LeadsPage from './pages/crm/LeadsPage';
+import CampaignsPage from './pages/crm/CampaignsPage';
+import CampaignDetailsPage from './pages/crm/CampaignDetailsPage';
+import SmartAssetsPage from './pages/crm/SmartAssetsPage';
+import SettingsPage from './pages/crm/SettingsPage';
+import OnboardingPage from './pages/crm/OnboardingPage';
+import LoginPage from './pages/crm/LoginPage';
+import RegisterPage from './pages/crm/RegisterPage';
+import ExportHunterLanding from './pages/ExportHunterLanding';
+import RadarPromotionBanner from './components/RadarPromotionBanner';
+import RadarStickyWidget from './components/RadarStickyWidget';
+
+// Simple CRM Auth Guard
+const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
+  const { isAuthenticated, isLoading } = useAuth();
+  if (isLoading) return <div className="h-screen flex items-center justify-center font-bold">Authenticating...</div>;
+  return isAuthenticated ? <>{children}</> : <Navigate to="/login" />;
+};
 
 function Layout() {
   const { } = useGeo();
@@ -66,17 +91,19 @@ function Layout() {
   // DUAL INTERFACE MENUS
   const menuItems = {
     en: [
+      { label: "L.O.X AI Radar", path: "/radar" },
       { label: "Services", path: "/solutions" },
       { label: "Industries", path: "/industries" },
+      { label: "Journal", path: "/journal" },
       { label: "About", path: "/about" },
-      { label: "Insights", path: "/blog" },
       { label: "Contact", path: "/contact" }
     ],
     tr: [
+      { label: "L.O.X AI Radar", path: "/radar" },
       { label: "Hizmetler", path: "/cozumler" },
       { label: "Sektörler", path: "/sektorler" },
+      { label: "Akademi", path: "/akademi" },
       { label: "Hakkımızda", path: "/about" },
-      { label: "Akademi", path: "/blog" },
       { label: "İletişim", path: "/contact" }
     ]
   };
@@ -96,8 +123,16 @@ function Layout() {
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center space-x-8 text-white font-medium">
             {menuItems[lang].map((item, idx) => (
-              <a key={idx} onClick={() => handleNav(item.path)} className="hover:text-yellow transition-colors cursor-pointer">
+              <a
+                key={idx}
+                onClick={() => handleNav(item.path)}
+                className={`transition-all duration-300 cursor-pointer ${item.label.includes('Radar')
+                  ? 'bg-yellow/10 border border-yellow/30 px-4 py-1.5 rounded-full text-yellow font-black shadow-[0_0_15px_rgba(245,158,11,0.1)] hover:shadow-[0_0_20px_rgba(245,158,11,0.2)] hover:bg-yellow/20 flex items-center gap-2'
+                  : 'text-white hover:text-yellow'
+                  }`}
+              >
                 {item.label}
+                {item.label.includes('Radar') && <Sparkles className="w-3 h-3 animate-pulse" />}
               </a>
             ))}
 
@@ -116,7 +151,8 @@ function Layout() {
                     'partner': 'partner',
                     'distribution': 'distribution',
                     'faq': 'faq',
-                    'export-solutions': 'export-solutions'
+                    'export-solutions': 'export-solutions',
+                    'journal': 'akademi'
                   },
                   tr: {
                     'cozumler': 'solutions',
@@ -126,7 +162,8 @@ function Layout() {
                     'partner': 'partner',
                     'distribution': 'distribution',
                     'faq': 'faq',
-                    'export-solutions': 'export-solutions'
+                    'export-solutions': 'export-solutions',
+                    'akademi': 'journal'
                   }
                 };
 
@@ -216,7 +253,20 @@ function Layout() {
 
       <Outlet />
 
+      {/* Show promotion banner on all pages except the radar landing and auth pages */}
+      {!location.pathname.includes('/radar') &&
+        !location.pathname.includes('/login') &&
+        !location.pathname.includes('/register') &&
+        !location.pathname.includes('/contact') &&
+        location.pathname !== '/en' &&
+        location.pathname !== '/en/' &&
+        location.pathname !== '/tr' &&
+        location.pathname !== '/tr/' && (
+          <RadarPromotionBanner lang={lang} />
+        )}
+
       <Footer />
+      <RadarStickyWidget lang={lang} />
       <WhatsAppButton />
       <ExitPopup lang={lang} />
       <CookieConsent />
@@ -260,60 +310,88 @@ function Redirector() {
 
 function App() {
   return (
-    <SettingsProvider>
-      <BrowserRouter>
-        {/* ScrollToTop component added here to listen to route changes */}
-        <ScrollToTop />
-        <Routes>
-          {/* Root redirector */}
-          <Route path="/" element={<Redirector />} />
+    <AuthProvider>
+      <SettingsProvider>
+        <BrowserRouter>
+          {/* ScrollToTop component added here to listen to route changes */}
+          <ScrollToTop />
+          <Routes>
+            {/* Root redirector */}
+            <Route path="/" element={<Redirector />} />
 
-          {/* ... authenticated routes ... */}
+            {/* Auth Routes */}
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
+            <Route path="/onboarding" element={
+              <PrivateRoute>
+                <OnboardingPage />
+              </PrivateRoute>
+            } />
 
-          <Route element={<Layout />}>
-            <Route path="en" element={<Outlet />}>
-              <Route index element={<Home />} />
-              <Route path="solutions" element={<Solutions />} />
-              <Route path="industries" element={<Industries />} />
-              <Route path="industries/:slug" element={<IndustryDetail />} />
-              <Route path="distribution" element={<Distribution />} />
-              <Route path="partner" element={<PartnerProgram />} />
-              <Route path="about" element={<About />} />
-              <Route path="faq" element={<FAQ />} />
-              <Route path="contact" element={<Contact />} />
-              <Route path="terms" element={<TermsOfService />} />
-              <Route path="privacy" element={<PrivacyPolicy />} />
-              <Route path="export-solutions" element={<ExportSolutions />} />
-              <Route path="blog" element={<Blog />} />
-              <Route path="blog/:slug" element={<BlogPostPage />} />
-              <Route path="*" element={<NotFound />} />
+            {/* CRM Module (Protected) */}
+            <Route path="/crm" element={
+              <PrivateRoute>
+                <SidebarProvider>
+                  <CRMLayout />
+                </SidebarProvider>
+              </PrivateRoute>
+            }>
+              <Route index element={<Navigate to="dashboard" replace />} />
+              <Route path="dashboard" element={<DashboardPage />} />
+              <Route path="leads" element={<LeadsPage />} />
+              <Route path="campaigns" element={<CampaignsPage />} />
+              <Route path="campaigns/:id" element={<CampaignDetailsPage />} />
+              <Route path="assets" element={<SmartAssetsPage />} />
+              <Route path="settings" element={<SettingsPage />} />
             </Route>
 
-            <Route path="tr" element={<Outlet />}>
-              <Route index element={<Home />} />
-              <Route path="cozumler" element={<Solutions />} />
+            <Route element={<Layout />}>
+              <Route path="en" element={<Outlet />}>
+                <Route index element={<Home />} />
+                <Route path="solutions" element={<Solutions />} />
+                <Route path="industries" element={<Industries />} />
+                <Route path="industries/:slug" element={<IndustryDetail />} />
+                <Route path="distribution" element={<Distribution />} />
+                <Route path="partner" element={<PartnerProgram />} />
+                <Route path="about" element={<About />} />
+                <Route path="faq" element={<FAQ />} />
+                <Route path="contact" element={<Contact />} />
+                <Route path="terms" element={<TermsOfService />} />
+                <Route path="privacy" element={<PrivacyPolicy />} />
+                <Route path="export-solutions" element={<ExportSolutions />} />
+                <Route path="journal" element={<Blog />} />
+                <Route path="journal/:slug" element={<BlogPostPage />} />
+                <Route path="radar" element={<ExportHunterLanding />} />
+                <Route path="*" element={<NotFound />} />
+              </Route>
 
-              <Route path="sektorler" element={<Industries />} />
-              <Route path="sektorler/:slug" element={<IndustryDetail />} />
-              <Route path="distribution" element={<Distribution />} />
-              <Route path="partner" element={<PartnerProgram />} />
-              <Route path="about" element={<About />} />
-              <Route path="faq" element={<FAQ />} />
-              <Route path="contact" element={<Contact />} />
-              <Route path="terms" element={<TermsOfService />} />
-              <Route path="privacy" element={<PrivacyPolicy />} />
-              <Route path="export-solutions" element={<ExportSolutions />} />
-              <Route path="blog" element={<Blog />} />
-              <Route path="blog/:slug" element={<BlogPostPage />} />
+              <Route path="tr" element={<Outlet />}>
+                <Route index element={<Home />} />
+                <Route path="cozumler" element={<Solutions />} />
+
+                <Route path="sektorler" element={<Industries />} />
+                <Route path="sektorler/:slug" element={<IndustryDetail />} />
+                <Route path="distribution" element={<Distribution />} />
+                <Route path="partner" element={<PartnerProgram />} />
+                <Route path="about" element={<About />} />
+                <Route path="faq" element={<FAQ />} />
+                <Route path="contact" element={<Contact />} />
+                <Route path="terms" element={<TermsOfService />} />
+                <Route path="privacy" element={<PrivacyPolicy />} />
+                <Route path="export-solutions" element={<ExportSolutions />} />
+                <Route path="akademi" element={<Blog />} />
+                <Route path="akademi/:slug" element={<BlogPostPage />} />
+                <Route path="radar" element={<ExportHunterLanding />} />
+                <Route path="*" element={<NotFound />} />
+              </Route>
+
+              {/* Global 404 for unhandled root paths */}
               <Route path="*" element={<NotFound />} />
             </Route>
-
-            {/* Global 404 for unhandled root paths */}
-            <Route path="*" element={<NotFound />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
-    </SettingsProvider>
+          </Routes>
+        </BrowserRouter>
+      </SettingsProvider>
+    </AuthProvider>
   );
 }
 

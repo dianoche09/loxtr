@@ -122,7 +122,16 @@ const Distribution = () => {
             <SEO title={t.title} description={t.desc} />
 
             {/* HERO - Flat Navy (Simple, Different from Partner's decorative style) */}
-            <section className="relative pt-32 pb-20 overflow-hidden bg-navy">
+            <section className="relative pt-32 pb-20 overflow-hidden bg-navy min-h-[60vh] flex items-center">
+                <div className="absolute inset-0">
+                    <img
+                        src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&q=80"
+                        className="w-full h-full object-cover opacity-30"
+                        alt="Logistics warehouse"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-b from-navy/60 to-navy"></div>
+                </div>
+
                 <div className="container mx-auto px-6 relative z-10">
                     <div className="max-w-4xl mx-auto text-center">
                         <motion.div

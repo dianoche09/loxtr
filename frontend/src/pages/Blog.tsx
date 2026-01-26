@@ -36,7 +36,7 @@ const Blog = () => {
                 title={t.title}
                 description={t.subtitle}
                 // Determine canonical URL dynamically based on lang
-                canonicalUrl={`https://www.loxtr.com/${lang}/blog`}
+                canonicalUrl={`https://www.loxtr.com/${lang}/${lang === 'en' ? 'journal' : 'akademi'}`}
             />
 
             {/* Hero Section */}

@@ -1,0 +1,154 @@
+import { motion } from 'framer-motion';
+import { Target, ArrowRight, ShieldCheck, Globe, Zap, BarChart3, Database } from 'lucide-react';
+import { useNavigate, useLocation } from 'react-router-dom';
+
+export default function RadarPromotionBanner({ lang }: { lang: 'en' | 'tr' }) {
+    const navigate = useNavigate();
+    const location = useLocation();
+    const path = location.pathname;
+
+    const getVariant = () => {
+        if (path.includes('cozumler') || path.includes('solutions')) return 'solutions';
+        if (path.includes('sektorler') || path.includes('industries')) return 'industries';
+        if (path.includes('about') || path.includes('partner') || path.includes('distribution')) return 'about';
+        return 'default';
+    };
+
+    const variant = getVariant();
+
+    const t = {
+        tr: {
+            default: {
+                title: "KÜRESEL TİCARETİN KURALLARINI YENİDEN YAZIN",
+                desc: "Yapay zeka radarımızla sınırları aşın, milyonlarca veriyi süzerek bir sonraki büyük fırsatınızı rakiplerinizden önce yakalayın.",
+                cta: "RADARI BAŞLAT",
+                secondary: "Ekibimizle Konuşun",
+                icon: <Target className="w-6 h-6" />
+            },
+            solutions: {
+                title: "SINIRLARI ORTADAN KALDIRAN OPERASYONEL GÜÇ",
+                desc: "Uçtan uca dış ticaret yönetimini dijitalleştirin. Kağıt işlerini değil, büyümenizi yönetin.",
+                cta: "GÜCÜ KEŞFET",
+                secondary: "Hizmetlerimizi İnceleyin",
+                icon: <Zap className="w-6 h-6" />
+            },
+            industries: {
+                title: "SEKTÖRÜNÜZÜN YARININI BUGÜNDEN GÖRÜN",
+                desc: "Tedarik zinciri değişimlerini ve alıcı davranışlarını anlık verilerle takip edin. Stratejinizi istihbaratla kurun.",
+                cta: "VERİYE ERİŞ",
+                secondary: "Sektörel Analiz Al",
+                icon: <BarChart3 className="w-6 h-6" />
+            },
+            about: {
+                title: "DIŞ TİCARETİN GELECEĞİNE HOŞ GELDİNİZ",
+                desc: "LOX ekosistemi veri, teknoloji ve operasyonu tek bir çatı altında birleştirerek global ticareti demokratize ediyor.",
+                cta: "EKOSİSTEME KATIL",
+                secondary: "Vizyonumuzu Görün",
+                icon: <Globe className="w-6 h-6" />
+            }
+        },
+        en: {
+            default: {
+                title: "REWRITE THE RULES OF GLOBAL TRADE",
+                desc: "Break through boundaries with our AI radar. Filter millions of data points to seize your next big opportunity before your competitors.",
+                cta: "LAUNCH RADAR",
+                secondary: "Talk to an Expert",
+                icon: <Target className="w-6 h-6" />
+            },
+            solutions: {
+                title: "OPERATIONAL POWER WITHOUT BORDERS",
+                desc: "Digitalize your end-to-end foreign trade management. Manage your growth, not the paperwork.",
+                cta: "DISCOVER THE POWER",
+                secondary: "View Our Services",
+                icon: <Zap className="w-6 h-6" />
+            },
+            industries: {
+                title: "SEE YOUR INDUSTRY'S FUTURE TODAY",
+                desc: "Track supply chain shifts and buyer behaviors with real-time data. Build your strategy on intelligence.",
+                cta: "ACCESS DATA",
+                secondary: "Get Sector Analysis",
+                icon: <BarChart3 className="w-6 h-6" />
+            },
+            about: {
+                title: "WELCOME TO THE FUTURE OF TRADE",
+                desc: "The LOX ecosystem democratizes global trade by merging data, technology, and operations under one roof.",
+                cta: "JOIN ECOSYSTEM",
+                secondary: "Explore Our Vision",
+                icon: <Globe className="w-6 h-6" />
+            }
+        }
+    }[lang][variant];
+
+    return (
+        <section className="py-20 bg-[#050505] relative overflow-hidden">
+            {/* Background elements */}
+            <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-yellow/5 rounded-full blur-[120px] pointer-events-none" />
+
+            <div className="container mx-auto px-6">
+                <motion.div
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    className="relative bg-[#0a0a0c]/80 backdrop-blur-xl rounded-[2.5rem] p-12 md:p-24 border border-yellow/20 overflow-hidden"
+                >
+                    {/* Visual noise/patterns */}
+                    <div className="absolute inset-0 opacity-[0.02] pointer-events-none" style={{ backgroundImage: 'radial-gradient(#fff 1px, transparent 0)', backgroundSize: '40px 40px' }} />
+                    <div className="absolute bottom-0 right-0 p-12 opacity-5 pointer-events-none">
+                        <div className="w-64 h-64 border-[10px] border-white rounded-3xl rotate-12" />
+                    </div>
+
+                    <div className="relative z-10 max-w-4xl mx-auto text-center">
+                        <motion.div
+                            initial={{ scale: 0.9, opacity: 0 }}
+                            whileInView={{ scale: 1, opacity: 1 }}
+                            transition={{ delay: 0.2 }}
+                            className="w-16 h-16 bg-yellow/10 border border-yellow/20 rounded-2xl flex items-center justify-center mx-auto mb-10 text-yellow"
+                        >
+                            {t.icon}
+                        </motion.div>
+
+                        <h2 className="text-4xl md:text-7xl font-black text-white mb-8 uppercase tracking-tighter leading-[0.9]">
+                            {t.title}
+                        </h2>
+
+                        <p className="text-lg md:text-xl text-white/50 mb-12 max-w-2xl mx-auto font-medium leading-relaxed">
+                            {t.desc}
+                        </p>
+
+                        <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
+                            <button
+                                onClick={() => navigate(`/${lang}/radar`)}
+                                className="bg-yellow hover:bg-white text-navy font-black px-10 py-5 rounded-full transition-all uppercase tracking-widest text-xs flex items-center gap-3 shadow-2xl shadow-yellow/20 group active:scale-95"
+                            >
+                                <span>{t.cta}</span>
+                                <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                            </button>
+
+                            <button
+                                onClick={() => navigate(`/${lang}/contact`)}
+                                className="text-white/60 hover:text-white font-bold flex items-center gap-2 group transition-colors text-sm"
+                            >
+                                <span>{t.secondary}</span>
+                                <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform text-white/40" />
+                            </button>
+                        </div>
+                    </div>
+
+                    {/* Meta Info Bar */}
+                    <div className="absolute bottom-0 left-0 w-full px-12 py-6 border-t border-white/5 flex flex-wrap justify-between items-center gap-4 text-[9px] font-black text-white/20 uppercase tracking-[0.3em]">
+                        <div className="flex items-center gap-4">
+                            <span className="flex items-center gap-2 italic"><Database size={10} className="text-yellow" /> LOX CORE v8.2</span>
+                            <span className="h-2 w-px bg-white/10" />
+                            <span>NODE STATUS: NOMINAL</span>
+                        </div>
+                        <div className="flex items-center gap-6">
+                            <span className="flex items-center gap-2"><ShieldCheck size={10} className="text-yellow" /> ENCRYPTED PROTOCOL</span>
+                            <span>© 2026 LOXTR GLOBAL</span>
+                        </div>
+                    </div>
+                </motion.div>
+            </div>
+        </section>
+    );
+}

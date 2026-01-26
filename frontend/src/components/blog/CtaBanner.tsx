@@ -14,29 +14,25 @@ const CtaBanner: React.FC<CtaBannerProps> = ({ title, text, buttonText, link, ty
     const navigate = useNavigate();
     const isPartner = type === 'partner';
 
-    return (
-        <div className={`my-12 p-8 rounded-3xl relative overflow-hidden group ${isPartner ? 'bg-navy text-white' : 'bg-yellow text-navy'
-            }`}>
-            {/* Background Patterns */}
-            <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none" />
+    <div className="my-16 p-10 rounded-[2.5rem] relative overflow-hidden group bg-[#0a0a0c] border border-yellow/20 shadow-2xl">
+        {/* Background elements */}
+        <div className="absolute top-0 right-0 w-64 h-64 bg-yellow/5 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute inset-0 opacity-[0.02] pointer-events-none" style={{ backgroundImage: 'radial-gradient(#fff 1px, transparent 0)', backgroundSize: '30px 30px' }} />
 
-            <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-left">
-                <div>
-                    <h3 className="text-2xl font-bold font-heading mb-2 uppercase tracking-tight">{title}</h3>
-                    <p className={`max-w-xl text-lg ${isPartner ? 'text-white/80' : 'text-navy/80'}`}>{text}</p>
-                </div>
-                <button
-                    onClick={() => navigate(link)}
-                    className={`px-8 py-3 rounded-xl font-bold flex items-center gap-2 transition-all hover:scale-105 shadow-lg ${isPartner
-                            ? 'bg-yellow text-navy hover:bg-white'
-                            : 'bg-navy text-white hover:bg-white hover:text-navy'
-                        }`}
-                >
-                    {buttonText}
-                    <ArrowRight className="w-5 h-5" />
-                </button>
+        <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8 text-center md:text-left">
+            <div className="flex-1">
+                <h3 className="text-3xl font-black text-white mb-3 uppercase tracking-tighter leading-none">{title}</h3>
+                <p className="max-w-xl text-lg text-white/50 leading-relaxed">{text}</p>
             </div>
+            <button
+                onClick={() => navigate(link)}
+                className="bg-yellow hover:bg-white text-navy font-black px-10 py-5 rounded-full transition-all uppercase tracking-[0.2em] text-[10px] flex items-center gap-3 shadow-2xl shadow-yellow/20 active:scale-95 whitespace-nowrap"
+            >
+                <span>{buttonText}</span>
+                <ArrowRight className="w-4 h-4" />
+            </button>
         </div>
+    </div>
     );
 };
 

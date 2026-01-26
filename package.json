@@ -1,13 +1,28 @@
 {
-    "name": "loxtr-root",
+    "name": "loxtr-unified",
     "version": "1.0.0",
     "private": true,
     "scripts": {
+        "dev": "npm run dev --prefix frontend",
         "build": "npm install --prefix frontend --legacy-peer-deps && npm run build --prefix frontend",
-        "install": "npm install --prefix frontend --legacy-peer-deps"
+        "install:all": "npm install && npm install --prefix frontend --legacy-peer-deps",
+        "deploy": "vercel --prod"
     },
     "dependencies": {
-        "resend": "^6.7.0"
+        "@anthropic-ai/sdk": "^0.30.0",
+        "@google/generative-ai": "^0.24.1",
+        "@supabase/supabase-js": "^2.39.3",
+        "axios": "^1.6.5",
+        "bcryptjs": "^2.4.3",
+        "csv-parse": "^6.1.0",
+        "csv-stringify": "^6.6.0",
+        "googleapis": "^169.0.0",
+        "jsonwebtoken": "^9.0.2",
+        "papaparse": "^5.5.3",
+        "resend": "^6.7.0",
+        "stripe": "^20.1.0",
+        "uuid": "^13.0.0",
+        "zod": "^3.22.4"
     },
     "devDependencies": {
         "@vercel/node": "^5.5.16",

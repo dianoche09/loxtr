@@ -100,9 +100,15 @@ const About = () => {
                     initial={{ scale: 1.1 }}
                     animate={{ scale: 1 }}
                     transition={{ duration: 1.5 }}
-                    className="absolute inset-0 bg-[url('/images/about_hero_modern_trade.webp')] bg-cover bg-center"
-                />
-                <div className="absolute inset-0 bg-gradient-to-r from-navy via-navy/80 to-transparent"></div>
+                    className="absolute inset-0"
+                >
+                    <img
+                        src="https://images.unsplash.com/photo-1542744173-8e7e53145936?auto=format&fit=crop&q=80"
+                        className="w-full h-full object-cover opacity-40"
+                        alt="Global Trade"
+                    />
+                </motion.div>
+                <div className="absolute inset-0 bg-gradient-to-r from-navy via-navy/90 to-transparent"></div>
 
                 <div className="container mx-auto px-6 relative z-10">
                     <div className="max-w-3xl">

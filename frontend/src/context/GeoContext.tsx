@@ -44,9 +44,21 @@ export const GeoProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
     useEffect(() => {
         const fetchGeoData = async () => {
+            // Local development optimization: skip API call
+            if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+                const isTr = navigator.language?.startsWith('tr');
+                setGeoData({
+                    countryCode: isTr ? 'TR' : 'US',
+                    visitorType: isTr ? 'LOCAL' : 'GLOBAL',
+                    defaultLanguage: isTr ? 'tr' : 'en',
+                    loading: false,
+                    error: 'Local development mode',
+                });
+                return;
+            }
+
             try {
                 const response = await api.get('/geo/detect/');
-
                 setGeoData({
                     countryCode: response.country_code || 'US',
                     visitorType: response.visitor_type || 'GLOBAL',
@@ -54,7 +66,6 @@ export const GeoProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
                     loading: false,
                     error: null,
                 });
-
                 console.log('🌍 Geo detected:', response);
             } catch (error: any) {
                 console.warn('⚠️ Geo-detection unavailable, using defaults:', error.message);
