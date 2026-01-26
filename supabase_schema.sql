@@ -1,8 +1,6 @@
 -- LOXTR Supabase Schema
 -- Run this in Supabase SQL Editor
 
--- Enable Row Level Security
-ALTER DATABASE postgres SET "app.jwt_secret" TO 'your-jwt-secret';
 
 -- 1. USERS TABLE (for profiles after auth signup)
 CREATE TABLE IF NOT EXISTS public.users (

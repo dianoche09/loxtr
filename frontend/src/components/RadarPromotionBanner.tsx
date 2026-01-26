@@ -94,9 +94,6 @@ export default function RadarPromotionBanner({ lang }: { lang: 'en' | 'tr' }) {
                 >
                     {/* Visual noise/patterns */}
                     <div className="absolute inset-0 opacity-[0.02] pointer-events-none" style={{ backgroundImage: 'radial-gradient(#fff 1px, transparent 0)', backgroundSize: '40px 40px' }} />
-                    <div className="absolute bottom-0 right-0 p-12 opacity-5 pointer-events-none">
-                        <div className="w-64 h-64 border-[10px] border-white rounded-3xl rotate-12" />
-                    </div>
 
                     <div className="relative z-10 max-w-4xl mx-auto text-center">
                         <motion.div
