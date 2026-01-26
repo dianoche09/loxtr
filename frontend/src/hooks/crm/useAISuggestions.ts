@@ -1,6 +1,6 @@
 
 import { useState, useCallback, useRef } from 'react';
-import { aiAPI } from '../services/api';
+import { aiAPI } from '../../services/crm/api';
 
 function debounce(fn: Function, ms: number) {
     let timeoutId: ReturnType<typeof setTimeout>;

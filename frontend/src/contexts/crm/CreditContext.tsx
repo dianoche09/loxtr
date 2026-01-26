@@ -1,6 +1,6 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
 import axios from 'axios';
-import { CreditBalance, CreditAction, CreditContextType } from '../types/credit';
+import type { CreditBalance, CreditAction, CreditContextType } from '../../types/crm/credit';
 import { toast } from 'react-hot-toast';
 
 const CreditContext = createContext<CreditContextType | undefined>(undefined);

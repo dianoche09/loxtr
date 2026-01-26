@@ -6,7 +6,7 @@ import { Plus, Filter, Check, X, ChevronDown, ChevronUp, Sparkles, ShoppingBag, 
 import LoadingSpinner from './LoadingSpinner'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useAuth } from '../../contexts/crm/AuthContext'
-import { useAISuggestions } from '../hooks/useAISuggestions'
+import { useAISuggestions } from '../../hooks/crm/useAISuggestions'
 
 interface AILeadDiscoveryProps {
     onLeadsDiscovered?: (leads: any[]) => void

@@ -8,10 +8,21 @@ interface User {
   name: string
   company?: string
   onboardingCompleted?: boolean
+  onboarding_completed?: boolean
+  subscription?: {
+    planId?: string
+    usage?: {
+      leadsUnlockedThisMonth?: number
+    }
+    limits?: {
+      maxLeadsPerMonth?: number
+    }
+  }
   profile?: any
   portfolio?: any
   strategy?: any
   icp?: any
+  productGroups?: any[]
 }
 
 interface AuthContextType {

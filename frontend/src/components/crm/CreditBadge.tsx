@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Zap, TrendingUp, AlertCircle } from 'lucide-react';
-import { useCredits } from '../contexts/CreditContext';
-import { getCreditColor } from '../types/credit';
+import { useCredits } from '../../contexts/crm/CreditContext';
+import { getCreditColor } from '../../types/crm/credit';
 
 interface CreditBadgeProps {
     onClick?: () => void;
@@ -103,8 +103,8 @@ const CreditBadge: React.FC<CreditBadgeProps> = ({ onClick, variant = 'compact' 
                                         initial={{ width: 0 }}
                                         animate={{ width: `${percentage}%` }}
                                         className={`h-full ${color === 'green' ? 'bg-green-500' :
-                                                color === 'yellow' ? 'bg-amber-500' :
-                                                    'bg-red-500'
+                                            color === 'yellow' ? 'bg-amber-500' :
+                                                'bg-red-500'
                                             }`}
                                     />
                                 </div>
