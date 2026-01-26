@@ -49,16 +49,16 @@ const IndustryDetail = () => {
         <div className="bg-navy min-h-screen text-white pt-20 pb-32 relative">
             <SEO title={`${localizedName} | LOXTR`} description={desc} />
 
-            {/* STICKY CTA BUTTON */}
+            {/* STICKY CTA BUTTON - positioned higher to not overlap with Radar widget */}
             <motion.button
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 whileHover={{ scale: 1.05 }}
                 onClick={() => setIsModalOpen(true)}
-                className="fixed bottom-8 right-8 z-50 bg-yellow text-navy font-bold px-6 py-4 rounded-full shadow-xl shadow-yellow/20 flex items-center space-x-3 hover:bg-white transition-colors border-2 border-transparent hover:border-yellow"
+                className="fixed bottom-28 right-8 z-50 bg-yellow text-navy font-bold px-5 py-3 rounded-full shadow-xl shadow-yellow/20 flex items-center space-x-2 hover:bg-white transition-colors border-2 border-transparent hover:border-yellow"
             >
-                <Wallet className="w-6 h-6" />
-                <span className="text-lg uppercase tracking-wide">{t.ctaFloat}</span>
+                <Wallet className="w-5 h-5" />
+                <span className="text-sm uppercase tracking-wide">{t.ctaFloat}</span>
             </motion.button>
 
             <ContactModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} industryName={localizedName} lang={lang} />

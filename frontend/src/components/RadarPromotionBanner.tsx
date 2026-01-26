@@ -80,46 +80,46 @@ export default function RadarPromotionBanner({ lang }: { lang: 'en' | 'tr' }) {
     }[lang][variant];
 
     return (
-        <section className="py-20 bg-[#050505] relative overflow-hidden">
+        <section className="py-12 bg-[#050505] relative overflow-hidden">
             {/* Background elements */}
             <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent" />
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-yellow/5 rounded-full blur-[120px] pointer-events-none" />
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-yellow/5 rounded-full blur-[100px] pointer-events-none" />
 
             <div className="container mx-auto px-6">
                 <motion.div
                     initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
-                    className="relative bg-[#0a0a0c]/80 backdrop-blur-xl rounded-[2.5rem] p-12 md:p-24 border border-yellow/20 overflow-hidden"
+                    className="relative bg-[#0a0a0c]/80 backdrop-blur-xl rounded-2xl p-8 md:p-12 border border-yellow/20 overflow-hidden"
                 >
                     {/* Visual noise/patterns */}
                     <div className="absolute inset-0 opacity-[0.02] pointer-events-none" style={{ backgroundImage: 'radial-gradient(#fff 1px, transparent 0)', backgroundSize: '40px 40px' }} />
 
-                    <div className="relative z-10 max-w-4xl mx-auto text-center">
+                    <div className="relative z-10 max-w-3xl mx-auto text-center">
                         <motion.div
                             initial={{ scale: 0.9, opacity: 0 }}
                             whileInView={{ scale: 1, opacity: 1 }}
                             transition={{ delay: 0.2 }}
-                            className="w-16 h-16 bg-yellow/10 border border-yellow/20 rounded-2xl flex items-center justify-center mx-auto mb-10 text-yellow"
+                            className="w-12 h-12 bg-yellow/10 border border-yellow/20 rounded-xl flex items-center justify-center mx-auto mb-6 text-yellow"
                         >
                             {t.icon}
                         </motion.div>
 
-                        <h2 className="text-4xl md:text-7xl font-black text-white mb-8 uppercase tracking-tighter leading-[0.9]">
+                        <h2 className="text-3xl md:text-5xl font-black text-white mb-4 uppercase tracking-tighter leading-[0.9]">
                             {t.title}
                         </h2>
 
-                        <p className="text-lg md:text-xl text-white/50 mb-12 max-w-2xl mx-auto font-medium leading-relaxed">
+                        <p className="text-base text-white/50 mb-8 max-w-xl mx-auto font-medium leading-relaxed">
                             {t.desc}
                         </p>
 
-                        <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
+                        <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                             <button
                                 onClick={() => navigate('/register')}
-                                className="bg-yellow hover:bg-white text-navy font-black px-10 py-5 rounded-full transition-all uppercase tracking-widest text-xs flex items-center gap-3 shadow-2xl shadow-yellow/20 group active:scale-95"
+                                className="bg-yellow hover:bg-white text-navy font-black px-8 py-4 rounded-full transition-all uppercase tracking-widest text-xs flex items-center gap-2 shadow-xl shadow-yellow/20 group active:scale-95"
                             >
                                 <span>{t.cta}</span>
-                                <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                                <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
                             </button>
 
                             <button

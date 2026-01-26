@@ -85,7 +85,7 @@ const Solutions = () => {
             <section className="relative py-20 px-6 overflow-hidden pt-32 min-h-[60vh] flex items-center">
                 <div className="absolute inset-0">
                     <img
-                        src="https://images.unsplash.com/photo-1494412574743-019485b7828d?auto=format&fit=crop&q=80"
+                        src="/images/distribution_hero_new.webp"
                         className="w-full h-full object-cover opacity-20"
                         alt="Solutions background"
                     />
