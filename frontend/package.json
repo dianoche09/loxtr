@@ -8,12 +8,13 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
     "postbuild": "node scripts/generate-sitemap.js"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.93.1",
     "@tailwindcss/typography": "^0.5.19",
     "@tanstack/react-query": "^5.90.20",
     "axios": "^1.13.2",

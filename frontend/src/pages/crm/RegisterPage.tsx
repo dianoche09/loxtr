@@ -85,9 +85,8 @@ export default function RegisterPage() {
 
                         <div className="space-y-6">
                             <h2 className="text-xl md:text-2xl font-black leading-tight tracking-tight uppercase">
-                                <span className="text-white/50 text-xs block mb-1">Join the Infrastructure</span>
-                                EMPOWERING <br />
-                                <span className="text-yellow">GLOBAL HUNTERS</span>
+                                <span className="text-white/50 text-xs block mb-1">LOXTR Intelligence</span>
+                                LOX <span className="text-yellow">AI RADAR</span>
                             </h2>
 
                             <div className="space-y-4 pt-2">
@@ -131,8 +130,8 @@ export default function RegisterPage() {
                 <div className="flex-1 p-8 md:p-12 bg-white flex flex-col justify-center">
                     <div className="max-w-md mx-auto w-full">
                         <div className="mb-8">
-                            <h1 className="text-2xl font-black text-navy tracking-tight uppercase">Join ExportHunter</h1>
-                            <p className="text-slate-500 text-sm mt-1 font-medium">Start finding buyers with the power of LOXTR AI.</p>
+                            <h1 className="text-2xl font-black text-navy tracking-tight uppercase">Join LOX AI RADAR</h1>
+                            <p className="text-slate-500 text-sm mt-1 font-medium">Start finding global buyers with AI-powered intelligence.</p>
                         </div>
 
                         <form onSubmit={handleSubmit} className="space-y-4">
@@ -232,7 +231,7 @@ export default function RegisterPage() {
                         </form>
 
                         <p className="mt-8 text-center text-slate-500 text-xs font-medium tracking-tight">
-                            Already part of LOX?{' '}
+                            Already registered?{' '}
                             <Link to="/login" className="text-navy hover:underline font-bold">
                                 Sign In
                             </Link>

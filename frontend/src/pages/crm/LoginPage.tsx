@@ -186,7 +186,7 @@ export default function LoginPage() {
                     <p className="mt-8 text-center text-slate-500 text-xs font-medium">
                         Not a partner yet?{' '}
                         <Link to="/register" className="text-navy hover:underline font-bold">
-                            Join ExportHunter
+                            Join LOX AI RADAR
                         </Link>
                     </p>
                 </div>

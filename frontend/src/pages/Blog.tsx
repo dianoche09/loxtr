@@ -31,16 +31,15 @@ const Blog = () => {
     }[lang];
 
     return (
-        <div className="bg-off-white min-h-screen pt-20">
+        <div className="bg-navy min-h-screen pt-20">
             <SEO
                 title={t.title}
                 description={t.subtitle}
-                // Determine canonical URL dynamically based on lang
                 canonicalUrl={`https://www.loxtr.com/${lang}/${lang === 'en' ? 'journal' : 'akademi'}`}
             />
 
             {/* Hero Section */}
-            <section className="relative h-[60vh] bg-navy overflow-hidden flex items-center justify-center text-center" ref={ref}>
+            <section className="relative h-[50vh] bg-navy overflow-hidden flex items-center justify-center text-center" ref={ref}>
                 <motion.div style={{ y }} className="absolute inset-0 opacity-30">
                     {/* Abstract Background */}
                     <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-blue-900/40 via-navy to-navy"></div>
@@ -66,8 +65,11 @@ const Blog = () => {
                 </div>
             </section>
 
-            {/* Content Section */}
-            <section className="py-24 relative z-20 -mt-20">
+            {/* Content Section - Seamless transition from navy */}
+            <section className="py-24 bg-slate-50 relative">
+                {/* Top navy bleed effect */}
+                <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-navy to-transparent -translate-y-full" />
+
                 <div className="container mx-auto px-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                         {posts.map((post) => (

@@ -118,7 +118,7 @@ export default function RadarPromotionBanner({ lang }: { lang: 'en' | 'tr' }) {
 
                         <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
                             <button
-                                onClick={() => navigate(`/${lang}/radar`)}
+                                onClick={() => navigate('/register')}
                                 className="bg-yellow hover:bg-white text-navy font-black px-10 py-5 rounded-full transition-all uppercase tracking-widest text-xs flex items-center gap-3 shadow-2xl shadow-yellow/20 group active:scale-95"
                             >
                                 <span>{t.cta}</span>
