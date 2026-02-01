@@ -18,6 +18,26 @@ export default function RegisterPage() {
     });
     const [loading, setLoading] = useState(false);
 
+    const COMPANIES = [
+        "Atlas Global Trade", "Meridian Logistics", "Vertex Supply Chain", "Pacific Rim Exports",
+        "Zenith Trading Corp", "Nova Freight Systems", "Horizon Import-Export", "OmniFlow Global",
+        "Stellar Maritime", "Apex International", "Solstice Trading", "Echo Logistics Group",
+        "Quantum Trade Solutions", "Pioneer Global", "Unity Cargo Systems", "Spectrum Supply",
+        "Vantage Global Trade", "Capital Freight", "Delta Shipping Lines", "Summit International",
+        "BlueHorizon Traders", "Terra Nova Logistics", "Global Link Partners", "Velocity Exports",
+        "Prime Source Trading"
+    ];
+
+    const [currentCompany, setCurrentCompany] = useState(COMPANIES[0]);
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            const randomCompany = COMPANIES[Math.floor(Math.random() * COMPANIES.length)];
+            setCurrentCompany(randomCompany);
+        }, 3500); // Change every 3.5 seconds
+        return () => clearInterval(interval);
+    }, []);
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
@@ -120,7 +140,7 @@ export default function RegisterPage() {
                             </div>
                             <div>
                                 <p className="text-[9px] font-black text-white uppercase tracking-widest leading-none">48+ Companies Joined</p>
-                                <p className="text-[9px] text-white/50 mt-1">Last joined: <span className="text-yellow font-bold uppercase">Siemens Middle East</span></p>
+                                <p className="text-[9px] text-white/50 mt-1">Last joined: <span className="text-yellow font-bold uppercase transition-all duration-500">{currentCompany}</span></p>
                             </div>
                         </div>
                     </div>
@@ -182,7 +202,7 @@ export default function RegisterPage() {
                                             value={formData.company}
                                             onChange={(e) => setFormData({ ...formData, company: e.target.value })}
                                             className="block w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-navy focus:ring-2 focus:ring-navy/5 transition-all outline-none font-bold text-navy text-sm shadow-sm"
-                                            placeholder="Acme Corp"
+                                            placeholder="Meridian Shipping"
                                         />
                                     </div>
                                 </div>

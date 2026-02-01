@@ -15,6 +15,26 @@ export default function LoginPage() {
     });
     const [loading, setLoading] = useState(false);
 
+    const COMPANIES = [
+        "Atlas Global Trade", "Meridian Logistics", "Vertex Supply Chain", "Pacific Rim Exports",
+        "Zenith Trading Corp", "Nova Freight Systems", "Horizon Import-Export", "OmniFlow Global",
+        "Stellar Maritime", "Apex International", "Solstice Trading", "Echo Logistics Group",
+        "Quantum Trade Solutions", "Pioneer Global", "Unity Cargo Systems", "Spectrum Supply",
+        "Vantage Global Trade", "Capital Freight", "Delta Shipping Lines", "Summit International",
+        "BlueHorizon Traders", "Terra Nova Logistics", "Global Link Partners", "Velocity Exports",
+        "Prime Source Trading"
+    ];
+
+    const [currentCompany, setCurrentCompany] = useState(COMPANIES[0]);
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            const randomCompany = COMPANIES[Math.floor(Math.random() * COMPANIES.length)];
+            setCurrentCompany(randomCompany);
+        }, 4000); // Change every 4 seconds
+        return () => clearInterval(interval);
+    }, []);
+
     // Redirect if already authenticated
     useEffect(() => {
         if (isAuthenticated && user) {
@@ -115,7 +135,7 @@ export default function LoginPage() {
                             <div>
                                 <p className="text-[10px] font-black text-yellow uppercase tracking-widest mb-1">48+ Companies Trading</p>
                                 <p className="text-[10px] text-white/70 font-medium leading-none">
-                                    Recent activity: <span className="text-white font-bold uppercase">Vestel Global</span> just found a buyer.
+                                    Recent activity: <span className="text-white font-bold uppercase transition-all duration-500">{currentCompany}</span> just found a buyer.
                                 </p>
                             </div>
                         </div>

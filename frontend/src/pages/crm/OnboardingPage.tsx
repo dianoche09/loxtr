@@ -876,7 +876,7 @@ export default function OnboardingPage() {
                 }
             }, 8000); // 8 second "WOW" transition for the first setup
 
-            toast.success('Setup complete! Welcome to ExportHunter.');
+            toast.success('Setup complete! Welcome to LOXTR.');
             navigate('/dashboard');
         } catch (error) {
             toast.error('Failed to save profile.');
@@ -985,8 +985,8 @@ export default function OnboardingPage() {
                             <Logo size={32} />
                         </div>
                         <div className="flex flex-col">
-                            <span className="font-black text-xl tracking-tight leading-none text-white">ExportHunter</span>
-                            <span className="text-[9px] font-bold text-blue-200 uppercase tracking-[0.2em] mt-1">Intelligence</span>
+                            <span className="font-black text-xl tracking-tight leading-none text-white">LOXTR</span>
+                            <span className="text-[9px] font-bold text-blue-200 uppercase tracking-[0.2em] mt-1">AI RADAR</span>
                         </div>
                     </div>
 
@@ -1637,7 +1637,7 @@ export default function OnboardingPage() {
                                                                 <div className="absolute bottom-full left-1/2 -translate-x-1/2 border-[8px] border-transparent border-b-slate-900"></div>
                                                             </div>
                                                         </span>
-                                                        and <span className="text-slate-900 font-black italic">LOX AI RADAR Intelligence</span>.
+                                                        and <span className="text-slate-900 font-black italic">LOX AI RADAR</span>.
                                                     </p>
                                                 </div>
                                             </div>
