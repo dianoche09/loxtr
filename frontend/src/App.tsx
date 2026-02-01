@@ -28,7 +28,7 @@ import ScrollToTop from './ScrollToTop';
 import Logo from './components/Logo';
 import Footer from './components/Footer';
 import ContactModal from './components/ContactModal';
-import WhatsAppButton from './components/geo/WhatsAppButton';
+
 import ExitPopup from './components/ExitPopup';
 import CookieConsent from './components/CookieConsent';
 
@@ -267,7 +267,7 @@ function Layout() {
 
       <Footer />
       <RadarStickyWidget lang={lang} />
-      <WhatsAppButton />
+
       <ExitPopup lang={lang} />
       <CookieConsent />
       <ContactModal

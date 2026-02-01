@@ -126,20 +126,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       })
       if (error) throw error
 
-      // Create profile in public.users table
-      if (authData.user) {
-        const { error: profileError } = await supabase
-          .from('users')
-          .insert([
-            {
-              id: authData.user.id,
-              name: data.name,
-              company: data.company,
-              onboarding_completed: false
-            }
-          ])
-        if (profileError) console.error('Profile creation error:', profileError)
-      }
+      // Profile creation is now handled by the database trigger 'on_auth_user_created'
+      // This prevents duplicate key errors and ensures atomicity.
 
       toast.success('Registration successful! Please check your email.')
     } catch (error: any) {

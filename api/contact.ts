@@ -22,15 +22,17 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         }
 
         // Store in Supabase
-        const { error: dbError } = await supabase
+        const { data: submission, error: dbError } = await supabase
             .from('contact_submissions')
             .insert([
                 { name, email, company, phone, message, page: page || 'Unknown' }
-            ]);
+            ])
+            .select()
+            .single();
 
         if (dbError) {
             console.error('Supabase Error:', dbError);
-            // Optionally continue to email even if DB fails, or throw
+            // Optionally continue to email even if DB fails
         }
 
         // Send email
@@ -108,14 +110,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             return res.status(200).json({
                 success: true,
                 message: 'Form submitted but email notification failed',
-                id: submission.id
+                id: submission?.id
             });
         }
 
         return res.status(200).json({
             success: true,
             message: 'Form submitted successfully',
-            id: submission.id
+            id: submission?.id
         });
 
     } catch (error) {

@@ -182,6 +182,26 @@ const Contact = () => {
                                         </div>
                                     </a>
 
+                                    <a href={`https://wa.me/${settings?.whatsapp_number || '905307635710'}?text=${encodeURIComponent(lang === 'tr' ? 'Merhaba LOXTR, hizmetleriniz hakkında bilgi almak istiyorum.' : 'Hello LOXTR, I would like to get information about your services.')}`} target="_blank" rel="noopener noreferrer" className="flex items-start space-x-4 group hover:opacity-80 transition-opacity">
+                                        <div className="p-3 bg-white/5 rounded-xl group-hover:bg-yellow/10 transition-colors">
+                                            <svg
+                                                viewBox="0 0 24 24"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                strokeWidth="2"
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                className="w-6 h-6 text-yellow"
+                                            >
+                                                <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+                                            </svg>
+                                        </div>
+                                        <div>
+                                            <h3 className="font-semibold text-white/90 mb-1">WhatsApp</h3>
+                                            <p className="text-white/60">{settings?.whatsapp_number ? `+${settings.whatsapp_number}` : '+90 530 763 57 10'}</p>
+                                        </div>
+                                    </a>
+
                                     <a href={`mailto:${settings?.company_email}`} className="flex items-start space-x-4 group hover:opacity-80 transition-opacity">
                                         <div className="p-3 bg-white/5 rounded-xl group-hover:bg-yellow/10 transition-colors">
                                             <Mail className="w-6 h-6 text-yellow" />
