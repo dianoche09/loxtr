@@ -972,74 +972,83 @@ export default function OnboardingPage() {
     };
 
     return (
-        <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-4 font-outfit">
+        <div className="min-h-screen bg-off-white flex flex-col items-center justify-center p-4 py-12 font-outfit">
+            <div className="fixed inset-0 overflow-hidden pointer-events-none">
+                <div className="absolute top-[20%] -right-[10%] w-[40%] h-[40%] bg-navy/5 rounded-full blur-3xl opacity-50" />
+                <div className="absolute bottom-[20%] -left-[10%] w-[40%] h-[40%] bg-yellow/5 rounded-full blur-3xl opacity-50" />
+            </div>
+
             <motion.div
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="w-full max-w-6xl bg-white rounded-[2.5rem] shadow-2xl overflow-hidden border border-slate-100 flex flex-col md:flex-row min-h-[750px]"
+                initial={{ opacity: 0, scale: 0.98 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="w-full max-w-6xl bg-white rounded-2xl shadow-xl overflow-hidden border border-slate-100 flex flex-col md:flex-row min-h-[750px] relative z-10"
             >
                 {/* Sidebar Navigation */}
-                <div className="w-full md:w-[22rem] bg-gradient-to-br from-navy to-indigo-700 p-8 text-white flex flex-col">
-                    <div className="flex items-center gap-3 mb-10 group cursor-pointer" onClick={() => navigate('/')}>
-                        <div className="p-2.5 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center border border-white/20 group-hover:bg-white/20 transition-all">
-                            <Logo size={32} />
-                        </div>
-                        <div className="flex flex-col">
-                            <span className="font-black text-xl tracking-tight leading-none text-white">LOXTR</span>
-                            <span className="text-[9px] font-bold text-blue-200 uppercase tracking-[0.2em] mt-1">AI RADAR</span>
-                        </div>
-                    </div>
+                <div className="w-full md:w-[22rem] bg-navy p-8 text-white flex flex-col relative overflow-hidden">
+                    <div className="absolute inset-0 bg-gradient-to-br from-navy via-navy to-charcoal opacity-90" />
 
-                    <div className="flex-1 space-y-8">
-                        {steps.map((step, idx) => {
-                            const isCompleted = idx < currentStep;
-                            const isActive = idx === currentStep;
-                            const isLocked = idx > currentStep;
+                    <div className="relative z-10 flex flex-col h-full">
+                        <div className="flex items-center gap-3 mb-10 group cursor-pointer" onClick={() => navigate('/')}>
+                            <div className="p-2.5 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center border border-white/20 group-hover:bg-white/20 transition-all">
+                                <Logo size={32} />
+                            </div>
+                            <div className="flex flex-col">
+                                <span className="font-black text-xl tracking-tight leading-none text-white">LOXTR</span>
+                                <span className="text-[9px] font-bold text-blue-200 uppercase tracking-[0.2em] mt-1">AI RADAR</span>
+                            </div>
+                        </div>
 
-                            return (
-                                <div
-                                    key={idx}
-                                    onClick={() => !isLocked && setCurrentStep(idx)}
-                                    className={`flex items-start gap-4 transition-all duration-300 
+                        <div className="flex-1 space-y-8">
+                            {steps.map((step, idx) => {
+                                const isCompleted = idx < currentStep;
+                                const isActive = idx === currentStep;
+                                const isLocked = idx > currentStep;
+
+                                return (
+                                    <div
+                                        key={idx}
+                                        onClick={() => !isLocked && setCurrentStep(idx)}
+                                        className={`flex items-start gap-4 transition-all duration-300 
                                         ${isLocked ? 'opacity-40 cursor-not-allowed' : 'opacity-100 cursor-pointer group'}`}
-                                >
-                                    <div className={`mt-1 w-10 h-10 rounded-2xl flex items-center justify-center border-2 transition-all duration-500
+                                    >
+                                        <div className={`mt-1 w-10 h-10 rounded-2xl flex items-center justify-center border-2 transition-all duration-500
                                         ${isCompleted ? 'bg-emerald-500 text-white border-emerald-500 shadow-lg shadow-emerald-500/20' :
-                                            isActive ? 'bg-white text-navy border-white shadow-[0_0_15px_rgba(255,255,255,0.4)] scale-110' :
-                                                'border-white/20 bg-white/5'}`}>
-                                        {isCompleted ? <Check size={20} className="stroke-[3]" /> :
-                                            isLocked ? <Lock size={16} className="text-white/40" /> :
-                                                <step.icon size={20} />}
-                                    </div>
-                                    <div className="flex-1">
-                                        <div className="flex items-center gap-2">
-                                            <h3 className={`font-bold leading-tight transition-colors ${isActive ? 'text-white' : 'text-blue-100/90 group-hover:text-white'}`}>
-                                                {step.title}
-                                            </h3>
-                                            {isCompleted && (
-                                                <span className="text-[8px] font-black bg-emerald-500/20 text-emerald-300 px-1.5 py-0.5 rounded-full uppercase tracking-widest">
-                                                    Done
-                                                </span>
-                                            )}
+                                                isActive ? 'bg-white text-navy border-white shadow-[0_0_15px_rgba(255,255,255,0.4)] scale-110' :
+                                                    'border-white/20 bg-white/5'}`}>
+                                            {isCompleted ? <Check size={20} className="stroke-[3]" /> :
+                                                isLocked ? <Lock size={16} className="text-white/40" /> :
+                                                    <step.icon size={20} />}
                                         </div>
-                                        <p className={`text-[11px] mt-1 font-medium transition-colors ${isActive ? 'text-blue-100' : 'text-blue-200/60'}`}>
-                                            {step.description}
-                                        </p>
+                                        <div className="flex-1">
+                                            <div className="flex items-center gap-2">
+                                                <h3 className={`font-bold leading-tight transition-colors ${isActive ? 'text-white' : 'text-blue-100/90 group-hover:text-white'}`}>
+                                                    {step.title}
+                                                </h3>
+                                                {isCompleted && (
+                                                    <span className="text-[8px] font-black bg-emerald-500/20 text-emerald-300 px-1.5 py-0.5 rounded-full uppercase tracking-widest">
+                                                        Done
+                                                    </span>
+                                                )}
+                                            </div>
+                                            <p className={`text-[11px] mt-1 font-medium transition-colors ${isActive ? 'text-blue-100' : 'text-blue-200/60'}`}>
+                                                {step.description}
+                                            </p>
+                                        </div>
                                     </div>
-                                </div>
-                            );
-                        })}
-                    </div>
+                                );
+                            })}
+                        </div>
 
-                    <div className="pt-10 border-t border-white/10 mt-auto">
-                        <p className="text-xs text-blue-200/60 font-medium">STEP {currentStep + 1} OF {steps.length}</p>
-                        <div className="w-full bg-white/10 h-1.5 rounded-full mt-2 overflow-hidden">
-                            <motion.div
-                                className="h-full bg-white"
-                                initial={{ width: 0 }}
-                                animate={{ width: `${((currentStep + 1) / steps.length) * 100}%` }}
-                                transition={{ duration: 0.5 }}
-                            />
+                        <div className="pt-10 border-t border-white/10 mt-auto">
+                            <p className="text-xs text-blue-200/60 font-medium">STEP {currentStep + 1} OF {steps.length}</p>
+                            <div className="w-full bg-white/10 h-1.5 rounded-full mt-2 overflow-hidden">
+                                <motion.div
+                                    className="h-full bg-white"
+                                    initial={{ width: 0 }}
+                                    animate={{ width: `${((currentStep + 1) / steps.length) * 100}%` }}
+                                    transition={{ duration: 0.5 }}
+                                />
+                            </div>
                         </div>
                     </div>
                 </div>
