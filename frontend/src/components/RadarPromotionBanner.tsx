@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Target, ArrowRight, ShieldCheck, Globe, Zap, BarChart3, Database } from 'lucide-react';
+import { Target, ArrowRight, ShieldCheck, Globe, Zap, BarChart3 } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 export default function RadarPromotionBanner({ lang }: { lang: 'en' | 'tr' }) {
@@ -122,28 +122,11 @@ export default function RadarPromotionBanner({ lang }: { lang: 'en' | 'tr' }) {
                                 <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
                             </button>
 
-                            <button
-                                onClick={() => navigate(`/${lang}/contact`)}
-                                className="text-white/60 hover:text-white font-bold flex items-center gap-2 group transition-colors text-sm"
-                            >
-                                <span>{t.secondary}</span>
-                                <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform text-white/40" />
-                            </button>
+
                         </div>
                     </div>
 
-                    {/* Meta Info Bar */}
-                    <div className="absolute bottom-0 left-0 w-full px-12 py-6 border-t border-white/5 flex flex-wrap justify-between items-center gap-4 text-[9px] font-black text-white/20 uppercase tracking-[0.3em]">
-                        <div className="flex items-center gap-4">
-                            <span className="flex items-center gap-2 italic"><Database size={10} className="text-yellow" /> LOX CORE v8.2</span>
-                            <span className="h-2 w-px bg-white/10" />
-                            <span>NODE STATUS: NOMINAL</span>
-                        </div>
-                        <div className="flex items-center gap-6">
-                            <span className="flex items-center gap-2"><ShieldCheck size={10} className="text-yellow" /> ENCRYPTED PROTOCOL</span>
-                            <span>© 2026 LOXTR GLOBAL</span>
-                        </div>
-                    </div>
+                    {/* Meta Info Bar - REMOVED */}
                 </motion.div>
             </div>
         </section>
