@@ -99,7 +99,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (error) throw error
       toast.success('Welcome back!')
     } catch (error: any) {
-      toast.error(error.message || 'Login failed')
+      console.error('Login error:', error)
+      if (error.message.includes('Email not confirmed')) {
+        toast.error('Please verify your email address before logging in.')
+      } else if (error.message.includes('Invalid login credentials')) {
+        toast.error('Invalid email or password.')
+      } else {
+        toast.error(error.message || 'Login failed')
+      }
       throw error
     } finally {
       setIsLoading(false)

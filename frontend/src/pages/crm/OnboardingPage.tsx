@@ -1637,7 +1637,7 @@ export default function OnboardingPage() {
                                                                 <div className="absolute bottom-full left-1/2 -translate-x-1/2 border-[8px] border-transparent border-b-slate-900"></div>
                                                             </div>
                                                         </span>
-                                                        and <span className="text-slate-900 font-black italic">ExportHunter Intelligence</span>.
+                                                        and <span className="text-slate-900 font-black italic">LOX AI RADAR Intelligence</span>.
                                                     </p>
                                                 </div>
                                             </div>

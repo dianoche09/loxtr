@@ -92,7 +92,7 @@ const LandingPage = () => {
                     <div className="flex justify-between h-20 items-center">
                         <div className="flex items-center gap-3 transition-all hover:opacity-80 cursor-pointer" onClick={() => navigate('/')}>
                             <Logo size={48} />
-                            <span className="font-black text-3xl tracking-tighter text-white">ExportHunter</span>
+                            <span className="font-black text-3xl tracking-tighter text-white">LOX AI RADAR</span>
                         </div>
 
                         {/* Desktop Menu */}
@@ -328,7 +328,7 @@ const LandingPage = () => {
                                 <Sparkles className="text-blue-400 w-10 h-10" />
                             </div>
                             <h3 className="text-2xl font-black text-white">Full API Integration</h3>
-                            <p className="text-slate-500 text-sm">Connect ExportHunter directly to your CRM, ERP, or custom tools.</p>
+                            <p className="text-slate-500 text-sm">Connect LOX AI RADAR directly to your CRM, ERP, or custom tools.</p>
                         </motion.div>
                     </div>
                 </div>
@@ -395,7 +395,7 @@ const LandingPage = () => {
                                 The world is <br />
                                 yours to conquer.
                             </h2>
-                            <p className="text-blue-100 text-xl md:text-2xl font-medium mb-16 max-w-xl">Join 2,000+ top exporters who use ExportHunter to dominate global markets.</p>
+                            <p className="text-blue-100 text-xl md:text-2xl font-medium mb-16 max-w-xl">Join 2,000+ top exporters who use LOX AI RADAR to dominate global markets.</p>
                             <button
                                 onClick={() => navigate('/register')}
                                 className="group relative bg-white text-blue-700 px-12 py-6 rounded-full font-black text-2xl transition-all shadow-2xl hover:scale-105 active:scale-95 flex items-center gap-4"
@@ -415,7 +415,7 @@ const LandingPage = () => {
                         <div className="col-span-1 md:col-span-2 space-y-8">
                             <div className="flex items-center gap-3">
                                 <Logo size={40} />
-                                <span className="text-3xl font-black text-white tracking-tighter">ExportHunter</span>
+                                <span className="text-3xl font-black text-white tracking-tighter">LOX AI RADAR</span>
                             </div>
                             <p className="text-slate-500 max-w-sm text-lg font-medium leading-relaxed">The most advanced AI operating system for the world's most ambitious exporters.</p>
                             <div className="flex gap-6">
@@ -445,7 +445,7 @@ const LandingPage = () => {
                     </div>
 
                     <div className="flex flex-col md:flex-row justify-between items-center gap-6 pt-10 border-t border-slate-900">
-                        <p className="text-[10px] text-slate-700 font-black uppercase tracking-[0.5em]">© 2026 ExportHunter AI • Built for high performance exporters.</p>
+                        <p className="text-[10px] text-slate-700 font-black uppercase tracking-[0.5em]">© 2026 LOXTR Intelligence • Built for high performance exporters.</p>
                         <div className="flex gap-8 text-[10px] font-black text-slate-700 uppercase tracking-widest">
                             <span>ISO 27001 Certified</span>
                             <span>Enterprise Ready</span>

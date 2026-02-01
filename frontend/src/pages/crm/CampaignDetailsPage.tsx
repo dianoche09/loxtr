@@ -362,7 +362,7 @@ function InboxView({ campaign, activities }: any) {
         conversations.push({
             id: 'placeholder',
             name: 'Intelligence Assistant',
-            company: 'ExportHunter',
+            company: 'LOX AI RADAR',
             time: 'Now',
             msg: 'Waiting for first replies... AI is monitoring 24/7.',
             status: 'Monitoring',

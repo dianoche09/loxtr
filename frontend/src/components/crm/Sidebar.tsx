@@ -46,7 +46,7 @@ export default function Sidebar() {
                                 <Logo size={40} />
                             </div>
                             <div className="flex flex-col">
-                                <span className="font-outfit font-bold text-xl text-gray-900">ExportHunter</span>
+                                <span className="font-outfit font-bold text-xl text-gray-900">LOX AI RADAR</span>
                                 <span className="text-[10px] font-medium text-yellow uppercase tracking-wider">AI Powered</span>
                             </div>
                         </motion.div>
