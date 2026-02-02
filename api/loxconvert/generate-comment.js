@@ -34,7 +34,10 @@ export default async function handler(req, res) {
     `;
 
     const attempts = [
+        { model: "gemini-1.5-flash", version: "v1" },
         { model: "gemini-1.5-flash", version: "v1beta" },
+        { model: "gemini-2.0-flash", version: "v1" },
+        { model: "gemini-1.5-pro", version: "v1" },
         { model: "gemini-2.0-flash-exp", version: "v1beta" }
     ];
 
