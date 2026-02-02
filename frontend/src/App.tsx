@@ -49,6 +49,10 @@ import ExportHunterLanding from './pages/ExportHunterLanding';
 import RadarPromotionBanner from './components/RadarPromotionBanner';
 import RadarStickyWidget from './components/RadarStickyWidget';
 
+// Admin Imports
+import AdminLayout from './pages/admin/AdminLayout';
+import AdminDashboard from './pages/admin/AdminDashboard';
+
 // Simple CRM Auth Guard
 const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
   const { isAuthenticated, isLoading } = useAuth();
@@ -343,6 +347,13 @@ function App() {
               <Route path="campaigns/:id" element={<CampaignDetailsPage />} />
               <Route path="assets" element={<SmartAssetsPage />} />
               <Route path="settings" element={<SettingsPage />} />
+            </Route>
+
+            {/* Admin Routes */}
+            <Route path="/admin" element={<AdminLayout />}>
+              <Route index element={<Navigate to="dashboard" replace />} />
+              <Route path="dashboard" element={<AdminDashboard />} />
+              {/* Add more admin routes here later */}
             </Route>
 
             <Route element={<Layout />}>
