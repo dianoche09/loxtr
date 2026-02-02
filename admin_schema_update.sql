@@ -21,12 +21,14 @@ CREATE TABLE IF NOT EXISTS public.audit_logs (
 ALTER TABLE public.audit_logs ENABLE ROW LEVEL SECURITY;
 
 -- Policy: Only Admins can view audit logs
+DROP POLICY IF EXISTS "Admins can view audit logs" ON public.audit_logs;
 CREATE POLICY "Admins can view audit logs" ON public.audit_logs
     FOR SELECT USING (
         EXISTS (SELECT 1 FROM public.users WHERE id = auth.uid() AND role = 'admin')
     );
 
 -- Policy: Admins and System can insert logs
+DROP POLICY IF EXISTS "Admins can insert audit logs" ON public.audit_logs;
 CREATE POLICY "Admins can insert audit logs" ON public.audit_logs
     FOR INSERT WITH CHECK (true);
 
@@ -48,10 +50,12 @@ INSERT INTO public.system_settings (key, value) VALUES
 ON CONFLICT (key) DO NOTHING;
 
 -- Policy: Everyone can read settings (needed for app login checks)
+DROP POLICY IF EXISTS "Everyone can read system settings" ON public.system_settings;
 CREATE POLICY "Everyone can read system settings" ON public.system_settings
     FOR SELECT USING (true);
 
 -- Policy: Only Admins can update settings
+DROP POLICY IF EXISTS "Admins can update system settings" ON public.system_settings;
 CREATE POLICY "Admins can update system settings" ON public.system_settings
     FOR ALL USING (
         EXISTS (SELECT 1 FROM public.users WHERE id = auth.uid() AND role = 'admin')
@@ -62,16 +66,19 @@ CREATE POLICY "Admins can update system settings" ON public.system_settings
 -- Note: You might need to drop existing restrictive policies if they conflict, 
 -- but adding a permissive OR condition usually works if structured correctly.
 
+DROP POLICY IF EXISTS "Admins can select all users" ON public.users;
 CREATE POLICY "Admins can select all users" ON public.users
     FOR SELECT USING (
         EXISTS (SELECT 1 FROM public.users WHERE id = auth.uid() AND role = 'admin')
     );
 
+DROP POLICY IF EXISTS "Admins can update all users" ON public.users;
 CREATE POLICY "Admins can update all users" ON public.users
     FOR UPDATE USING (
         EXISTS (SELECT 1 FROM public.users WHERE id = auth.uid() AND role = 'admin')
     );
 
+DROP POLICY IF EXISTS "Admins can delete users" ON public.users;
 CREATE POLICY "Admins can delete users" ON public.users
     FOR DELETE USING (
         EXISTS (SELECT 1 FROM public.users WHERE id = auth.uid() AND role = 'admin')

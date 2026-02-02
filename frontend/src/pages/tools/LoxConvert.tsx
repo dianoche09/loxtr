@@ -2,20 +2,15 @@ import { useState } from 'react';
 import { useAuth } from '../../contexts/crm/AuthContext';
 import { Upload, FileText, Check, Loader2, Download, AlertCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import * as XLSX from 'xlsx'; // Need to add xlsx package later, for now just placeholder logic or dynamic import
+import * as XLSX from 'xlsx';
 
-// Quick Excel export helper (Assuming XLSX is available or we add it next)
+// Excel export helper
 const exportToExcel = (data: any[], fileName: string) => {
-    // If xlsx wasn't installed, we might fallback or warn. 
-    // Ideally we install 'xlsx' package.
-    import('xlsx').then(XLSX => {
-        const ws = XLSX.utils.json_to_sheet(data);
-        const wb = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(wb, ws, "Items");
-        XLSX.writeFile(wb, `${fileName.split('.')[0]}_processed.xlsx`);
-    }).catch(() => {
-        alert("Excel export module not loaded. Please contact support.");
-    });
+    if (!data) return;
+    const ws = XLSX.utils.json_to_sheet(data);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "ConvertedData");
+    XLSX.writeFile(wb, `LOXTR_Docs_${fileName.split('.')[0]}_${new Date().getTime()}.xlsx`);
 };
 
 export default function LoxConvert() {
