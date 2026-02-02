@@ -1,7 +1,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import {
     Building2,
     Globe,
@@ -1007,6 +1007,17 @@ export default function OnboardingPage() {
                 <div className="absolute top-[20%] -right-[10%] w-[40%] h-[40%] bg-navy/5 rounded-full blur-3xl opacity-50" />
                 <div className="absolute bottom-[20%] -left-[10%] w-[40%] h-[40%] bg-yellow/5 rounded-full blur-3xl opacity-50" />
             </div>
+
+            {/* Back to Home Button */}
+            <Link
+                to="/"
+                className="fixed top-8 left-8 z-50 flex items-center gap-2 text-navy/40 hover:text-navy font-black text-[10px] uppercase tracking-[0.2em] transition-all group"
+            >
+                <div className="w-8 h-8 rounded-full border border-navy/10 flex items-center justify-center group-hover:bg-navy group-hover:text-white transition-all">
+                    <ArrowRight className="rotate-180" size={14} />
+                </div>
+                <span>Back to Home</span>
+            </Link>
 
             <motion.div
                 initial={{ opacity: 0, scale: 0.98 }}
