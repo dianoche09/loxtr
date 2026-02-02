@@ -25,11 +25,13 @@ export default function AdminLayout() {
     // For now, simple client-side check. In production, this should be enforced by RLS/Backend.
     // We assume 'gurkan@loxtr.com' or specific emails are admins, or we check a role field later.
     useEffect(() => {
-        // Placeholder security check
-        // if (!user?.email?.includes('loxtr.com')) {
-        //    navigate('/login');
-        //    toast.error('Unauthorized access');
-        // }
+        if (!user && !logout) return; // Wait for auth to initialize (though simple check)
+
+        // redirect if not admin
+        if (user && user.role !== 'admin') {
+            navigate('/dashboard'); // or /login or /
+            toast.error('Unauthorized access: Admins only');
+        }
     }, [user, navigate]);
 
     const handleLogout = async () => {

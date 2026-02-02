@@ -7,6 +7,7 @@ interface User {
   email: string
   name: string
   company?: string
+  role?: string
   onboardingCompleted?: boolean
   onboarding_completed?: boolean
   subscription?: {
