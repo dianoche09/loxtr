@@ -18,6 +18,7 @@ export default function LoxConvert() {
     const [data, setData] = useState<any[] | null>(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [fileName, setFileName] = useState<string>("");
     const [showPromoModal, setShowPromoModal] = useState(false);
 
     // Check usage for upsell
@@ -32,19 +33,28 @@ export default function LoxConvert() {
     };
 
     const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
-        // ... (existing logic start)
         const file = e.target.files?.[0];
         if (!file) return;
 
+        console.log("File selected:", file.name, file.type);
+
+        // Reset State
         setError(null);
         setData(null);
         setFileName(file.name);
         setLoading(true);
 
-        const validTypes = ['application/pdf', 'image/jpeg', 'image/png', 'image/webp'];
-        if (!validTypes.includes(file.type)) {
-            setError("Unsupported file format. Please upload PDF, PNG or JPG.");
+        // Validation (Loose check)
+        // Note: Some systems use application/x-pdf or different casing
+        const validTypes = ['application/pdf', 'application/x-pdf', 'image/jpeg', 'image/png', 'image/webp'];
+
+        if (!validTypes.includes(file.type) && !file.name.toLowerCase().endsWith('.pdf')) {
+            // Fallback: If type is empty/weird but extension is .pdf, let it pass (backend might handle it or fail)
+            // But if totally wrong:
+            console.warn("Invalid file type:", file.type);
+            setError(`Unsupported file format (${file.type || 'unknown'}). Please upload PDF, PNG or JPG.`);
             setLoading(false);
+            e.target.value = ''; // Reset input to allow re-selecting same bad file if needed
             return;
         }
 
@@ -59,7 +69,7 @@ export default function LoxConvert() {
                     body: JSON.stringify({
                         fileBase64: (reader.result as string).split(',')[1],
                         fileName: file.name,
-                        mimeType: file.type,
+                        mimeType: file.type || 'application/octet-stream', // Fallback mime
                         userId: user?.id
                     })
                 });
@@ -71,7 +81,7 @@ export default function LoxConvert() {
 
                 const resultData = await res.json();
                 setData(resultData);
-                checkUpsell(); // Trigger Upsell Logic
+                checkUpsell();
             } catch (err: any) {
                 console.error(err);
                 if (err.message.includes("Daily limit reached")) {
@@ -81,11 +91,14 @@ export default function LoxConvert() {
                 }
             } finally {
                 setLoading(false);
+                // Reset input to allow re-uploading same file later
+                if (e.target) e.target.value = '';
             }
         };
         reader.onerror = () => {
             setError("Failed to read file.");
             setLoading(false);
+            e.target.value = '';
         };
     };
 
