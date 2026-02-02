@@ -59,10 +59,10 @@ export default async function handler(req, res) {
         // SMART REST API Implementation
         // We try combinations of Models AND API Versions because availability differs
         const attempts = [
-            { model: "gemini-1.5-flash", version: "v1" },
-            { model: "gemini-1.5-flash", version: "v1beta" },
-            { model: "gemini-1.5-pro", version: "v1" },
-            { model: "gemini-1.5-pro", version: "v1beta" }
+            { model: "gemini-3-flash", version: "v1" },
+            { model: "gemini-3-flash", version: "v1beta" },
+            { model: "gemini-2.5-flash", version: "v1" },
+            { model: "gemini-2.0-flash", version: "v1" }
         ];
         let jsonOutput = null;
         let lastError = null;
