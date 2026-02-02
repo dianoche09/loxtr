@@ -55,7 +55,7 @@ export default async function handler(req, res) {
         }
 
         // REST API Implementation to bypass SDK version issues
-        const modelsToTry = ["gemini-1.5-flash", "gemini-pro"];
+        const modelsToTry = ["gemini-1.5-flash"];
         let jsonOutput = null;
         let lastError = null;
 
