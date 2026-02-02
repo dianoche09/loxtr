@@ -40,6 +40,20 @@ export default async function handler(req, res) {
             throw new Error("Missing GEMINI_API_KEY");
         }
 
+        // DAILY LIMIT CHECK
+        if (userId) {
+            const today = new Date().toISOString().split('T')[0];
+            const { count, error } = await supabase
+                .from('lox_convert_history')
+                .select('id', { count: 'exact', head: true })
+                .eq('user_id', userId)
+                .gte('created_at', today);
+
+            if (count !== null && count >= 5) {
+                return res.status(403).json({ error: "Daily limit reached (5/5). Please upgrade to Pro for unlimited access." });
+            }
+        }
+
         const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
         const prompt = `Analyze this logistics/trade document (packing list, invoice, etc.). 

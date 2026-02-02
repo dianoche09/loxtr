@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/crm/AuthContext';
-import { Upload, FileText, Check, Loader2, Download, AlertCircle } from 'lucide-react';
+import { Upload, FileText, Check, Loader2, Download, AlertCircle, ArrowRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import * as XLSX from 'xlsx';
 
@@ -19,6 +19,11 @@ export default function LoxConvert() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [fileName, setFileName] = useState<string>("");
+
+    // SEO Title
+    useEffect(() => {
+        document.title = "AI Packing List & Invoice Converter | Digitizing Logistics | LOXTR Docs";
+    }, []);
 
     const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -72,7 +77,11 @@ export default function LoxConvert() {
                 setData(resultData);
             } catch (err: any) {
                 console.error(err);
-                setError(err.message || "An error occurred during analysis.");
+                if (err.message.includes("Daily limit reached")) {
+                    setError("Daily limit exceeded. Please upgrade your plan for unlimited conversions.");
+                } else {
+                    setError(err.message || "An error occurred during analysis.");
+                }
             } finally {
                 setLoading(false);
             }
@@ -181,7 +190,7 @@ export default function LoxConvert() {
                                     </button>
                                 </div>
 
-                                <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+                                <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden mb-8">
                                     <div className="overflow-x-auto">
                                         <table className="w-full text-left text-sm">
                                             <thead className="bg-slate-50 border-b border-slate-200 text-slate-500 font-bold uppercase tracking-wider text-xs">
@@ -215,6 +224,24 @@ export default function LoxConvert() {
                                         </table>
                                     </div>
                                 </div>
+
+                                {/* UPSELL BANNER */}
+                                <motion.div
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    className="bg-navy rounded-2xl p-8 flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden"
+                                >
+                                    <div className="absolute inset-0 bg-yellow/10" style={{ clipPath: 'polygon(0 0, 100% 0, 85% 100%, 0% 100%)' }} />
+                                    <div className="relative z-10 text-white text-center md:text-left">
+                                        <h3 className="text-xl font-bold mb-2">Documents ready! Need to ship this cargo?</h3>
+                                        <p className="text-white/70 text-sm">Get the best freight rates from LOXTR's global network in 1 minute.</p>
+                                    </div>
+                                    <a href="/" target="_blank" className="relative z-10 flex items-center gap-2 bg-yellow hover:bg-yellow/90 text-navy font-black px-6 py-3 rounded-xl transition-all shadow-lg shadow-yellow/20">
+                                        Get Freight Quote
+                                        <ArrowRight size={18} />
+                                    </a>
+                                </motion.div>
+
                             </motion.div>
                         )}
                     </AnimatePresence>
