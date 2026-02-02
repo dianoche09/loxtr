@@ -8,11 +8,13 @@ export default function PackingListTips() {
     }, []);
 
     const tips = [
-        "Include distinct description for each package type.",
-        "Ensure Gross Weight > Net Weight.",
-        "Match Invoice numbers perfectly.",
-        "List HS Codes (GTİP) for every line item.",
-        "Clearly state Dimensions (LxWxH) in cm."
+        "Include distinct description for each package type (Box, Pallet, Roll).",
+        "Ensure Gross Weight is always greater than Net Weight.",
+        "Match Invoice and PO numbers across all documents perfectly.",
+        "List full 12-digit HS Codes (GTİP) for complex machinery.",
+        "Include precise Dimensions (LxWxH) in CM or Inches.",
+        "Clearly indicate 'Country of Origin' for each line item.",
+        "Mention total number of packages in bold at a glance area."
     ];
 
     return (

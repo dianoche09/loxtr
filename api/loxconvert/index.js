@@ -59,10 +59,9 @@ export default async function handler(req, res) {
         // SMART REST API Implementation
         // We try combinations of Models AND API Versions because availability differs
         const attempts = [
-            { model: "gemini-3-flash", version: "v1" },
-            { model: "gemini-3-flash", version: "v1beta" },
-            { model: "gemini-2.5-flash", version: "v1" },
-            { model: "gemini-2.0-flash", version: "v1" }
+            { model: "gemini-1.5-flash", version: "v1beta" },
+            { model: "gemini-2.0-flash-exp", version: "v1beta" },
+            { model: "gemini-1.5-pro", version: "v1beta" }
         ];
         let jsonOutput = null;
         let lastError = null;
@@ -83,6 +82,8 @@ export default async function handler(req, res) {
     - "unit": Unit of measure (pcs, kg, m3, etc.).
     - "weight": Total weight if available (number), else null.
     - "hs_code": The HS Code / GTIP if listed. If NOT listed, suggest the most likely 6-digit HS Code based on the description.
+    - "confidence": A number between 0 and 1 representing your confidence in the HS Code selection.
+    - "logic": A very short explanation of why this HS Code was chosen (e.g. "Direct match" or "Suggested based on description").
 
     OUTPUT ONLY RAW JSON. NO MARKDOWN. NO BACKTICKS.` },
                             {

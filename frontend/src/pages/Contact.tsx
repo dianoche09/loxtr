@@ -17,6 +17,26 @@ const Contact = () => {
         company: '',
         message: ''
     });
+
+    // Handle pre-fill from LoxConvert
+    React.useEffect(() => {
+        const pending = sessionStorage.getItem('pending_quote_request');
+        if (pending) {
+            try {
+                const { items, fileName } = JSON.parse(pending);
+                const prefix = lang === 'tr' ? 'LoxConvert ile oluşturulan sevkiyat talebi:' : 'Shipment inquiry generated via LoxConvert:';
+                setFormData(prev => ({
+                    ...prev,
+                    message: `${prefix}\n\nFile: ${fileName}\n\nItems:\n${items}`
+                }));
+                // Clear after use to avoid re-filling on refresh if they don't want it
+                sessionStorage.removeItem('pending_quote_request');
+            } catch (e) {
+                console.error("Failed to parse pending quote", e);
+            }
+        }
+    }, [lang]);
+
     const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
 
     const t = {

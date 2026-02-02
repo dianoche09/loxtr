@@ -4,7 +4,7 @@ import { ArrowRight, Search, FileText } from 'lucide-react';
 
 export default function HSCodeGuide() {
     useEffect(() => {
-        document.title = "En Çok Aranan GTİP Kodları (2025) | HS Code Finder | LOXTR Docs";
+        document.title = "En Çok Aranan GTİP Kodları (2026) | HS Code Finder & AI Search | LOXTR Docs";
     }, []);
 
     const codes = [
@@ -18,6 +18,11 @@ export default function HSCodeGuide() {
         { code: "1905.90", desc: "Bread, Pastry, Cakes (Ekmek, Pasta, Kek)" },
         { code: "3926.90", desc: "Other Articles of Plastics (Plastik Eşyalar)" },
         { code: "8544.49", desc: "Electric Conductors (Elektrik İletkenleri)" },
+        { code: "8471.30", desc: "Laptops & Portable Computers (Dizüstü Bilgisayarlar)" },
+        { code: "3004.90", desc: "Pharmaceutical Products (İlaç ve Tıbbi Ürünler)" },
+        { code: "6403.99", desc: "Leather Footwear (Deri Ayakkabı)" },
+        { code: "4819.10", desc: "Corrugated Paper Boxes (Oluklu Mukavva Kutular)" },
+        { code: "2202.99", desc: "Soft Drinks & Beverages (Meşrubat ve İçecekler)" },
     ];
 
     return (

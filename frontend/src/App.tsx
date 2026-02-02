@@ -56,6 +56,7 @@ import UsersPage from './pages/admin/UsersPage';
 
 // Tools Imports
 import LoxConvert from './pages/tools/LoxConvert';
+import LoxWallet from './pages/tools/LoxWallet';
 import HSCodeGuide from './pages/tools/HSCodeGuide';
 import PackingListTips from './pages/tools/PackingListTips';
 
@@ -325,7 +326,13 @@ function App() {
     return (
       <AuthProvider>
         <SettingsProvider>
-          <LoxConvert />
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<LoxConvert />} />
+              <Route path="/vault" element={<LoxWallet />} />
+              <Route path="*" element={<LoxConvert />} />
+            </Routes>
+          </BrowserRouter>
         </SettingsProvider>
       </AuthProvider>
     );
@@ -340,6 +347,7 @@ function App() {
           <Routes>
             {/* Tool Routes */}
             <Route path="/convert" element={<LoxConvert />} />
+            <Route path="/vault" element={<LoxWallet />} />
             <Route path="/guide/hs-codes" element={<HSCodeGuide />} />
             <Route path="/guide/packing-list" element={<PackingListTips />} />
 
