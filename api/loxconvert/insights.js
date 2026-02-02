@@ -42,8 +42,8 @@ export default async function handler(req, res) {
 
         // Using the same robust pattern as LoxConvert main
         const attempts = [
-            { model: "gemini-1.5-flash", version: "v1beta" },
-            { model: "gemini-1.5-pro", version: "v1beta" }
+            { model: "gemini-1.5-flash", version: "v1" },
+            { model: "gemini-1.5-pro", version: "v1" }
         ];
 
         let complianceData = {
