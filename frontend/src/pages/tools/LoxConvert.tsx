@@ -246,19 +246,19 @@ export default function LoxConvert() {
                     <motion.div
                         initial={{ opacity: 0, y: -20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-[#003366] text-white text-[10px] font-black uppercase tracking-[0.3em] mb-8 shadow-xl shadow-blue-900/20"
+                        className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-navy text-white text-[10px] font-black uppercase tracking-[0.3em] mb-8 shadow-xl shadow-navy/20"
                     >
-                        <span className="w-2 h-2 rounded-full bg-blue-400 animate-pulse shadow-[0_0_8px_#60a5fa]" />
-                        Operational Intelligence v1.0
+                        <span className="w-2 h-2 rounded-full bg-yellow animate-pulse shadow-[0_0_8px_#F5A623]" />
+                        Trade Intelligence v1.0
                     </motion.div>
 
-                    <h1 className="text-5xl md:text-7xl font-black text-[#003366] mb-6 tracking-tighter uppercase italic italic">
-                        Lox<span className="text-blue-600">Convert</span> <span className="text-yellow not-italic">AI</span>
+                    <h1 className="text-5xl md:text-7xl font-black text-navy mb-6 tracking-tighter uppercase italic">
+                        Lox<span className="text-yellow">Convert</span> <span className="text-navy not-italic">AI</span>
                     </h1>
 
                     <p className="max-w-2xl text-slate-500 font-medium text-lg leading-relaxed">
-                        Lojistik dökümanlarını saniyeler içinde hatasız dijital verilere dönüştürün,
-                        <span className="text-[#003366] font-bold"> gümrük risklerini analiz edin</span> ve pazar fırsatlarını yakalayın.
+                        Convert logistics documents to structured data in seconds,
+                        <span className="text-navy font-bold"> analyze customs risks</span> and identify market opportunities.
                     </p>
                 </header>
 
@@ -282,7 +282,7 @@ export default function LoxConvert() {
 
                             <div className="flex flex-col items-center gap-6 relative z-0">
                                 <div className="relative">
-                                    <div className="bg-blue-600 p-6 rounded-[2rem] text-white shadow-2xl group-hover:scale-110 transition-transform duration-500">
+                                    <div className="bg-navy p-6 rounded-[2rem] text-yellow shadow-2xl group-hover:scale-110 transition-transform duration-500">
                                         {loading ? <Loader2 size={40} className="animate-spin" /> : <Upload size={40} />}
                                     </div>
                                     {!loading && (
@@ -295,11 +295,11 @@ export default function LoxConvert() {
                                 </div>
 
                                 <div className="space-y-2">
-                                    <h3 className="text-2xl font-black text-[#003366] uppercase italic leading-none">
-                                        {loading ? 'ANALİZ EDİLİYOR...' : 'DÖKÜMANI BURAYA BIRAKIN'}
+                                    <h3 className="text-2xl font-black text-navy uppercase italic leading-none">
+                                        {loading ? 'ANALYZING DOCUMENT...' : 'DROP YOUR DOCUMENT HERE'}
                                     </h3>
                                     <p className="text-slate-400 font-bold text-xs uppercase tracking-[0.2em]">
-                                        PDF, PNG VEYA JPEG • MAX 10MB
+                                        PDF, PNG OR JPEG • MAX 10MB
                                     </p>
                                 </div>
 
@@ -416,32 +416,32 @@ export default function LoxConvert() {
                                     <button
                                         onClick={handleSaveToFolder}
                                         disabled={saveLoading}
-                                        className="group flex items-center gap-3 bg-white border border-slate-200 px-8 py-5 rounded-[2.5rem] text-[10px] font-black tracking-[0.2em] text-[#003366] hover:border-indigo-600 hover:text-indigo-600 transition-all shadow-xl shadow-blue-900/5 hover:shadow-indigo-900/10 active:scale-95 disabled:opacity-50"
+                                        className="group flex items-center gap-3 bg-white border border-slate-200 px-8 py-5 rounded-[2.5rem] text-[10px] font-black tracking-[0.2em] text-navy hover:border-navy hover:text-navy transition-all shadow-xl shadow-navy/5 hover:shadow-navy/10 active:scale-95 disabled:opacity-50"
                                     >
-                                        <div className="bg-indigo-50 p-2 rounded-xl group-hover:bg-indigo-600 group-hover:text-white transition-all">
+                                        <div className="bg-navy/10 p-2 rounded-xl group-hover:bg-navy group-hover:text-yellow transition-all">
                                             {saveLoading ? <Loader2 size={18} className="animate-spin" /> : <FolderPlus size={18} />}
                                         </div>
-                                        SMART VAULT'A KAYDET
+                                        SAVE TO VAULT
                                     </button>
 
                                     <button
                                         onClick={handleGenerateInvoice}
-                                        className="group flex items-center gap-3 bg-white border border-slate-200 px-8 py-5 rounded-[2.5rem] text-[10px] font-black tracking-[0.2em] text-[#003366] hover:border-emerald-600 hover:text-emerald-600 transition-all shadow-xl shadow-blue-900/5 hover:shadow-emerald-900/10 active:scale-95"
+                                        className="group flex items-center gap-3 bg-white border border-slate-200 px-8 py-5 rounded-[2.5rem] text-[10px] font-black tracking-[0.2em] text-navy hover:border-yellow hover:text-navy transition-all shadow-xl shadow-navy/5 hover:shadow-yellow/10 active:scale-95"
                                     >
-                                        <div className="bg-emerald-50 p-2 rounded-xl group-hover:bg-emerald-600 group-hover:text-white transition-all">
+                                        <div className="bg-yellow/20 p-2 rounded-xl group-hover:bg-yellow group-hover:text-navy transition-all">
                                             <FileType size={18} />
                                         </div>
-                                        AI AUTO-INVOICE ÜRET
+                                        AI AUTO-INVOICE
                                     </button>
 
                                     <button
                                         onClick={handleCreateLoxQR}
-                                        className="group flex items-center gap-3 bg-white border border-slate-200 px-8 py-5 rounded-[2.5rem] text-[10px] font-black tracking-[0.2em] text-[#003366] hover:border-amber-600 hover:text-amber-600 transition-all shadow-xl shadow-blue-900/5 hover:shadow-amber-900/10 active:scale-95"
+                                        className="group flex items-center gap-3 bg-white border border-slate-200 px-8 py-5 rounded-[2.5rem] text-[10px] font-black tracking-[0.2em] text-navy hover:border-navy hover:text-navy transition-all shadow-xl shadow-navy/5 hover:shadow-navy/10 active:scale-95"
                                     >
-                                        <div className="bg-amber-50 p-2 rounded-xl group-hover:bg-amber-600 group-hover:text-white transition-all">
+                                        <div className="bg-navy/10 p-2 rounded-xl group-hover:bg-navy group-hover:text-yellow transition-all">
                                             <QrCode size={18} />
                                         </div>
-                                        LOXQR ETİKETİ BAS
+                                        PRINT QR LABEL
                                     </button>
                                 </motion.div>
 
@@ -489,11 +489,11 @@ export default function LoxConvert() {
                                             exit={{ opacity: 0, y: 40 }}
                                             className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-6"
                                         >
-                                            {/* LEFT: COMPLIANCE & RISK (AI Gümrük Uyumluluk Raporu) */}
+                                            {/* LEFT: COMPLIANCE & RISK (AI Customs Compliance Report) */}
                                             <div className="bg-white border border-slate-200 rounded-[2.5rem] p-8 shadow-sm">
-                                                <div className="flex items-center gap-3 mb-6 text-[#003366]">
-                                                    <div className="bg-blue-50 p-2.5 rounded-xl text-[#003366]"><ShieldCheck size={24} /></div>
-                                                    <h3 className="font-black text-xl tracking-tight">AI Gümrük Uyumluluk Raporu</h3>
+                                                <div className="flex items-center gap-3 mb-6 text-navy">
+                                                    <div className="bg-navy/10 p-2.5 rounded-xl text-navy"><ShieldCheck size={24} /></div>
+                                                    <h3 className="font-black text-xl tracking-tight">AI Customs Compliance Report</h3>
                                                 </div>
 
                                                 {insightLoading ? (
@@ -502,11 +502,11 @@ export default function LoxConvert() {
                                                     </div>
                                                 ) : (
                                                     <>
-                                                        {/* LEFT: COMPLIANCE & RISK (AI Gümrük Uyumluluk Raporu) */}
+                                                        {/* LEFT: COMPLIANCE & RISK (AI Customs Compliance Report) */}
                                                         <div className="bg-white border border-slate-200 rounded-[2.5rem] p-8 shadow-sm">
-                                                            <div className="flex items-center gap-3 mb-6 text-[#003366]">
-                                                                <div className="bg-blue-50 p-2.5 rounded-xl text-[#003366]"><ShieldCheck size={24} /></div>
-                                                                <h3 className="font-black text-xl tracking-tight">AI Gümrük Uyumluluk Raporu</h3>
+                                                            <div className="flex items-center gap-3 mb-6 text-navy">
+                                                                <div className="bg-navy/10 p-2.5 rounded-xl text-navy"><ShieldCheck size={24} /></div>
+                                                                <h3 className="font-black text-xl tracking-tight">AI Customs Compliance Report</h3>
                                                             </div>
 
                                                             <div className="space-y-4">
@@ -517,7 +517,7 @@ export default function LoxConvert() {
                                                                     </div>
                                                                 )}
                                                                 <div className="space-y-2">
-                                                                    <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-1">Gerekli Belgeler & Vergiler</h4>
+                                                                    <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-1">Required Documents & Taxes</h4>
                                                                     <ul className="grid grid-cols-1 gap-2">
                                                                         {insightData?.compliance?.requirements?.map((req: string, i: number) => (
                                                                             <li key={i} className="flex items-center gap-3 bg-slate-50 p-3 rounded-xl text-sm font-medium text-slate-600 border border-slate-100">
@@ -547,7 +547,7 @@ export default function LoxConvert() {
 
                                                                 <div className="flex-1 flex flex-col">
                                                                     <p className="text-sm text-blue-100 font-medium mb-6 leading-relaxed">
-                                                                        Bu ürünü {targetCountry} pazarında aktif olarak ithal eden alıcılar tespit edildi:
+                                                                        Buyers actively importing this product in {targetCountry} have been identified:
                                                                     </p>
                                                                     <div className="space-y-3 mb-8">
                                                                         {insightData?.potentialBuyers?.map((buyer: any, i: number) => (
@@ -566,24 +566,24 @@ export default function LoxConvert() {
                                                                         target="_blank"
                                                                         className="mt-auto flex items-center justify-center gap-3 w-full bg-white text-[#003366] py-4 rounded-2xl font-black hover:bg-yellow hover:text-navy transition-all text-xs uppercase tracking-widest group/btn shadow-xl shadow-blue-900/40"
                                                                     >
-                                                                        {selectedItem?.hs_code} Kodlu Ürün İçin Tüm Alıcılar
+                                                                        View All Buyers for HS Code {selectedItem?.hs_code}
                                                                         <ArrowRight size={18} className="group-hover/btn:translate-x-1 transition-transform" />
                                                                     </a>
                                                                 </div>
                                                             </div>
                                                         </div>
 
-                                                        {/* BOTTOM FULL WIDTH: MARKET INTELLIGENCE (Rakip Analizi) */}
+                                                        {/* BOTTOM FULL WIDTH: MARKET INTELLIGENCE (Competitor Analysis) */}
                                                         <div className="col-span-1 lg:col-span-2 bg-[#F8FAFC] border border-slate-200 rounded-[2.5rem] p-8 shadow-sm group">
                                                             <div className="flex items-center gap-3 mb-6">
-                                                                <div className="bg-indigo-50 p-2.5 rounded-xl text-indigo-600 group-hover:bg-indigo-600 group-hover:text-white transition-all"><Globe size={24} /></div>
-                                                                <h3 className="font-black text-xl tracking-tight text-[#003366]">Pazar Payı ve Rekabet Analizi</h3>
+                                                                <div className="bg-navy/10 p-2.5 rounded-xl text-navy group-hover:bg-navy group-hover:text-yellow transition-all"><Globe size={24} /></div>
+                                                                <h3 className="font-black text-xl tracking-tight text-navy">Market Share & Competitor Analysis</h3>
                                                             </div>
 
                                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                                                 <div className="space-y-4">
                                                                     <p className="text-sm text-slate-500 italic">
-                                                                        {targetCountry} pazarında bu ürün için en büyük tedarikçi ülkeler:
+                                                                        Top supplier countries for this product in {targetCountry}:
                                                                     </p>
                                                                     <div className="space-y-4">
                                                                         {insightData?.compliance?.competitors?.map((comp: any, i: number) => (
