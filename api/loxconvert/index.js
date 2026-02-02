@@ -54,16 +54,20 @@ export default async function handler(req, res) {
             }
         }
 
-        const modelsToTry = ["gemini-1.5-flash", "gemini-1.5-pro", "gemini-1.0-pro"];
-        let result;
-        let lastError;
+        // REST API Implementation to bypass SDK version issues
+        const modelsToTry = ["gemini-1.5-flash", "gemini-pro"];
+        let jsonOutput = null;
+        let lastError = null;
 
-        for (const modelName of modelsToTry) {
+        for (const model of modelsToTry) {
             try {
-                console.log(`Trying model: ${modelName}`);
-                const model = genAI.getGenerativeModel({ model: modelName });
+                console.log(`Trying via REST API: ${model}`);
 
-                const prompt = `Analyze this logistics/trade document (packing list, invoice, etc.). 
+                const payload = {
+                    contents: [{
+                        parts: [
+                            {
+                                text: `Analyze this logistics/trade document (packing list, invoice, etc.). 
     Extract the items listed in the table or list. 
     Return a STRICT JSON array where each object has these fields:
     - "description": The item description (keep original language, but ensure clarity).
@@ -72,39 +76,57 @@ export default async function handler(req, res) {
     - "weight": Total weight if available (number), else null.
     - "hs_code": The HS Code / GTIP if listed. If NOT listed, suggest the most likely 6-digit HS Code based on the description.
 
-    OUTPUT ONLY RAW JSON. NO MARKDOWN. NO BACKTICKS.`;
+    OUTPUT ONLY RAW JSON. NO MARKDOWN. NO BACKTICKS.` },
+                            {
+                                inline_data: {
+                                    mime_type: mimeType,
+                                    data: fileBase64
+                                }
+                            }
+                        ]
+                    }],
+                    generationConfig: {
+                        response_mime_type: "application/json"
+                    }
+                };
 
-                result = await model.generateContent([
-                    prompt,
-                    { inlineData: { data: fileBase64, mimeType } }
-                ]);
+                const response = await fetch(
+                    `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${process.env.GEMINI_API_KEY}`,
+                    {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(payload)
+                    }
+                );
 
-                // If successful, break the loop
-                if (result && result.response) break;
+                if (!response.ok) {
+                    const errText = await response.text();
+                    throw new Error(`API Error ${response.status}: ${errText}`);
+                }
+
+                const data = await response.json();
+
+                // Parse response
+                const rawText = data.candidates?.[0]?.content?.parts?.[0]?.text;
+                if (!rawText) throw new Error("No content generated");
+
+                const cleanedText = rawText.replace(/```json/g, "").replace(/```/g, "").trim();
+                jsonOutput = JSON.parse(cleanedText);
+
+                // If success, break
+                break;
+
             } catch (e) {
-                console.warn(`Model ${modelName} failed:`, e.message);
+                console.warn(`Model ${model} failed:`, e.message);
                 lastError = e;
-                continue; // Try next model
             }
         }
 
-        if (!result) {
+        if (!jsonOutput) {
             throw new Error(`All AI models failed. Last error: ${lastError?.message}`);
         }
 
-        const text = result.response.text();
-        // Clean up potential markdown formatting if model ignores "NO MARKDOWN"
-        const cleanedText = text.replace(/```json/g, "").replace(/```/g, "").trim();
-
-        let jsonOutput;
-        try {
-            jsonOutput = JSON.parse(cleanedText);
-        } catch (e) {
-            console.error("JSON Parse Error:", text);
-            return res.status(500).json({ error: "Failed to parse AI response. Try again." });
-        }
-
-        // Insert history into Supabase (if userId provided)
+        // Insert history into Supabase
         if (userId) {
             try {
                 await supabase.from('lox_convert_history').insert({
@@ -115,7 +137,6 @@ export default async function handler(req, res) {
                 });
             } catch (dbError) {
                 console.error("Supabase Log Error:", dbError);
-                // Don't fail the request if logging fails
             }
         }
 
