@@ -10,7 +10,8 @@ import {
     Menu,
     X,
     ShieldCheck,
-    Bell
+    Bell,
+    Target
 } from 'lucide-react';
 import Logo from '../../components/Logo';
 import { useAuth } from '../../contexts/crm/AuthContext';
@@ -43,6 +44,7 @@ export default function AdminLayout() {
         { icon: LayoutDashboard, label: 'Dashboard', path: '/admin/dashboard' },
         { icon: Users, label: 'Users', path: '/admin/users' },
         { icon: FileText, label: 'Applications', path: '/admin/applications' },
+        { icon: Target, label: 'LinkedIn Bot', path: '/admin/outreach' },
         { icon: Settings, label: 'Settings', path: '/admin/settings' },
     ];
 
