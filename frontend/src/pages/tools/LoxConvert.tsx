@@ -1,11 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Upload, FileText, Check, Loader2, Download, AlertCircle, ArrowRight, HelpCircle, Send, Sparkles, Globe, ShieldCheck, Target, ExternalLink, FolderPlus, QrCode, FileType, Info, Activity } from 'lucide-react';
+import { Upload, FileText, Check, Loader2, Download, AlertCircle, ArrowRight, HelpCircle, Send, Sparkles, Globe, ShieldCheck, Target, ExternalLink, FolderPlus, QrCode, FileType, Info, Search } from 'lucide-react';
 import * as XLSX from 'xlsx';
 import { supabase } from '../../supabase';
 import { useAuth } from '../../contexts/crm/AuthContext';
-import RadarScanner from '../../components/RadarScanner';
 
 // Excel export helper
 const exportToExcel = (data: any[], fileName: string) => {
@@ -13,7 +12,7 @@ const exportToExcel = (data: any[], fileName: string) => {
     const ws = XLSX.utils.json_to_sheet(data);
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "ConvertedData");
-    XLSX.writeFile(wb, `LOXTR_Docs_${fileName.split('.')[0]}_${new Date().getTime()}.xlsx`);
+    XLSX.writeFile(wb, `LoxConvert_${fileName.split('.')[0]}_${new Date().getTime()}.xlsx`);
 };
 
 export default function LoxConvert() {
@@ -24,8 +23,6 @@ export default function LoxConvert() {
     const [error, setError] = useState<string | null>(null);
     const [fileName, setFileName] = useState<string>("");
     const [showPromoModal, setShowPromoModal] = useState(false);
-    const [requestSuccess, setRequestSuccess] = useState(false);
-    const [requestLoading, setRequestLoading] = useState(false);
 
     // Insights State
     const [insightData, setInsightData] = useState<any>(null);
@@ -45,7 +42,7 @@ export default function LoxConvert() {
                 .from('lox_folders')
                 .insert({
                     user_id: user.id,
-                    name: `Dossier: ${fileName.split('.')[0]}`,
+                    name: `LoxConvert: ${fileName.split('.')[0]}`,
                     metadata: { item_count: data.length, country: targetCountry }
                 })
                 .select()
@@ -64,10 +61,10 @@ export default function LoxConvert() {
                 });
 
             if (dError) throw dError;
-            alert("📦 Dosya Başarıyla 'Smart Vault' Klasörüne Kaydedildi!");
+            alert("📦 Dossier saved to Smart Vault!");
         } catch (e: any) {
             console.error(e);
-            alert("Hata: " + e.message);
+            alert("Error: " + e.message);
         } finally {
             setSaveLoading(false);
         }
@@ -83,7 +80,7 @@ export default function LoxConvert() {
                 body: JSON.stringify({
                     items: data,
                     targetCountry,
-                    companyInfo: { name: user?.email?.split('@')[0].toUpperCase(), address: "Istanbul, Turkey" }
+                    companyInfo: { name: user?.email?.split('@')[0].toUpperCase(), address: "Exporter Address" }
                 })
             });
             const result = await response.json();
@@ -92,24 +89,14 @@ export default function LoxConvert() {
             setShowInvoiceModal(true);
         } catch (e: any) {
             console.error(e);
-            alert("Fatura oluşturulamadı: " + e.message);
+            alert("Invoice failed: " + e.message);
         } finally {
             setInvoiceLoading(false);
         }
     };
 
     const handleCreateLoxQR = () => {
-        alert("🔗 LoxQR Oluşturuldu! Bu QR'ı koli üzerine yapıştırarak gümrükçülerin dijital dökümanlara anında erişmesini sağlayabilirsiniz.");
-    };
-
-    const checkUpsell = () => {
-        const count = parseInt(localStorage.getItem('lox_convert_count') || '0');
-        const newCount = count + 1;
-        localStorage.setItem('lox_convert_count', newCount.toString());
-
-        if (newCount === 3) {
-            setShowPromoModal(true);
-        }
+        alert("🔗 LoxQR Created! Attach this to your cargo for instant digital document access.");
     };
 
     const handleInsights = async (item: any) => {
@@ -148,11 +135,9 @@ export default function LoxConvert() {
         setLoading(true);
 
         const validTypes = ['application/pdf', 'application/x-pdf', 'image/jpeg', 'image/png', 'image/webp'];
-
         if (!validTypes.includes(file.type) && !file.name.toLowerCase().endsWith('.pdf')) {
-            setError(`Unsupported format. Please upload PDF, PNG or JPG.`);
+            setError(`Please upload a valid PDF or Image.`);
             setLoading(false);
-            e.target.value = '';
             return;
         }
 
@@ -160,8 +145,7 @@ export default function LoxConvert() {
         reader.readAsDataURL(file);
         reader.onload = async () => {
             try {
-                const endpoint = '/api/loxconvert';
-                const res = await fetch(endpoint, {
+                const res = await fetch('/api/loxconvert', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -172,366 +156,331 @@ export default function LoxConvert() {
                     })
                 });
 
-                if (!res.ok) {
-                    const errDetails = await res.json().catch(() => ({}));
-                    throw new Error(errDetails.error || 'Failed to analyze document');
-                }
-
+                if (!res.ok) throw new Error('Analysis failed. Please try again.');
                 const resultData = await res.json();
                 setData(resultData);
-                checkUpsell();
             } catch (err: any) {
-                console.error(err);
-                setError(err.message || "An error occurred during analysis.");
+                setError(err.message || "An error occurred.");
             } finally {
                 setLoading(false);
                 if (e.target) e.target.value = '';
             }
         };
-        reader.onerror = () => {
-            setError("Failed to read file.");
-            setLoading(false);
-            e.target.value = '';
-        };
     };
 
     return (
-        <div className="min-h-screen bg-[#050505] font-outfit text-white selection:bg-yellow selection:text-navy">
-            {/* --- PREMIUM STICKY HEADER --- */}
-            <nav className="fixed top-0 left-0 right-0 z-[100] bg-black/50 backdrop-blur-xl border-b border-white/5 py-4 px-6 md:px-12 flex justify-between items-center">
-                <div className="flex items-center gap-3 group cursor-pointer" onClick={() => navigate('/dashboard')}>
-                    <div className="w-10 h-10 bg-yellow rounded-2xl flex items-center justify-center shadow-[0_0_20px_rgba(245,166,35,0.3)] group-hover:scale-110 transition-transform">
-                        <Target className="text-navy" size={24} />
+        <div className="min-h-screen bg-white font-outfit text-navy pb-20">
+            {/* CLEAN BRAND HEADER */}
+            <header className="bg-white border-b border-slate-100 py-4 px-6 md:px-12 flex justify-between items-center sticky top-0 z-50">
+                <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate('/')}>
+                    <div className="w-8 h-8 bg-navy rounded-lg flex items-center justify-center">
+                        <Target className="text-yellow" size={18} />
                     </div>
                     <div>
-                        <h1 className="text-xl font-black tracking-tighter italic leading-none">
-                            LOX<span className="text-yellow">CONVERT</span> AI
+                        <h1 className="text-xl font-black tracking-tighter">
+                            Lox<span className="text-yellow">Convert</span>
                         </h1>
-                        <div className="flex items-center gap-2 mt-0.5">
-                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                            <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Trade Intelligence Engine v2.5</p>
-                        </div>
+                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-[-2px]">Powered by LOXTR</p>
                     </div>
                 </div>
 
-                <div className="hidden lg:flex items-center gap-8">
-                    {['Network', 'Security', 'Insights', 'Radar'].map((item) => (
-                        <span key={item} className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-500 hover:text-white transition-colors cursor-crosshair">
-                            {item}
-                        </span>
-                    ))}
+                <div className="hidden md:flex items-center gap-6">
+                    <span className="text-xs font-bold text-slate-400">Enterprise Grade Extraction</span>
+                    <div className="h-4 w-px bg-slate-100" />
+                    <button onClick={() => navigate('/dashboard')} className="text-xs font-bold hover:text-yellow transition-colors">Go to Dashboard</button>
                 </div>
-
-                <div className="flex items-center gap-4">
-                    <button className="hidden md:block text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-white transition-all px-4 py-2">
-                        Systems Status
-                    </button>
-                    <div className="h-8 w-px bg-white/10" />
-                    <div className="w-10 h-10 rounded-full border border-white/10 bg-white/5 flex items-center justify-center text-yellow font-black text-xs">
-                        {user?.email?.charAt(0).toUpperCase() || 'A'}
-                    </div>
-                </div>
-            </nav>
+            </header>
 
             <AnimatePresence mode="wait">
                 {!data ? (
+                    /* LANDING */
                     <motion.div
                         key="landing"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0, scale: 0.95 }}
-                        className="min-h-screen flex flex-col lg:flex-row pt-20"
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="max-w-5xl mx-auto px-6 pt-16 md:pt-24"
                     >
-                        {/* LEFT: APPLE-STYLE NARRATIVE */}
-                        <div className="flex-1 flex flex-col justify-center px-8 md:px-20 lg:px-32 py-20 relative overflow-hidden border-r border-white/5">
-                            <div className="absolute top-1/4 -left-20 w-96 h-96 bg-blue-600/10 blur-[150px] rounded-full" />
-
-                            <motion.div
-                                initial={{ opacity: 0, x: -30 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                transition={{ delay: 0.2 }}
-                                className="relative z-10"
-                            >
-                                <span className="inline-block px-4 py-1.5 bg-yellow text-navy text-[10px] font-black uppercase tracking-[0.4em] mb-8 rounded-full">
-                                    Revolutionizing Logistics
-                                </span>
-                                <h1 className="text-6xl md:text-8xl font-black leading-[0.9] tracking-tighter uppercase italic mb-8">
-                                    Intelligence <br />
-                                    <span className="text-yellow">Unleashed.</span>
-                                </h1>
-                                <p className="text-xl text-slate-400 max-w-lg font-medium leading-relaxed mb-12">
-                                    Turn static logistics documents into dynamic operational assets.
-                                    Powered by LOXTR Intelligence, LoxConvert AI extracts, analyzes,
-                                    and predicts with 99.8% precision.
-                                </p>
-
-                                <div className="grid grid-cols-2 gap-8 py-8 border-t border-white/10">
-                                    <div>
-                                        <p className="text-3xl font-black text-white italic">0.4s</p>
-                                        <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mt-1">Extraction Speed</p>
-                                    </div>
-                                    <div>
-                                        <p className="text-3xl font-black text-yellow italic">HS AI™</p>
-                                        <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mt-1">Universal Classifier</p>
-                                    </div>
-                                </div>
-                            </motion.div>
+                        <div className="text-center mb-16">
+                            <h2 className="text-4xl md:text-6xl font-black tracking-tight mb-6">
+                                The smartest way to convert <br />
+                                <span className="text-yellow">Logistics Documents</span>
+                            </h2>
+                            <p className="text-lg text-slate-500 max-w-2xl mx-auto">
+                                Automatically extract line items, predict HS codes, and analyze market risks in seconds.
+                            </p>
                         </div>
 
-                        {/* RIGHT: CYBER UPLOAD ZONE */}
-                        <div className="flex-1 bg-[#0a0a0a] flex items-center justify-center p-8 md:p-20 relative">
-                            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(245,166,35,0.03)_0%,_transparent_70%)]" />
-
-                            <motion.div
-                                initial={{ opacity: 0, scale: 0.9 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                transition={{ delay: 0.4 }}
-                                className="w-full max-w-xl relative"
+                        {/* UPLOAD ZONE - CLEAN & FOCUS */}
+                        <div className="max-w-xl mx-auto bg-slate-50 rounded-[2.5rem] p-4 border border-slate-100 shadow-xl shadow-slate-200/50">
+                            <div className={`relative border-2 border-dashed rounded-[2rem] p-12 text-center transition-all
+                                ${loading ? 'border-yellow bg-white animate-pulse' : 'border-slate-200 bg-white hover:border-yellow hover:bg-slate-50'}`}
                             >
-                                <div className="absolute -top-12 -left-12 opacity-50">
-                                    <div className="absolute top-0 left-0 w-24 h-24 border-t-2 border-l-2 border-yellow animate-pulse" />
-                                </div>
-                                <div className="absolute -bottom-12 -right-12 opacity-50">
-                                    <div className="absolute top-0 left-0 w-24 h-24 border-b-2 border-r-2 border-yellow animate-pulse" />
-                                </div>
+                                <input
+                                    type="file"
+                                    onChange={handleFile}
+                                    className="absolute inset-0 opacity-0 cursor-pointer z-10"
+                                    disabled={loading}
+                                    accept=".pdf,.png,.jpg,.jpeg,.webp"
+                                />
 
-                                <div className={`relative group border border-white/10 rounded-[3rem] p-1 bg-black overflow-hidden
-                                    ${loading ? 'cursor-wait bg-navy/50' : 'cursor-pointer'}`}
-                                >
-                                    {loading && (
-                                        <motion.div
-                                            animate={{ top: ['0%', '100%'] }}
-                                            transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-                                            className="absolute left-0 right-0 h-1 bg-yellow/50 shadow-[0_0_15px_#F5A623] z-20"
-                                        />
-                                    )}
-
-                                    <div className="relative z-10 p-12 lg:p-20 flex flex-col items-center text-center">
-                                        <input
-                                            type="file"
-                                            onChange={handleFile}
-                                            className="absolute inset-0 opacity-0 z-30 cursor-pointer disabled:cursor-not-allowed"
-                                            disabled={loading}
-                                            accept=".pdf,.png,.jpg,.jpeg,.webp"
-                                        />
-
-                                        <div className={`w-32 h-32 rounded-[2.5rem] flex items-center justify-center mb-10 transition-all duration-500
-                                            ${loading ? 'bg-navy border-yellow ring-4 ring-yellow/20' : 'bg-white/5 border border-white/10 group-hover:bg-yellow group-hover:text-navy group-hover:scale-110'}`}
-                                        >
-                                            {loading ? <Loader2 size={48} className="animate-spin text-yellow" /> : <Upload size={48} className="text-white group-hover:text-navy transition-colors" />}
-                                        </div>
-
-                                        <h3 className="text-3xl font-black italic uppercase tracking-tighter mb-4">
-                                            {loading ? 'Analyzing Core...' : 'Inject Document'}
-                                        </h3>
-                                        <p className="text-slate-500 text-sm font-bold tracking-[0.2em] mb-8">
-                                            PDF • JPG • PNG (MAX 10MB)
-                                        </p>
-
-                                        {error && (
-                                            <div className="mb-8 bg-red-500/10 border border-red-500/50 p-4 rounded-2xl text-red-500 text-xs font-black uppercase tracking-widest flex items-center gap-3">
-                                                <AlertCircle size={16} />
-                                                {error}
-                                            </div>
-                                        )}
-
-                                        <div className="flex items-center gap-6 text-[10px] font-black text-slate-600 uppercase tracking-[0.3em]">
-                                            <div className="flex items-center gap-2">
-                                                <ShieldCheck size={14} className="text-emerald-500" />
-                                                SECURE
-                                            </div>
-                                            <div className="w-1 h-1 rounded-full bg-white/20" />
-                                            <div className="flex items-center gap-2">
-                                                <Globe size={14} className="text-blue-500" />
-                                                CLOUD-NATIVE
-                                            </div>
-                                        </div>
+                                <div className="flex flex-col items-center">
+                                    <div className={`w-20 h-20 rounded-2xl flex items-center justify-center mb-6 transition-all
+                                        ${loading ? 'bg-yellow text-navy' : 'bg-navy text-white'}`}
+                                    >
+                                        {loading ? <Loader2 size={32} className="animate-spin" /> : <Upload size={32} />}
                                     </div>
+                                    <h3 className="text-xl font-bold mb-2">
+                                        {loading ? 'AI analyzing your document...' : 'Upload your document'}
+                                    </h3>
+                                    <p className="text-slate-400 text-sm">Drop your Packing List or Invoice PDF here</p>
                                 </div>
-                            </motion.div>
+                            </div>
+                        </div>
+
+                        {error && (
+                            <div className="mt-8 max-w-xl mx-auto bg-red-50 text-red-600 p-4 rounded-2xl text-center text-sm font-bold flex items-center justify-center gap-2 border border-red-100">
+                                <AlertCircle size={18} />
+                                {error}
+                            </div>
+                        )}
+
+                        {/* STEPS - ILovePDF Style */}
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-24">
+                            {[
+                                { step: "01", title: "Upload", icon: Upload, desc: "Select your logistics document safely." },
+                                { step: "02", title: "AI Extract", icon: Sparkles, desc: "Our AI identifies items and HS codes." },
+                                { step: "03", title: "Scale", icon: Download, desc: "Export to Excel or create AI Invoice." }
+                            ].map((s, i) => (
+                                <div key={i} className="flex flex-col items-center text-center p-8 bg-white rounded-3xl border border-slate-50 hover:shadow-lg transition-shadow">
+                                    <span className="text-[10px] font-black text-yellow uppercase tracking-widest mb-4">Step {s.step}</span>
+                                    <div className="w-12 h-12 bg-slate-50 rounded-xl flex items-center justify-center mb-4 text-navy">
+                                        <s.icon size={24} />
+                                    </div>
+                                    <h4 className="font-black text-lg mb-2">{s.title}</h4>
+                                    <p className="text-slate-400 text-sm">{s.desc}</p>
+                                </div>
+                            ))}
                         </div>
                     </motion.div>
                 ) : (
+                    /* RESULTS SCREEN - CLEAN DASHBOARD */
                     <motion.div
                         key="results"
-                        initial={{ opacity: 0, scale: 1.05 }}
+                        initial={{ opacity: 0, scale: 0.98 }}
                         animate={{ opacity: 1, scale: 1 }}
-                        className="pt-32 px-6 md:px-12 max-w-[1600px] mx-auto pb-40"
+                        className="max-w-7xl mx-auto px-6 pt-12"
                     >
-                        <div className="flex flex-col md:flex-row justify-between items-end gap-8 mb-12 border-b border-white/5 pb-10">
+                        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-6 mb-8">
                             <div>
-                                <div className="flex items-center gap-3 mb-4">
-                                    <div className="px-3 py-1 bg-yellow text-navy text-[10px] font-black uppercase tracking-widest rounded-lg">
-                                        Doc ID: {fileName.toUpperCase().slice(0, 10)}
-                                    </div>
-                                    <div className="px-3 py-1 bg-white/5 text-slate-400 text-[10px] font-black uppercase tracking-widest rounded-lg border border-white/10">
-                                        Scan Confirmed
-                                    </div>
-                                </div>
-                                <h1 className="text-5xl font-black tracking-tighter uppercase italic leading-none">
-                                    Intelligence <span className="text-yellow">Report.</span>
-                                </h1>
-                                <div className="flex items-center gap-2 mt-4 text-slate-500 font-bold">
-                                    <FileText size={18} />
-                                    <span>{fileName}</span>
-                                    <span className="text-yellow mx-2">/</span>
-                                    <span>{data.length} LINE ITEMS EXTRACTED</span>
-                                </div>
-                            </div>
-
-                            <div className="flex items-center gap-4">
                                 <button
                                     onClick={() => setData(null)}
-                                    className="px-8 py-4 rounded-xl border border-white/10 text-[10px] font-black uppercase tracking-widest hover:bg-white/5 transition-all"
+                                    className="text-xs font-bold text-slate-400 hover:text-navy mb-4 flex items-center gap-2"
                                 >
-                                    Inject New File
+                                    <ArrowRight size={14} className="rotate-180" /> Back to Upload
                                 </button>
+                                <h2 className="text-3xl font-black tracking-tight">Analysis <span className="text-yellow">Ready</span></h2>
+                                <p className="text-slate-400 font-medium text-sm mt-1 flex items-center gap-2">
+                                    <FileText size={16} /> {fileName} • {data.length} Items Found
+                                </p>
+                            </div>
+
+                            <div className="flex items-center gap-3">
                                 <button
                                     onClick={() => exportToExcel(data, fileName)}
-                                    className="px-8 py-4 bg-yellow text-navy rounded-xl text-[10px] font-black uppercase tracking-widest hover:scale-105 active:scale-95 transition-all shadow-[0_0_30px_rgba(245,166,35,0.2)] flex items-center gap-3"
+                                    className="bg-navy text-white px-8 py-4 rounded-2xl font-black text-xs uppercase tracking-widest flex items-center gap-3 shadow-xl shadow-navy/20 hover:scale-105 active:scale-95 transition-all"
                                 >
-                                    <Download size={18} />
-                                    Export to Intelligence Excel
+                                    <Download size={18} className="text-yellow" />
+                                    Download Excel
                                 </button>
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
-                            <div className="lg:col-span-8 space-y-8">
-                                <div className="bg-[#0c0c0c] border border-white/5 rounded-[2.5rem] overflow-hidden">
-                                    <div className="overflow-x-auto">
-                                        <table className="w-full text-left border-separate border-spacing-0">
-                                            <thead>
-                                                <tr className="bg-white/[0.02]">
-                                                    <th className="px-8 py-6 text-[10px] font-black text-slate-500 uppercase tracking-[0.3em]">Description</th>
-                                                    <th className="px-8 py-6 text-[10px] font-black text-slate-500 uppercase tracking-[0.3em]">Quantity</th>
-                                                    <th className="px-8 py-6 text-[10px] font-black text-slate-500 uppercase tracking-[0.3em]">HS Prediction</th>
-                                                    <th className="px-8 py-6 text-[10px] font-black text-slate-500 uppercase tracking-[0.3em]">Insight</th>
+                        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                            {/* TABLE CARD */}
+                            <div className="lg:col-span-8 bg-white rounded-[2.5rem] border border-slate-100 shadow-xl shadow-slate-200/40 overflow-hidden">
+                                <div className="overflow-x-auto">
+                                    <table className="w-full text-left border-collapse">
+                                        <thead>
+                                            <tr className="bg-slate-50 border-b border-slate-100">
+                                                <th className="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">Description</th>
+                                                <th className="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">Qty</th>
+                                                <th className="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">HS Code</th>
+                                                <th className="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">Intelligence</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody className="divide-y divide-slate-50">
+                                            {data.map((item, i) => (
+                                                <tr key={i} className="hover:bg-slate-50/50 transition-colors">
+                                                    <td className="px-8 py-6">
+                                                        <span className="text-sm font-bold block truncate max-w-[300px]">{item.description}</span>
+                                                    </td>
+                                                    <td className="px-8 py-6 font-black text-sm">{item.qty} <span className="text-[10px] text-slate-400">{item.unit}</span></td>
+                                                    <td className="px-8 py-6">
+                                                        <span className="bg-slate-100 px-3 py-1.5 rounded-lg text-xs font-mono font-bold tracking-tight">
+                                                            {item.hs_code || '---'}
+                                                        </span>
+                                                    </td>
+                                                    <td className="px-8 py-6 text-center">
+                                                        <button
+                                                            onClick={() => handleInsights(item)}
+                                                            className={`p-2 rounded-xl transition-all ${selectedItem === item ? 'bg-yellow text-navy' : 'text-slate-300 hover:text-yellow'}`}
+                                                        >
+                                                            <Sparkles size={20} />
+                                                        </button>
+                                                    </td>
                                                 </tr>
-                                            </thead>
-                                            <tbody className="divide-y divide-white/5">
-                                                {data.map((item, i) => (
-                                                    <tr key={i} className="hover:bg-white/[0.03] transition-colors group">
-                                                        <td className="px-8 py-6 text-sm font-bold text-white mb-0">{item.description}</td>
-                                                        <td className="px-8 py-6">
-                                                            <div className="flex items-center gap-2">
-                                                                <span className="text-sm font-black text-white">{item.qty}</span>
-                                                                <span className="text-[10px] font-black text-slate-600 uppercase tracking-widest">{item.unit}</span>
-                                                            </div>
-                                                        </td>
-                                                        <td className="px-8 py-6 border-0">
-                                                            <div className="flex items-center gap-3">
-                                                                <span className="px-4 py-2 bg-yellow/5 border border-yellow/20 rounded-xl text-yellow text-xs font-mono font-black tracking-widest">
-                                                                    {item.hs_code || '---'}
-                                                                </span>
-                                                            </div>
-                                                        </td>
-                                                        <td className="px-8 py-6">
-                                                            <button
-                                                                onClick={() => handleInsights(item)}
-                                                                className={`p-3 rounded-xl transition-all ${selectedItem === item ? 'bg-yellow text-navy shadow-lg shadow-yellow/30' : 'bg-white/5 text-slate-400 hover:bg-yellow/10 hover:text-yellow'}`}
-                                                            >
-                                                                <Sparkles size={18} />
-                                                            </button>
-                                                        </td>
-                                                    </tr>
-                                                ))}
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                    <button onClick={handleSaveToFolder} className="p-8 bg-[#0c0c0c] border border-white/5 rounded-[2rem] text-left hover:border-yellow/30 transition-all group">
-                                        <div className="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-yellow group-hover:text-navy transition-all"><FolderPlus size={24} /></div>
-                                        <h3 className="text-lg font-black italic uppercase tracking-tighter mb-2">Smart Vault</h3>
-                                        <p className="text-xs text-slate-500 font-medium">Save to your encrypted company dossier.</p>
-                                    </button>
-                                    <button onClick={handleGenerateInvoice} className="p-8 bg-[#0c0c0c] border border-white/5 rounded-[2rem] text-left hover:border-yellow/30 transition-all group">
-                                        <div className="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-yellow group-hover:text-navy transition-all"><FileType size={24} /></div>
-                                        <h3 className="text-lg font-black italic uppercase tracking-tighter mb-2">AI Invoice</h3>
-                                        <p className="text-xs text-slate-500 font-medium">Auto-generate commercial invoice draft.</p>
-                                    </button>
-                                    <button onClick={handleCreateLoxQR} className="p-8 bg-[#0c0c0c] border border-white/5 rounded-[2rem] text-left hover:border-yellow/30 transition-all group">
-                                        <div className="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-yellow group-hover:text-navy transition-all"><QrCode size={24} /></div>
-                                        <h3 className="text-lg font-black italic uppercase tracking-tighter mb-2">LoxQR Label</h3>
-                                        <p className="text-xs text-slate-500 font-medium">Print smart tracking labels for cargo.</p>
-                                    </button>
+                                            ))}
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
-                            <div className="lg:col-span-4 space-y-8">
-                                <div className="bg-navy border border-white/5 rounded-[3rem] p-10 relative overflow-hidden">
-                                    <div className="relative z-10 flex flex-col items-center text-center">
-                                        <div className="w-40 h-40 mb-10"><RadarScanner active={true} /></div>
-                                        <h3 className="text-2xl font-black italic uppercase tracking-tighter mb-4 text-white">LOX AI RADAR</h3>
-                                        <p className="text-sm text-blue-200/60 font-medium mb-8">Scanning Target Market: <span className="text-yellow font-black">{targetCountry}</span></p>
-                                        <select value={targetCountry} onChange={(e) => setTargetCountry(e.target.value)} className="w-full bg-black/50 border border-white/10 rounded-xl px-5 py-4 text-sm font-black text-white outline-none focus:border-yellow transition-all">
-                                            <option value="Germany">GERMANY 🇩🇪</option>
-                                            <option value="United Kingdom">UNITED KINGDOM 🇬🇧</option>
+
+                            {/* SIDEBAR CARD */}
+                            <div className="lg:col-span-4 space-y-6">
+                                {/* RADAR & TARGET */}
+                                <div className="bg-navy text-white rounded-[2.5rem] p-8 shadow-xl shadow-navy/20">
+                                    <div className="flex items-center gap-3 mb-6">
+                                        <div className="w-10 h-10 bg-yellow rounded-xl flex items-center justify-center text-navy">
+                                            <Globe size={20} />
+                                        </div>
+                                        <div>
+                                            <h4 className="font-black text-sm uppercase tracking-widest">Trade Radar</h4>
+                                            <p className="text-[10px] text-blue-300 font-bold">Scanning Buyers</p>
+                                        </div>
+                                    </div>
+
+                                    <div className="space-y-4 mb-8">
+                                        <label className="text-[10px] font-black text-blue-300 uppercase tracking-widest">Target Market</label>
+                                        <select
+                                            value={targetCountry}
+                                            onChange={(e) => setTargetCountry(e.target.value)}
+                                            className="w-full bg-white/10 border border-white/10 rounded-xl px-4 py-3 text-sm font-bold text-white outline-none focus:border-yellow transition-all"
+                                        >
+                                            <option value="Germany">Germany 🇩🇪</option>
+                                            <option value="United Kingdom">United Kingdom 🇬🇧</option>
                                             <option value="USA">USA 🇺🇸</option>
-                                            <option value="France">FRANCE 🇫🇷</option>
+                                            <option value="France">France 🇫🇷</option>
                                             <option value="UAE">UAE 🇦🇪</option>
                                         </select>
                                     </div>
+
+                                    <div className="p-4 bg-white/5 rounded-2xl border border-white/5 mb-6">
+                                        <p className="text-xs text-blue-200 italic leading-relaxed">
+                                            "Targeting {targetCountry} database. Our AI is ready to match these {data.length} items with potential buyers."
+                                        </p>
+                                    </div>
+
+                                    <div className="grid grid-cols-3 gap-2">
+                                        <button onClick={handleSaveToFolder} className="flex flex-col items-center gap-2 p-3 bg-white/5 rounded-2xl hover:bg-white/10 transition-all border border-white/5 group">
+                                            <FolderPlus size={18} className="group-hover:text-yellow" />
+                                            <span className="text-[8px] font-black uppercase">Save</span>
+                                        </button>
+                                        <button onClick={handleGenerateInvoice} className="flex flex-col items-center gap-2 p-3 bg-white/5 rounded-2xl hover:bg-white/10 transition-all border border-white/5 group">
+                                            <FileType size={18} className="group-hover:text-yellow" />
+                                            <span className="text-[8px] font-black uppercase">Invoice</span>
+                                        </button>
+                                        <button onClick={handleCreateLoxQR} className="flex flex-col items-center gap-2 p-3 bg-white/5 rounded-2xl hover:bg-white/10 transition-all border border-white/5 group">
+                                            <QrCode size={18} className="group-hover:text-yellow" />
+                                            <span className="text-[8px] font-black uppercase">LoxQR</span>
+                                        </button>
+                                    </div>
                                 </div>
+
+                                {/* INSIGHT DATA CARD */}
                                 {insightData && (
-                                    <motion.div initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} className="bg-[#0c0c0c] border-l-4 border-yellow rounded-[2.5rem] p-10">
-                                        <h4 className="text-[10px] font-black text-slate-500 uppercase tracking-[0.4em] mb-6">Security Intelligence</h4>
-                                        <div className="space-y-6">
-                                            <div>
-                                                <p className="text-[10px] font-black text-yellow uppercase tracking-widest mb-2">HS Code Identity</p>
-                                                <p className="text-2xl font-black text-white italic">{selectedItem?.hs_code}</p>
-                                            </div>
-                                            <div className="p-5 bg-white/5 rounded-2xl border border-white/5">
-                                                <p className="text-xs text-slate-400 italic">"Detected items are classified under Trade Protocol A-12. Priority clearance recommended."</p>
-                                            </div>
+                                    <motion.div
+                                        initial={{ opacity: 0, x: 20 }}
+                                        animate={{ opacity: 1, x: 0 }}
+                                        className="bg-slate-50 rounded-[2.5rem] p-8 border border-slate-100"
+                                    >
+                                        <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] mb-4">HS Intelligence</h4>
+                                        <div className="mb-4">
+                                            <p className="text-[10px] font-black text-yellow uppercase tracking-widest mb-1">Detected HS Code</p>
+                                            <p className="text-2xl font-black text-navy">{selectedItem?.hs_code}</p>
                                         </div>
+                                        <p className="text-xs text-slate-500 italic leading-relaxed">
+                                            "{insightData.summary || 'Trade analysis ready for export.'}"
+                                        </p>
                                     </motion.div>
                                 )}
                             </div>
                         </div>
+
+                        {/* FOOTER - POWERED BY LOXTR */}
+                        <div className="mt-20 pt-10 border-t border-slate-50 text-center">
+                            <p className="text-[10px] font-black text-slate-300 uppercase tracking-[0.5em]">
+                                LoxConvert Powered by LOXTR Intelligence
+                            </p>
+                        </div>
                     </motion.div>
                 )}
             </AnimatePresence>
 
-            {/* PROMO MODAL */}
-            <AnimatePresence>
-                {showPromoModal && (
-                    <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/90 backdrop-blur-2xl">
-                        <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="bg-[#0a0a0a] border border-white/10 rounded-[3rem] p-12 max-w-lg w-full text-center relative overflow-hidden">
-                            <div className="absolute top-0 left-0 w-full h-1 bg-yellow" />
-                            <div className="w-20 h-20 bg-yellow/10 rounded-3xl flex items-center justify-center mx-auto mb-8"><Activity className="text-yellow" size={40} /></div>
-                            <h2 className="text-3xl font-black italic uppercase tracking-tighter mb-4 text-white">Power User Active.</h2>
-                            <p className="text-slate-500 mb-12">Upgrade to LOXTR PRO for unlimited trade intelligence.</p>
-                            <button className="w-full py-5 bg-yellow text-navy font-black italic uppercase tracking-widest rounded-2xl">UPGRADE TO PRO</button>
-                            <button onClick={() => setShowPromoModal(false)} className="mt-8 text-[10px] font-black text-slate-600 uppercase tracking-widest">CONTINUE AS GUEST</button>
-                        </motion.div>
-                    </div>
-                )}
-            </AnimatePresence>
-
-            {/* INVOICE MODAL */}
+            {/* INVOICE MODAL - CLEAN & WHITE */}
             <AnimatePresence>
                 {showInvoiceModal && invoiceData && (
-                    <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-navy/95 backdrop-blur-2xl overflow-y-auto">
-                        <motion.div initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} className="bg-white rounded-[3rem] max-w-4xl w-full text-navy shadow-2xl my-20 p-12 lg:p-20 relative">
-                            <button onClick={() => setShowInvoiceModal(false)} className="absolute top-8 right-8 text-slate-300 hover:text-navy p-3 bg-slate-50 rounded-full">✕</button>
-                            <div className="flex justify-between items-start mb-16 border-b border-slate-100 pb-16">
+                    <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-navy/20 backdrop-blur-md">
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="bg-white rounded-[3rem] max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl p-10 md:p-16 relative"
+                        >
+                            <button
+                                onClick={() => setShowInvoiceModal(false)}
+                                className="absolute top-8 right-8 w-10 h-10 bg-slate-50 rounded-full flex items-center justify-center hover:bg-slate-100 transition-colors"
+                            >
+                                <span className="text-xl">✕</span>
+                            </button>
+
+                            <div className="flex justify-between items-start mb-16 pb-12 border-b border-slate-100">
                                 <div>
-                                    <h2 className="text-4xl font-black italic uppercase tracking-tighter mb-4">Commercial <span className="text-yellow bg-navy px-4 rounded-xl">Invoice</span></h2>
-                                    <p className="text-[10px] font-black uppercase text-slate-400">AI-GENERATED DRAFT</p>
+                                    <h2 className="text-4xl font-black italic tracking-tighter">AI Commercial <span className="text-yellow">Invoice</span></h2>
+                                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-2">LOXCONVERT DRAFT • {new Date().toLocaleDateString()}</p>
                                 </div>
-                                <div className="bg-navy text-white px-6 py-4 rounded-2xl">
-                                    <p className="text-[10px] font-black uppercase tracking-widest mb-1">Amount</p>
-                                    <p className="text-2xl font-black italic">{invoiceData.currency} {invoiceData.total_amount?.toLocaleString()}</p>
+                                <div className="text-right bg-slate-50 p-6 rounded-3xl border border-slate-100">
+                                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Total Value</p>
+                                    <p className="text-3xl font-black">{invoiceData.currency} {invoiceData.total_amount?.toLocaleString()}</p>
                                 </div>
                             </div>
-                            <div className="grid grid-cols-2 gap-16 mb-16 italic">
-                                <div><p className="text-[10px] font-black text-slate-400 uppercase mb-4">Exporter</p><p className="text-lg font-black text-navy">{invoiceData.exporter?.name}</p></div>
-                                <div><p className="text-[10px] font-black text-slate-400 uppercase mb-4">Importer</p><p className="text-sm font-bold text-slate-400">Targeting {targetCountry}...</p></div>
+
+                            <div className="grid grid-cols-2 gap-12 mb-12">
+                                <div>
+                                    <h5 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Exporter</h5>
+                                    <p className="font-bold text-navy">{invoiceData.exporter?.name}</p>
+                                    <p className="text-sm text-slate-500 mt-2">{invoiceData.exporter?.address || 'Address registered in LOXTR Profile'}</p>
+                                </div>
+                                <div className="p-6 bg-slate-50 rounded-2xl border border-slate-100">
+                                    <h5 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Importer</h5>
+                                    <p className="text-xs italic text-slate-400">Buyer match in {targetCountry} being analyzed for direct shipping...</p>
+                                </div>
                             </div>
-                            <div className="flex justify-end gap-6 pt-10 border-t border-slate-100">
-                                <button className="px-10 py-5 bg-navy text-white font-black italic uppercase tracking-widest rounded-2xl flex items-center gap-4">
-                                    <Download size={20} className="text-yellow" /> Download Final PDF
+
+                            <div className="border border-slate-100 rounded-[2rem] overflow-hidden mb-12">
+                                <table className="w-full text-left">
+                                    <thead>
+                                        <tr className="bg-slate-50 border-b border-slate-100">
+                                            <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Description</th>
+                                            <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">HS Code</th>
+                                            <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Value</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody className="divide-y divide-slate-50">
+                                        {invoiceData.items?.map((item: any, i: number) => (
+                                            <tr key={i}>
+                                                <td className="px-8 py-6 text-sm font-bold">{item.description}</td>
+                                                <td className="px-8 py-6"><span className="bg-slate-100 text-[10px] px-2 py-1 rounded font-black">{item.hs_code}</span></td>
+                                                <td className="px-8 py-6 text-right text-sm font-black">{invoiceData.currency} 0.00</td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div className="flex justify-end gap-4">
+                                <button onClick={() => setShowInvoiceModal(false)} className="px-8 py-4 text-xs font-bold text-slate-400 hover:text-navy transition-colors">Discard Draft</button>
+                                <button className="bg-navy text-white px-10 py-4 rounded-2xl font-black text-xs uppercase tracking-widest flex items-center gap-3 shadow-xl shadow-navy/20">
+                                    <Download size={18} className="text-yellow" />
+                                    Download PDF
                                 </button>
                             </div>
                         </motion.div>
@@ -541,3 +490,4 @@ export default function LoxConvert() {
         </div>
     );
 }
+
