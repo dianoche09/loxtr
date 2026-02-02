@@ -54,6 +54,9 @@ import AdminLayout from './pages/admin/AdminLayout';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import UsersPage from './pages/admin/UsersPage';
 
+// Tools Imports
+import LoxConvert from './pages/tools/LoxConvert';
+
 // Simple CRM Auth Guard
 const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
   const { isAuthenticated, isLoading } = useAuth();
@@ -313,7 +316,19 @@ function Redirector() {
   );
 }
 
+
 function App() {
+  // SUBDOMAIN ROUTING (docs.loxtr.com)
+  if (window.location.hostname === 'docs.loxtr.com') {
+    return (
+      <AuthProvider>
+        <SettingsProvider>
+          <LoxConvert />
+        </SettingsProvider>
+      </AuthProvider>
+    );
+  }
+
   return (
     <AuthProvider>
       <SettingsProvider>
@@ -321,6 +336,9 @@ function App() {
           {/* ScrollToTop component added here to listen to route changes */}
           <ScrollToTop />
           <Routes>
+            {/* Tool Routes */}
+            <Route path="/convert" element={<LoxConvert />} />
+
             {/* Root redirector */}
             <Route path="/" element={<Redirector />} />
 
