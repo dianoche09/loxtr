@@ -54,14 +54,23 @@ export default async function handler(req, res) {
             }
         }
 
-        // REST API Implementation to bypass SDK version issues
-        const modelsToTry = ["gemini-1.5-flash"];
+        // REST API Implementation
+        // Brute-force try all known aliases for Gemini 1.5 to find one that works
+        // SMART REST API Implementation
+        // We try combinations of Models AND API Versions because availability differs
+        const attempts = [
+            { model: "gemini-1.5-flash", version: "v1beta" },
+            { model: "gemini-1.5-flash", version: "v1" },
+            { model: "gemini-1.5-flash-latest", version: "v1beta" },
+            { model: "gemini-1.5-flash-001", version: "v1beta" },
+            { model: "gemini-1.5-pro", version: "v1beta" }
+        ];
         let jsonOutput = null;
         let lastError = null;
 
-        for (const model of modelsToTry) {
+        for (const { model, version } of attempts) {
             try {
-                console.log(`Trying via REST API: ${model}`);
+                console.log(`Trying via REST API: ${model} (${version})`);
 
                 const payload = {
                     contents: [{
@@ -91,7 +100,7 @@ export default async function handler(req, res) {
                 };
 
                 const response = await fetch(
-                    `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${process.env.GEMINI_API_KEY}`,
+                    `https://generativelanguage.googleapis.com/${version}/models/${model}:generateContent?key=${process.env.GEMINI_API_KEY}`,
                     {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
@@ -117,7 +126,7 @@ export default async function handler(req, res) {
                 break;
 
             } catch (e) {
-                console.warn(`Model ${model} failed:`, e.message);
+                console.warn(`Attempt ${model}/${version} failed:`, e.message);
                 lastError = e;
             }
         }
