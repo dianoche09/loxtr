@@ -77,15 +77,24 @@ export default async function handler(req, res) {
                         parts: [
                             {
                                 text: `Analyze this logistics/trade document (packing list, invoice, etc.). 
-    Extract the items listed in the table or list. 
-    Return a STRICT JSON array where each object has these fields:
-    - "description": The item description (keep original language, but ensure clarity).
-    - "qty": Quantity as a number.
-    - "unit": Unit of measure (pcs, kg, m3, etc.).
-    - "weight": Total weight if available (number), else null.
-    - "hs_code": The HS Code / GTIP if listed. If NOT listed, suggest the most likely 6-digit HS Code based on the description.
-    - "confidence": A number between 0 and 1 representing your confidence in the HS Code selection.
-    - "logic": A very short explanation of why this HS Code was chosen (e.g. "Direct match" or "Suggested based on description").
+    1. Extract the items listed in the table or list. 
+    2. Provide a macro-level trade intelligence summary.
+
+    Return a STRICT JSON object with these fields:
+    - "items": A JSON array where each item has:
+        * "description": Item name.
+        * "qty": Number.
+        * "unit": e.g. pcs, kg.
+        * "weight": Total weight if available.
+        * "hs_code": Suggest 6-digit HS Code if not found.
+        * "confidence": 0-1 score.
+        * "logic": 1-sentence explanation of classification.
+    - "intelligence": An object with:
+        * "commodity_category": Primary business sector (e.g. Industrial Textiles, Electronics).
+        * "risk_score": 1-10 (10 being high trade risk).
+        * "regulatory_notes": 1-2 sentences on potential customs barriers for this type of cargo.
+        * "market_potential": 1-sentence AI opinion on export scalability for these items.
+        * "suggested_buyers": Array of 3 generic company types that would buy this (e.g. "Automotive OEM", "Wholesale Distributors").
 
     OUTPUT ONLY RAW JSON. NO MARKDOWN. NO BACKTICKS.` },
                             {
@@ -140,8 +149,8 @@ export default async function handler(req, res) {
                 await supabase.from('lox_convert_history').insert({
                     user_id: userId,
                     file_name: fileName,
-                    items_count: jsonOutput.length,
-                    hs_codes_suggested: jsonOutput.filter(i => i.hs_code).length
+                    items_count: jsonOutput.items?.length || 0,
+                    hs_codes_suggested: (jsonOutput.items || []).filter(i => i.hs_code).length
                 });
             } catch (dbError) {
                 console.error("Supabase Log Error:", dbError);
