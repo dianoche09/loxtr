@@ -54,7 +54,7 @@ export default async function handler(req, res) {
             }
         }
 
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
 
         const prompt = `Analyze this logistics/trade document (packing list, invoice, etc.). 
     Extract the items listed in the table or list. 
