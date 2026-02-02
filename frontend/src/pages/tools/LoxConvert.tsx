@@ -18,24 +18,29 @@ export default function LoxConvert() {
     const [data, setData] = useState<any[] | null>(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const [fileName, setFileName] = useState<string>("");
+    const [showPromoModal, setShowPromoModal] = useState(false);
 
-    // SEO Title
-    useEffect(() => {
-        document.title = "AI Packing List & Invoice Converter | Digitizing Logistics | LOXTR Docs";
-    }, []);
+    // Check usage for upsell
+    const checkUpsell = () => {
+        const count = parseInt(localStorage.getItem('lox_convert_count') || '0');
+        const newCount = count + 1;
+        localStorage.setItem('lox_convert_count', newCount.toString());
+
+        if (newCount === 3) {
+            setShowPromoModal(true);
+        }
+    };
 
     const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        // ... (existing logic start)
         const file = e.target.files?.[0];
         if (!file) return;
 
-        // Reset
         setError(null);
         setData(null);
         setFileName(file.name);
         setLoading(true);
 
-        // Validation
         const validTypes = ['application/pdf', 'image/jpeg', 'image/png', 'image/webp'];
         if (!validTypes.includes(file.type)) {
             setError("Unsupported file format. Please upload PDF, PNG or JPG.");
@@ -47,16 +52,7 @@ export default function LoxConvert() {
         reader.readAsDataURL(file);
         reader.onload = async () => {
             try {
-                // Since this is calling a Vercel Function in the 'api' folder at root, 
-                // in dev mode (Vite), we need a proxy setup or absolute URL if running separately.
-                // Assuming "vercel dev" or proxy is active. If not, this might fail locally without setup.
-                // We'll assume the standard Vercel /api path convention works in production.
-                // Locally, user presumably runs 'npm run dev' in frontend. 
-                // To hit the root 'api', we usually need 'vercel dev' at root.
-                // I will add a fallback or assume standard proxy config.
-
                 const endpoint = '/api/loxconvert';
-
                 const res = await fetch(endpoint, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -75,6 +71,7 @@ export default function LoxConvert() {
 
                 const resultData = await res.json();
                 setData(resultData);
+                checkUpsell(); // Trigger Upsell Logic
             } catch (err: any) {
                 console.error(err);
                 if (err.message.includes("Daily limit reached")) {
@@ -93,7 +90,7 @@ export default function LoxConvert() {
     };
 
     return (
-        <div className="min-h-screen bg-slate-50 font-outfit p-8">
+        <div className="min-h-screen bg-slate-50 font-outfit p-8 relative">
             <div className="max-w-5xl mx-auto">
                 <header className="mb-12 text-center">
                     <motion.div
@@ -246,6 +243,39 @@ export default function LoxConvert() {
                         )}
                     </AnimatePresence>
                 </motion.div>
+
+                {/* PROMO MODAL (Triggered after 3rd usage) */}
+                <AnimatePresence>
+                    {showPromoModal && (
+                        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-navy/80 backdrop-blur-sm">
+                            <motion.div
+                                initial={{ opacity: 0, scale: 0.9 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                exit={{ opacity: 0, scale: 0.9 }}
+                                className="bg-white rounded-3xl p-8 max-w-md w-full relative overflow-hidden text-center"
+                            >
+                                <button onClick={() => setShowPromoModal(false)} className="absolute top-4 right-4 text-slate-300 hover:text-slate-500">
+                                    <div className="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center">✕</div>
+                                </button>
+
+                                <div className="w-16 h-16 rounded-full bg-yellow/10 flex items-center justify-center mx-auto mb-6">
+                                    <FileText size={32} className="text-yellow" />
+                                </div>
+                                <h3 className="text-2xl font-black text-navy mb-3">Power User Alert! 🚀</h3>
+                                <p className="text-slate-500 mb-8">
+                                    You seem to process documents frequently. Did you know LOXTR can manage your entire export operation from a single dashboard?
+                                </p>
+
+                                <a href="/register" className="block w-full py-4 bg-navy text-white font-bold rounded-xl hover:bg-navy/90 transition-all mb-4">
+                                    Create Free Account
+                                </a>
+                                <button onClick={() => setShowPromoModal(false)} className="text-slate-400 text-sm hover:text-slate-600">
+                                    Maybe later, thanks
+                                </button>
+                            </motion.div>
+                        </div>
+                    )}
+                </AnimatePresence>
             </div>
         </div>
     );

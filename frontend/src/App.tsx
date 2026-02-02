@@ -56,6 +56,8 @@ import UsersPage from './pages/admin/UsersPage';
 
 // Tools Imports
 import LoxConvert from './pages/tools/LoxConvert';
+import HSCodeGuide from './pages/tools/HSCodeGuide';
+import PackingListTips from './pages/tools/PackingListTips';
 
 // Simple CRM Auth Guard
 const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
@@ -338,6 +340,8 @@ function App() {
           <Routes>
             {/* Tool Routes */}
             <Route path="/convert" element={<LoxConvert />} />
+            <Route path="/guide/hs-codes" element={<HSCodeGuide />} />
+            <Route path="/guide/packing-list" element={<PackingListTips />} />
 
             {/* Root redirector */}
             <Route path="/" element={<Redirector />} />
