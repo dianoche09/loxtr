@@ -52,6 +52,7 @@ import RadarStickyWidget from './components/RadarStickyWidget';
 // Admin Imports
 import AdminLayout from './pages/admin/AdminLayout';
 import AdminDashboard from './pages/admin/AdminDashboard';
+import UsersPage from './pages/admin/UsersPage';
 
 // Simple CRM Auth Guard
 const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
@@ -353,6 +354,7 @@ function App() {
             <Route path="/admin" element={<AdminLayout />}>
               <Route index element={<Navigate to="dashboard" replace />} />
               <Route path="dashboard" element={<AdminDashboard />} />
+              <Route path="users" element={<UsersPage />} />
               {/* Add more admin routes here later */}
             </Route>
 
