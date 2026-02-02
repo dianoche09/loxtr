@@ -54,9 +54,16 @@ export default async function handler(req, res) {
             }
         }
 
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        const modelsToTry = ["gemini-1.5-flash", "gemini-1.5-pro", "gemini-1.0-pro"];
+        let result;
+        let lastError;
 
-        const prompt = `Analyze this logistics/trade document (packing list, invoice, etc.). 
+        for (const modelName of modelsToTry) {
+            try {
+                console.log(`Trying model: ${modelName}`);
+                const model = genAI.getGenerativeModel({ model: modelName });
+
+                const prompt = `Analyze this logistics/trade document (packing list, invoice, etc.). 
     Extract the items listed in the table or list. 
     Return a STRICT JSON array where each object has these fields:
     - "description": The item description (keep original language, but ensure clarity).
@@ -67,10 +74,23 @@ export default async function handler(req, res) {
 
     OUTPUT ONLY RAW JSON. NO MARKDOWN. NO BACKTICKS.`;
 
-        const result = await model.generateContent([
-            prompt,
-            { inlineData: { data: fileBase64, mimeType } }
-        ]);
+                result = await model.generateContent([
+                    prompt,
+                    { inlineData: { data: fileBase64, mimeType } }
+                ]);
+
+                // If successful, break the loop
+                if (result && result.response) break;
+            } catch (e) {
+                console.warn(`Model ${modelName} failed:`, e.message);
+                lastError = e;
+                continue; // Try next model
+            }
+        }
+
+        if (!result) {
+            throw new Error(`All AI models failed. Last error: ${lastError?.message}`);
+        }
 
         const text = result.response.text();
         // Clean up potential markdown formatting if model ignores "NO MARKDOWN"
