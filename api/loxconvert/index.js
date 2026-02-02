@@ -59,10 +59,9 @@ export default async function handler(req, res) {
         // SMART REST API Implementation
         // We try combinations of Models AND API Versions because availability differs
         const attempts = [
-            { model: "gemini-1.5-flash", version: "v1beta" },
             { model: "gemini-1.5-flash", version: "v1" },
-            { model: "gemini-1.5-flash-latest", version: "v1beta" },
-            { model: "gemini-1.5-flash-001", version: "v1beta" },
+            { model: "gemini-1.5-flash", version: "v1beta" },
+            { model: "gemini-1.5-pro", version: "v1" },
             { model: "gemini-1.5-pro", version: "v1beta" }
         ];
         let jsonOutput = null;
@@ -87,15 +86,15 @@ export default async function handler(req, res) {
 
     OUTPUT ONLY RAW JSON. NO MARKDOWN. NO BACKTICKS.` },
                             {
-                                inline_data: {
-                                    mime_type: mimeType,
+                                inlineData: {
+                                    mimeType: mimeType,
                                     data: fileBase64
                                 }
                             }
                         ]
                     }],
                     generationConfig: {
-                        response_mime_type: "application/json"
+                        responseMimeType: "application/json"
                     }
                 };
 
