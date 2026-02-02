@@ -488,14 +488,25 @@ export default function OnboardingPage() {
         try {
             const res = (await aiAPI.generateBio({ website: formData.website })) as any;
             if (res.success && res.data) {
-                const { bio, logo } = res.data;
+                const { bio, logo, products } = res.data;
                 setFormData(prev => ({
                     ...prev,
                     companyDescription: bio,
-                    logo: logo || prev.logo
+                    logo: logo || prev.logo,
+                    // Auto-add found products if they don't exist yet
+                    productGroups: products && products.length > 0
+                        ? [...prev.productGroups, ...products.map((p: string) => ({
+                            name: p,
+                            hsCode: '',
+                            certificates: [],
+                            usageAreas: []
+                        }))]
+                        : prev.productGroups
                 }));
 
-                if (logo) {
+                if (logo && products?.length > 0) {
+                    toast.success(`✨ Bio, logo and ${products.length} products found!`);
+                } else if (logo) {
                     toast.success('✨ Bio and logo extracted from website!');
                 } else {
                     toast.success('✨ Bio generated from website!');
@@ -520,21 +531,40 @@ export default function OnboardingPage() {
             aiAPI.generateBio({ website: formData.website })
                 .then((res: any) => {
                     if (res.success && res.data) {
-                        const { bio, logo } = res.data;
-                        setFormData(prev => ({
-                            ...prev,
-                            companyDescription: bio || prev.companyDescription,
-                            logo: logo || prev.logo
-                        }));
+                        const { bio, logo, products } = res.data;
 
-                        // Immediately save to backend
+                        setFormData(prev => {
+                            // Merge new products if any
+                            const currentNames = prev.productGroups.map(p => p.name.toLowerCase());
+                            const newProducts = (products || [])
+                                .filter((p: string) => !currentNames.includes(p.toLowerCase()))
+                                .map((p: string) => ({
+                                    name: p,
+                                    hsCode: '',
+                                    certificates: [],
+                                    usageAreas: []
+                                }));
+
+                            return {
+                                ...prev,
+                                companyDescription: bio || prev.companyDescription,
+                                logo: logo || prev.logo,
+                                productGroups: [...prev.productGroups, ...newProducts]
+                            };
+                        });
+
+                        // Immediately save to backend (bio & logo only for now, products saved on next step)
                         authAPI.updateProfile({
                             companyDescription: bio,
                             logo: logo
                         });
 
                         console.log('✅ Website scraping complete');
-                        toast.success('📝 Company bio extracted from website', {
+                        const msg = products?.length > 0
+                            ? `📝 Found info & ${products.length} products from website`
+                            : '📝 Company bio extracted from website';
+
+                        toast.success(msg, {
                             id: 'bio-scraped',
                             duration: 3000
                         });
@@ -988,14 +1018,16 @@ export default function OnboardingPage() {
                     <div className="absolute inset-0 bg-gradient-to-br from-navy via-navy to-charcoal opacity-90" />
 
                     <div className="relative z-10 flex flex-col h-full">
-                        <div className="flex items-center gap-3 mb-10 group cursor-pointer" onClick={() => navigate('/')}>
-                            <div className="p-2.5 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center border border-white/20 group-hover:bg-white/20 transition-all">
-                                <Logo size={32} />
-                            </div>
-                            <div className="flex flex-col">
-                                <span className="font-black text-xl tracking-tight leading-none text-white">LOXTR</span>
-                                <span className="text-[9px] font-bold text-blue-200 uppercase tracking-[0.2em] mt-1">AI RADAR</span>
-                            </div>
+                        <div className="flex flex-col gap-4 mb-8">
+                            <Logo className="h-10" />
+                            <div className="h-1 w-8 bg-yellow rounded-full" />
+                        </div>
+
+                        <div className="mb-8">
+                            <h2 className="text-xl font-black leading-tight tracking-tight uppercase">
+                                <span className="text-white/50 text-xs block mb-1">LOXTR Intelligence</span>
+                                LOX <span className="text-yellow">AI RADAR</span>
+                            </h2>
                         </div>
 
                         <div className="flex-1 space-y-8">
@@ -1012,7 +1044,7 @@ export default function OnboardingPage() {
                                         ${isLocked ? 'opacity-40 cursor-not-allowed' : 'opacity-100 cursor-pointer group'}`}
                                     >
                                         <div className={`mt-1 w-10 h-10 rounded-2xl flex items-center justify-center border-2 transition-all duration-500
-                                        ${isCompleted ? 'bg-emerald-500 text-white border-emerald-500 shadow-lg shadow-emerald-500/20' :
+                                        ${isCompleted ? 'bg-yellow text-navy border-yellow shadow-lg shadow-yellow/20' :
                                                 isActive ? 'bg-white text-navy border-white shadow-[0_0_15px_rgba(255,255,255,0.4)] scale-110' :
                                                     'border-white/20 bg-white/5'}`}>
                                             {isCompleted ? <Check size={20} className="stroke-[3]" /> :
@@ -1025,7 +1057,7 @@ export default function OnboardingPage() {
                                                     {step.title}
                                                 </h3>
                                                 {isCompleted && (
-                                                    <span className="text-[8px] font-black bg-emerald-500/20 text-emerald-300 px-1.5 py-0.5 rounded-full uppercase tracking-widest">
+                                                    <span className="text-[8px] font-black bg-yellow/20 text-yellow px-1.5 py-0.5 rounded-full uppercase tracking-widest">
                                                         Done
                                                     </span>
                                                 )}
