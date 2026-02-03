@@ -77,24 +77,21 @@ export default async function handler(req, res) {
                         parts: [
                             {
                                 text: `Analyze this logistics/trade document (packing list, invoice, etc.). 
-    1. Extract the items listed in the table or list. 
-    2. Provide a macro-level trade intelligence summary.
+    1. Extract all line items with precision.
+    2. Conduct a "Customs Digital Audit" and "Market Intelligence" sweep.
 
     Return a STRICT JSON object with these fields:
-    - "items": A JSON array where each item has:
-        * "description": Item name.
-        * "qty": Number.
-        * "unit": e.g. pcs, kg.
-        * "weight": Total weight if available.
-        * "hs_code": Suggest 6-digit HS Code if not found.
-        * "confidence": 0-1 score.
-        * "logic": 1-sentence explanation of classification.
-    - "intelligence": An object with:
-        * "commodity_category": Primary business sector (e.g. Industrial Textiles, Electronics).
-        * "risk_score": 1-10 (10 being high trade risk).
-        * "regulatory_notes": 1-2 sentences on potential customs barriers for this type of cargo.
-        * "market_potential": 1-sentence AI opinion on export scalability for these items.
-        * "suggested_buyers": Array of 3 generic company types that would buy this (e.g. "Automotive OEM", "Wholesale Distributors").
+    - "items": Array of items. Each item must have:
+        * "description", "qty", "unit", "weight", "hs_code" (6-digit), "confidence", "logic".
+        * "taxes": { "duty_percent": number, "vat_percent": number, "additional_tax": number } (Estimated for import to Turkey or target).
+    - "intelligence": 
+        * "commodity_category": e.g. "Industrial Machinery".
+        * "risk_score": 1-10.
+        * "regulatory_notes": Specific barrier info.
+        * "incoterms": { "term": "e.g. FOB", "is_valid": boolean, "advice": "Brief advice" }.
+        * "market_data": { "total_market_size": "e.g. $2.1B", "growth": "+4.2%", "competitor_nations": ["China", "Germany"] }.
+        * "cross_validation": { "is_consistent": boolean, "noted_inconsistencies": ["e.g. Net weight mismatch between pages"] }.
+        * "suggested_buyers": Array of 3 specific types.
 
     OUTPUT ONLY RAW JSON. NO MARKDOWN. NO BACKTICKS.` },
                             {
