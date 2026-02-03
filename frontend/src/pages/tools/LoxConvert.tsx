@@ -185,11 +185,12 @@ export default function LoxConvert() {
     };
 
     const validation = (() => {
-        if (dossier.length < 2) return null;
+        if (dossier.length < 2) return { isConsistent: true, isWaiting: true, weightError: false, qtyError: false };
         const weights = dossier.map(d => d.intelligence?.validation_hooks?.total_weight || 0).filter(w => w > 0);
         const qtys = dossier.map(d => d.intelligence?.validation_hooks?.total_qty || 0).filter(q => q > 0);
         return {
             isConsistent: new Set(weights).size <= 1 && new Set(qtys).size <= 1,
+            isWaiting: false,
             weightError: new Set(weights).size > 1,
             qtyError: new Set(qtys).size > 1
         };
@@ -266,19 +267,21 @@ export default function LoxConvert() {
                     </motion.div>
                 ) : (
                     /* --- REFINED CUSTOMS DASHBOARD --- */
-                    <motion.div key="dashboard" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="max-w-[1750px] mx-auto px-10 pt-16">
+                    <motion.div key="dashboard" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="max-w-[1750px] mx-auto px-10 pt-10">
 
                         {/* HEADER LOGO & NAV */}
-                        <div className="flex items-center justify-between mb-12">
+                        <div className="flex items-center justify-between mb-10 px-4">
                             <LoxLogo />
-                            <div className="flex items-center gap-8">
+                            <div className="flex items-center gap-6">
                                 {!user && (
-                                    <button onClick={() => navigate('/login')} className="px-6 py-2.5 bg-yellow text-navy rounded-xl text-[10px] font-black uppercase tracking-widest shadow-xl hover:-translate-y-1 transition-all flex items-center gap-2">
+                                    <button onClick={() => window.location.href = 'https://www.loxtr.com/login'} className="px-5 py-2.5 bg-yellow text-navy rounded-xl text-[9px] font-black uppercase tracking-widest shadow-xl hover:-translate-y-1 transition-all flex items-center gap-2">
                                         <Key size={14} /> Account Login
                                     </button>
                                 )}
-                                <button onClick={() => setDossier([])} className="hover:rotate-180 transition-transform duration-500 w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-slate-300 hover:text-navy shadow-sm border border-slate-100"><RefreshCcw size={22} /></button>
-                                <div className="w-12 h-12 rounded-2xl bg-navy text-white flex items-center justify-center font-black text-xs shadow-lg">{user ? 'U' : '?'}</div>
+                                <div className="flex items-center gap-2 bg-white p-1.5 rounded-2xl border border-slate-100 shadow-sm">
+                                    <button onClick={() => setDossier([])} className="w-10 h-10 bg-slate-50 rounded-xl flex items-center justify-center text-slate-300 hover:text-navy transition-all"><RefreshCcw size={18} /></button>
+                                    <div className="w-10 h-10 rounded-xl bg-navy text-white flex items-center justify-center font-black text-[10px] shadow-lg">{user ? 'U' : '?'}</div>
+                                </div>
                             </div>
                         </div>
 
@@ -294,13 +297,13 @@ export default function LoxConvert() {
                             </div>
 
                             <div className="flex flex-wrap items-center gap-4 relative z-10 mt-8 lg:mt-0">
-                                <button onClick={() => handleProtectedAction(() => setShowQRModal(true))} className="px-10 py-5 bg-white/5 hover:bg-white hover:text-navy border border-white/10 rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] transition-all flex items-center gap-3">
-                                    <QrIcon size={18} /> Physical QR Sync {!user && <Lock size={12} className="opacity-40" />}
+                                <button onClick={() => handleProtectedAction(() => setShowQRModal(true))} className="px-8 py-4 bg-white/5 hover:bg-white hover:text-navy border border-white/10 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] transition-all flex items-center gap-3">
+                                    <QrIcon size={16} /> Physical QR Sync {!user && <Lock size={12} className="opacity-40" />}
                                 </button>
-                                <button onClick={() => handleProtectedAction(handleVaultSync)} disabled={saveLoading} className="px-10 py-5 bg-white/5 hover:bg-white hover:text-navy border border-white/10 rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] transition-all flex items-center gap-3">
-                                    {saveLoading ? <Loader2 size={18} className="animate-spin" /> : <Save size={18} />} Push to Vault {!user && <Lock size={12} className="opacity-40" />}
+                                <button onClick={() => handleProtectedAction(handleVaultSync)} disabled={saveLoading} className="px-8 py-4 bg-white/5 hover:bg-white hover:text-navy border border-white/10 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] transition-all flex items-center gap-3">
+                                    {saveLoading ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />} Push to Vault {!user && <Lock size={12} className="opacity-40" />}
                                 </button>
-                                <button onClick={() => setShowExportWizard(true)} className="px-12 py-5 bg-yellow text-navy rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] shadow-xl hover:-translate-y-2 transition-all flex items-center gap-3"><Download size={20} /> Master Export</button>
+                                <button onClick={() => setShowExportWizard(true)} className="px-10 py-4 bg-yellow text-navy rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] shadow-xl hover:-translate-y-2 transition-all flex items-center gap-3"><Download size={18} /> Master Export</button>
                             </div>
                         </div>
 
@@ -347,7 +350,9 @@ export default function LoxConvert() {
                                 </div>
                                 <div className={`p-4 rounded-2xl flex items-center gap-4 ${validation?.isConsistent ? 'bg-emerald-50 text-emerald-600' : 'bg-red-50 text-red-500 animate-pulse'}`}>
                                     {validation?.isConsistent ? <Check size={16} /> : <AlertCircle size={16} />}
-                                    <span className="text-[10px] font-black uppercase tracking-widest">{validation?.isConsistent ? 'Dossier 100% Consistent' : 'CRITICAL MISMATCH FOUND'}</span>
+                                    <span className="text-[10px] font-black uppercase tracking-widest">
+                                        {validation?.isWaiting ? 'Dossier Logic: Standing By' : (validation?.isConsistent ? 'Dossier 100% Consistent' : 'CRITICAL MISMATCH FOUND')}
+                                    </span>
                                 </div>
                             </div>
 
@@ -423,7 +428,7 @@ export default function LoxConvert() {
                                                                     <div className="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center text-yellow mx-auto mb-6"><Lock size={32} /></div>
                                                                     <h5 className="text-2xl font-black italic text-white mb-3 uppercase tracking-tighter">Intelligence Locked</h5>
                                                                     <p className="text-[10px] font-bold text-blue-200 uppercase tracking-widest leading-relaxed mb-8 opacity-60">Full line-item extraction and digital audit requires an active LOXTR node.</p>
-                                                                    <button onClick={() => navigate('/register')} className="w-full bg-yellow text-navy py-5 rounded-2xl font-black text-[11px] uppercase tracking-[0.2em] shadow-xl hover:-translate-y-1 transition-all flex items-center justify-center gap-3">
+                                                                    <button onClick={() => window.location.href = 'https://www.loxtr.com/register'} className="w-full bg-yellow text-navy py-5 rounded-2xl font-black text-[11px] uppercase tracking-[0.2em] shadow-xl hover:-translate-y-1 transition-all flex items-center justify-center gap-3">
                                                                         <UserPlus size={18} /> Claim This Dossier
                                                                     </button>
                                                                 </div>
@@ -568,7 +573,7 @@ export default function LoxConvert() {
                                 Dossier Vaulting, QR Digital Twin Sync and Advanced Multi-Document Integrity checks are reserved for LOXTR Premium members. Join the future of customs logic.
                             </p>
                             <div className="flex flex-col gap-4">
-                                <button onClick={() => navigate('/register')} className="w-full bg-navy text-white py-6 rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl hover:bg-yellow hover:text-navy transition-all">Create Free Account</button>
+                                <button onClick={() => window.location.href = 'https://www.loxtr.com/register'} className="w-full bg-navy text-white py-6 rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl hover:bg-yellow hover:text-navy transition-all">Create Free Account</button>
                                 <button onClick={() => setShowAuthGate(false)} className="w-full py-6 rounded-2xl text-[10px] font-black uppercase text-slate-300 hover:text-navy transition-all tracking-[0.3em]">Not Now, Keep Analyzing</button>
                             </div>
                         </motion.div>
