@@ -13,7 +13,6 @@ import {
     Globe,
     ShieldCheck,
     FolderPlus,
-    QrCode,
     FileType,
     LayoutDashboard,
     History,
@@ -23,7 +22,11 @@ import {
     Zap,
     TrendingUp,
     ShieldAlert,
-    Target as TargetIcon
+    Target as TargetIcon,
+    Scan,
+    BrainCircuit,
+    Cpu,
+    Boxes
 } from 'lucide-react';
 import * as XLSX from 'xlsx';
 import { supabase } from '../../supabase';
@@ -41,7 +44,7 @@ const exportToExcel = (data: any[], fileName: string) => {
 export default function LoxConvert() {
     const { user } = useAuth();
     const navigate = useNavigate();
-    const [data, setData] = useState<any | null>(null); // Now an object {items, intelligence}
+    const [data, setData] = useState<any | null>(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [fileName, setFileName] = useState<string>("");
@@ -188,40 +191,7 @@ export default function LoxConvert() {
 
     return (
         <div className="min-h-screen bg-slate-50 font-outfit text-slate-900 pb-20 selection:bg-yellow/30">
-            {/* SaaS Header */}
-            <header className="bg-white border-b border-slate-200 py-4 px-6 md:px-12 flex justify-between items-center sticky top-0 z-50 shadow-sm">
-                <div className="flex items-center gap-4 cursor-pointer group" onClick={() => navigate('/')}>
-                    <div className="w-10 h-10 bg-navy rounded-xl flex items-center justify-center transition-transform group-hover:rotate-12">
-                        <Zap className="text-yellow" size={20} />
-                    </div>
-                    <div>
-                        <h1 className="text-xl font-black tracking-tight leading-none text-navy uppercase italic">
-                            LOX<span className="text-yellow">CONVERT</span>
-                            <span className="ml-1 px-1.5 py-0.5 bg-yellow text-navy text-[8px] font-black rounded uppercase tracking-widest align-middle">PRO IQ</span>
-                        </h1>
-                        <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mt-0.5 text-center px-1 border border-slate-100 rounded">AI Global Trade Node</p>
-                    </div>
-                </div>
-
-                <div className="hidden lg:flex items-center gap-8">
-                    <button onClick={() => navigate('/vault')} className="text-xs font-black text-slate-400 hover:text-navy flex items-center gap-2 transition-colors uppercase tracking-widest">
-                        <History size={14} /> Vault History
-                    </button>
-                    <button onClick={() => navigate('/crm/dashboard')} className="text-xs font-black text-slate-400 hover:text-navy flex items-center gap-2 transition-colors uppercase tracking-widest">
-                        <LayoutDashboard size={14} /> Intelligence Hub
-                    </button>
-                </div>
-
-                <div className="flex items-center gap-4">
-                    <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-emerald-50 rounded-full border border-emerald-100 shadow-inner">
-                        <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
-                        <span className="text-[9px] font-black text-emerald-600 uppercase tracking-widest">Logic Stream Live</span>
-                    </div>
-                    <div className="w-9 h-9 rounded-xl bg-navy flex items-center justify-center text-[10px] font-black text-yellow border border-white/10 shadow-lg">
-                        {user?.email?.charAt(0).toUpperCase() || 'G'}
-                    </div>
-                </div>
-            </header>
+            {/* Header Removed as requested */}
 
             <AnimatePresence mode="wait">
                 {!data ? (
@@ -230,65 +200,117 @@ export default function LoxConvert() {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0, scale: 0.98 }}
-                        className="max-w-4xl mx-auto px-6 pt-16 md:pt-24"
+                        className="max-w-6xl mx-auto px-6 pt-24 md:pt-32"
                     >
-                        <div className="text-center mb-12">
+                        {/* Hero Section */}
+                        <div className="text-center mb-20">
                             <motion.div
                                 initial={{ opacity: 0, y: -10 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 className="inline-flex items-center gap-2 px-4 py-1.5 bg-navy text-white text-[10px] font-black uppercase tracking-[0.3em] rounded-full mb-8 shadow-xl"
                             >
-                                <Sparkles size={12} className="text-yellow" /> Analyzing Documents with Gemini 1.5 Pro
+                                <Sparkles size={12} className="text-yellow" /> LOXCONVERT PRO IQ • ENGINE v2.1
                             </motion.div>
-                            <h2 className="text-5xl md:text-7xl font-black tracking-tight text-navy mb-6 leading-none">
+                            <h2 className="text-5xl md:text-8xl font-black tracking-tight text-navy mb-8 leading-none">
                                 Don't just extract.<br />
-                                <span className="text-yellow bg-navy px-4 rounded-xl inline-block -rotate-1">Understand.</span>
+                                <span className="text-yellow bg-navy px-5 py-2 rounded-2xl inline-block -rotate-1 shadow-2xl">Understand.</span>
                             </h2>
-                            <p className="text-lg text-slate-500 max-w-xl mx-auto font-bold leading-relaxed">
-                                Upload logistics docs. Get HS codes, customs risk assessments,
-                                and market intelligence reports automatically.
+                            <p className="text-xl md:text-2xl text-slate-500 max-w-2xl mx-auto font-bold leading-relaxed mb-12">
+                                The world's first <span className="text-navy underline decoration-yellow decoration-4 underline-offset-4">Trade Intelligence Node</span> that decodes logistics documents into actionable market insights.
                             </p>
-                        </div>
 
-                        {/* Professional Upload Card */}
-                        <div className="bg-white rounded-[3rem] p-8 shadow-2xl shadow-slate-200/80 border-t-8 border-yellow relative overflow-hidden group">
-                            {/* Background Glow */}
-                            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/2 h-1 bg-yellow/50 blur-xl group-hover:w-full transition-all duration-700" />
+                            {/* Main CTA Section (Hero style) */}
+                            <div className="max-w-3xl mx-auto mb-24">
+                                <div className="bg-white rounded-[3rem] p-4 shadow-2xl shadow-slate-200/80 border-t-8 border-yellow relative group overflow-hidden">
+                                    {/* Background Glow */}
+                                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/2 h-1 bg-yellow/50 blur-xl group-hover:w-full transition-all duration-700" />
 
-                            <div className={`relative border-2 border-dashed rounded-[2.5rem] p-20 text-center transition-all duration-500
-                                ${loading ? 'border-yellow bg-yellow/5' : 'border-slate-100 bg-slate-50/50 hover:border-yellow hover:bg-white'}`}
-                            >
-                                <input
-                                    type="file"
-                                    onChange={handleFile}
-                                    className="absolute inset-0 opacity-0 cursor-pointer z-10"
-                                    disabled={loading}
-                                    accept=".pdf,.png,.jpg,.jpeg,.webp"
-                                />
-
-                                <div className="flex flex-col items-center">
-                                    <div className={`w-28 h-28 rounded-[2rem] flex items-center justify-center mb-8 transition-all shadow-2xl
-                                        ${loading ? 'bg-navy text-yellow ring-4 ring-yellow/20' : 'bg-white text-navy border border-slate-100'}`}
+                                    <div className={`relative border-2 border-dashed rounded-[2.5rem] p-12 md:p-20 text-center transition-all duration-500
+                                        ${loading ? 'border-yellow bg-yellow/5' : 'border-slate-100 bg-slate-50/50 hover:border-yellow hover:bg-white'}`}
                                     >
-                                        {loading ? <Loader2 size={40} className="animate-spin" /> : <Upload size={40} />}
+                                        <input
+                                            type="file"
+                                            onChange={handleFile}
+                                            className="absolute inset-0 opacity-0 cursor-pointer z-10"
+                                            disabled={loading}
+                                            accept=".pdf,.png,.jpg,.jpeg,.webp"
+                                        />
+
+                                        <div className="flex flex-col items-center">
+                                            <div className={`w-28 h-28 rounded-[2rem] flex items-center justify-center mb-8 transition-all shadow-2xl
+                                                ${loading ? 'bg-navy text-yellow ring-4 ring-yellow/20 translate-y-2' : 'bg-white text-navy border border-slate-100 group-hover:-translate-y-2'}`}
+                                            >
+                                                {loading ? <Loader2 size={40} className="animate-spin" /> : <Upload size={40} />}
+                                            </div>
+                                            <h3 className="text-3xl font-black text-navy mb-3 italic tracking-tighter">
+                                                {loading ? 'THINKING...' : 'INJECT DOCUMENT'}
+                                            </h3>
+                                            <p className="text-slate-400 text-xs font-black uppercase tracking-[0.3em]">AI-POWERED LOGISTICS NODE</p>
+                                        </div>
                                     </div>
-                                    <h3 className="text-3xl font-black text-navy mb-3 italic tracking-tighter">
-                                        {loading ? 'THINKING...' : 'INJECT DOCUMENT'}
-                                    </h3>
-                                    <p className="text-slate-400 text-sm font-bold uppercase tracking-widest">PDF • IMAGE • MAX 10MB</p>
+
+                                    {error && (
+                                        <motion.div
+                                            initial={{ opacity: 0, scale: 0.9 }}
+                                            animate={{ opacity: 1, scale: 1 }}
+                                            className="mt-6 flex items-center gap-4 p-6 bg-red-50 text-red-600 rounded-2xl text-xs font-black uppercase tracking-widest border border-red-200 shadow-lg"
+                                        >
+                                            <ShieldAlert size={20} />
+                                            {error}
+                                        </motion.div>
+                                    )}
                                 </div>
                             </div>
 
-                            {error && (
-                                <motion.div
-                                    initial={{ opacity: 0, scale: 0.9 }}
-                                    animate={{ opacity: 1, scale: 1 }}
-                                    className="mt-8 flex items-center gap-4 p-6 bg-red-50 text-red-600 rounded-2xl text-xs font-black uppercase tracking-widest border border-red-200 shadow-lg"
-                                >
-                                    <ShieldAlert size={20} />
-                                    {error}
-                                </motion.div>
-                            )}
+                            {/* Explanation / Flow Section (Hero styled) */}
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 text-left">
+                                {[
+                                    {
+                                        icon: Scan,
+                                        title: "DEEP SCAN",
+                                        desc: "AI identifies every line item, weight, and unit with 99% accuracy.",
+                                        tag: "Step 01"
+                                    },
+                                    {
+                                        icon: BrainCircuit,
+                                        title: "HS MAPPING",
+                                        desc: "Predicts the correct 6-digit HS Code using global trade clusters.",
+                                        tag: "Step 02"
+                                    },
+                                    {
+                                        icon: Cpu,
+                                        title: "RISK ENGINE",
+                                        desc: "Checks cargo against market barriers and regulatory risks.",
+                                        tag: "Step 03"
+                                    },
+                                    {
+                                        icon: Boxes,
+                                        title: "VAULT SYNC",
+                                        desc: "Exports clean Excel, AI Invoices and saves to your trade dossier.",
+                                        tag: "Step 04"
+                                    }
+                                ].map((item, i) => (
+                                    <motion.div
+                                        key={i}
+                                        initial={{ opacity: 0, y: 20 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        transition={{ delay: i * 0.1 }}
+                                        className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-xl shadow-slate-200/40 relative group hover:border-yellow/50 transition-all"
+                                    >
+                                        <div className="absolute top-6 right-8 text-[10px] font-black text-slate-300 uppercase tracking-widest">{item.tag}</div>
+                                        <div className="w-14 h-14 bg-slate-50 text-navy rounded-2xl flex items-center justify-center mb-6 shadow-inner group-hover:bg-navy group-hover:text-yellow transition-colors">
+                                            <item.icon size={28} />
+                                        </div>
+                                        <h4 className="text-xl font-black text-navy mb-3 italic tracking-tighter uppercase">{item.title}</h4>
+                                        <p className="text-sm text-slate-500 font-bold leading-relaxed">{item.desc}</p>
+                                    </motion.div>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* LOX Branding Footer inside landing */}
+                        <div className="text-center opacity-20 mt-12 pb-20">
+                            <p className="text-[10px] font-black uppercase tracking-[1em] text-navy">Powered by LOX Intelligence Node</p>
                         </div>
                     </motion.div>
                 ) : (
@@ -312,8 +334,14 @@ export default function LoxConvert() {
                                 </button>
                                 <div>
                                     <div className="flex items-center gap-4 mb-2">
-                                        <span className="px-3 py-1 bg-yellow text-navy text-[10px] font-black uppercase tracking-widest rounded-lg shadow-lg">AI REPORT GENERATED</span>
-                                        <span className="text-white/40 text-[10px] font-bold uppercase italic">REF# {Math.random().toString(36).substr(2, 5).toUpperCase()}</span>
+                                        <div className="flex items-center gap-2">
+                                            <div className="w-6 h-6 bg-yellow rounded flex items-center justify-center text-navy"><Sparkles size={14} /></div>
+                                            <h1 className="text-lg font-black tracking-tighter uppercase italic text-yellow">LOX<span className="text-white">CONVERT PRO</span></h1>
+                                        </div>
+                                        <span className="w-1 h-3 bg-white/10 rounded-full" />
+                                        <span className="text-white/40 text-[10px] font-bold uppercase italic tracking-widest flex items-center gap-2">
+                                            SECURE NODE v2.1
+                                        </span>
                                     </div>
                                     <h2 className="text-4xl font-black uppercase tracking-tight italic">Shipment <span className="text-yellow">Intelligence.</span></h2>
                                     <div className="flex items-center gap-6 mt-3">
@@ -546,7 +574,7 @@ export default function LoxConvert() {
                                     <span>•</span>
                                     <span>Encryption: SHA-512 Secure</span>
                                     <span>•</span>
-                                    <span className="px-3 py-1 bg-navy text-white rounded">Powered by LOXTR</span>
+                                    <span className="px-3 py-1 bg-navy text-white rounded cursor-pointer" onClick={() => setData(null)}>Powered by LOXTR</span>
                                 </div>
                             </div>
                         </div>
@@ -642,4 +670,3 @@ export default function LoxConvert() {
         </div>
     );
 }
-
