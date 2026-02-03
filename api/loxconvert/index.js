@@ -83,15 +83,15 @@ export default async function handler(req, res) {
     Return a STRICT JSON object with these fields:
     - "items": Array of items. Each item must have:
         * "description", "qty", "unit", "weight", "hs_code" (6-digit), "confidence", "logic".
-        * "taxes": { "duty_percent": number, "vat_percent": number, "additional_tax": number } (Estimated for import to Turkey or target).
+        * "origin_country": ISO Code (e.g. DE, TR, CN).
+        * "value": Estimate or extract the line value if available (number).
+        * "taxes": { "duty_percent": number, "vat_percent": number, "additional_tax": number }.
     - "intelligence": 
-        * "commodity_category": e.g. "Industrial Machinery".
-        * "risk_score": 1-10.
-        * "regulatory_notes": Specific barrier info.
-        * "incoterms": { "term": "e.g. FOB", "is_valid": boolean, "advice": "Brief advice" }.
-        * "market_data": { "total_market_size": "e.g. $2.1B", "growth": "+4.2%", "competitor_nations": ["China", "Germany"] }.
-        * "cross_validation": { "is_consistent": boolean, "noted_inconsistencies": ["e.g. Net weight mismatch between pages"] }.
-        * "suggested_buyers": Array of 3 specific types.
+        * "commodity_category", "risk_score", "regulatory_notes".
+        * "incoterms": { "term": string, "is_valid": boolean, "advice": string }.
+        * "market_data": { "total_market_size": string, "growth": string, "competitor_nations": [] }.
+        * "cross_validation": { "is_consistent": boolean, "noted_inconsistencies": [] }.
+        * "suggested_buyers": [].
 
     OUTPUT ONLY RAW JSON. NO MARKDOWN. NO BACKTICKS.` },
                             {
