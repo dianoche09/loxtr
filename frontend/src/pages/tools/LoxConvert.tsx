@@ -218,7 +218,7 @@ export default function LoxConvert() {
                                 <span className="text-yellow bg-navy px-8 py-4 rounded-[3rem] inline-block -rotate-1 shadow-2xl">Understand.</span>
                             </h2>
                             <p className="text-xl md:text-2xl text-slate-500 max-w-2xl mx-auto font-bold leading-relaxed mb-16 px-4">
-                                The world's first <span className="text-navy underline decoration-yellow decoration-[6px] underline-offset-8">Customs AI</span> that conducts digital audits, tax forecasting and market intelligence.
+                                The world's first <span className="text-navy underline decoration-yellow decoration-[6px] underline-offset-8">Global Customs AI</span> that conducts digital audits, tariff forecasting and trade compliance.
                             </p>
 
                             <div className="max-w-5xl mx-auto mb-24 px-4">
@@ -235,9 +235,9 @@ export default function LoxConvert() {
                                             </div>
                                             <div className="text-center md:text-left">
                                                 <h3 className="text-3xl font-black text-navy mb-1 italic tracking-tighter uppercase leading-none">
-                                                    {loading ? 'Analyzing...' : 'Shipment Dossier'}
+                                                    {loading ? 'Analyzing...' : 'Digital Customs Audit'}
                                                 </h3>
-                                                <p className="text-slate-400 text-[10px] font-black uppercase tracking-[0.4em] opacity-60">Digital Trade Intelligence Radar</p>
+                                                <p className="text-slate-400 text-[10px] font-black uppercase tracking-[0.4em] opacity-60">Global HS Code & Tariff Intelligence Radar</p>
                                             </div>
                                             {!loading && (
                                                 <div className="hidden md:flex items-center gap-3 px-6 py-3 bg-navy text-white text-[9px] font-black uppercase tracking-widest rounded-xl shadow-xl ml-4">
@@ -290,7 +290,7 @@ export default function LoxConvert() {
                                     <span className="text-[10px] font-black tracking-[0.5em] text-yellow uppercase">LOXCONVERT PRO IQ</span>
                                     <span className="px-4 py-1.5 bg-emerald-500/20 text-emerald-400 text-[9px] font-black rounded-full border border-emerald-500/20 uppercase tracking-widest">Audit Verified</span>
                                 </div>
-                                <h2 className="text-5xl font-black italic tracking-tighter uppercase leading-tight">Shipment <span className="text-yellow">Intelligence.</span></h2>
+                                <h2 className="text-5xl font-black italic tracking-tighter uppercase leading-tight">Global Customs <span className="text-yellow">Intelligence.</span></h2>
                             </div>
 
                             <div className="flex flex-wrap items-center gap-4 relative z-10 mt-8 lg:mt-0">
@@ -323,7 +323,7 @@ export default function LoxConvert() {
                             <div className="bg-white p-10 rounded-[3.5rem] border border-slate-100 flex flex-col justify-between group hover:shadow-[0_40px_80px_-20px_rgba(0,0,0,0.08)] transition-all h-[340px]">
                                 <div>
                                     <div className="flex items-center justify-between mb-10">
-                                        <p className="text-[10px] font-black text-slate-300 uppercase tracking-widest italic flex items-center">Digital Tax Forecast <InfoButton title="Tax Analysis" content="Estimated Duty and VAT liability based on the HS Codes and target market regulations." /></p>
+                                        <p className="text-[10px] font-black text-slate-300 uppercase tracking-widest italic flex items-center">Tariff & Duty Forecast <InfoButton title="Global Tariff Analysis" content="Estimated Duty and VAT liability based on the WCO HS Codes and target market regulations." /></p>
                                         <div className="w-12 h-12 bg-slate-50 rounded-2xl flex items-center justify-center text-navy shadow-inner group-hover:bg-navy group-hover:text-yellow transition-all"><Scale size={24} /></div>
                                     </div>
                                     <div className="grid grid-cols-2 gap-10">
