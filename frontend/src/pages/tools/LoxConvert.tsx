@@ -221,22 +221,22 @@ export default function LoxConvert() {
                                 The world's first <span className="text-navy underline decoration-yellow decoration-[6px] underline-offset-8">Customs AI</span> that conducts digital audits, tax forecasting and market intelligence.
                             </p>
 
-                            <div className="max-w-4xl mx-auto mb-24 px-4">
-                                <div className="bg-white rounded-[5rem] p-8 shadow-[0_50px_100px_-20px_rgba(0,0,0,0.15)] border-t-[16px] border-yellow group relative overflow-hidden transition-all hover:shadow-yellow/10">
-                                    <div className={`relative border-2 border-dashed rounded-[4rem] p-20 md:p-36 text-center transition-all duration-500
+                            <div className="max-w-2xl mx-auto mb-24 px-4">
+                                <div className="bg-white rounded-[4rem] p-6 shadow-[0_40px_80px_-20px_rgba(0,0,0,0.12)] border-t-[12px] border-yellow group relative overflow-hidden transition-all hover:shadow-yellow/10">
+                                    <div className={`relative border-2 border-dashed rounded-[3rem] p-12 md:p-20 text-center transition-all duration-500
                                         ${loading ? 'border-yellow bg-yellow/5 scale-[0.98]' : 'border-slate-100 bg-slate-50/50 hover:border-yellow'}`}
                                     >
                                         <input type="file" multiple onChange={handleFiles} className="absolute inset-0 opacity-0 cursor-pointer z-10" disabled={loading} />
                                         <div className="flex flex-col items-center">
-                                            <div className={`w-36 h-36 rounded-[3rem] flex items-center justify-center mb-10 transition-all shadow-2xl
-                                                ${loading ? 'bg-navy text-yellow ring-[12px] ring-yellow/10 animate-pulse' : 'bg-white text-navy border border-slate-100 group-hover:scale-110'}`}
+                                            <div className={`w-24 h-24 rounded-[2rem] flex items-center justify-center mb-8 transition-all shadow-xl
+                                                ${loading ? 'bg-navy text-yellow ring-8 ring-yellow/10 animate-pulse' : 'bg-white text-navy border border-slate-100 group-hover:scale-110'}`}
                                             >
-                                                {loading ? <Loader2 size={56} className="animate-spin" /> : <Layers size={56} />}
+                                                {loading ? <Loader2 size={36} className="animate-spin" /> : <Layers size={36} />}
                                             </div>
-                                            <h3 className="text-4xl md:text-5xl font-black text-navy mb-4 italic tracking-tighter uppercase leading-none">
+                                            <h3 className="text-3xl font-black text-navy mb-3 italic tracking-tighter uppercase leading-none">
                                                 {loading ? 'Analyzing...' : 'Shipment Dossier'}
                                             </h3>
-                                            <p className="text-slate-400 text-[12px] font-black uppercase tracking-[0.6em] opacity-60">Vision-LLM Global Trade Radar</p>
+                                            <p className="text-slate-400 text-[10px] font-black uppercase tracking-[0.4em] opacity-60">Digital Trade Radar</p>
                                         </div>
                                     </div>
 
