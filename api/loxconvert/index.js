@@ -34,74 +34,62 @@ export default async function handler(req, res) {
     if (req.method !== 'POST') return res.status(405).send('Method Not Allowed');
 
     try {
-        const { fileBase64, fileName, mimeType, userId } = req.body;
+        const { fileBase64, fileName, mimeType, userId, mode = 'extract', dossierData } = req.body;
 
         if (!process.env.GEMINI_API_KEY) {
             throw new Error("Missing GEMINI_API_KEY");
         }
 
-        // DAILY LIMIT CHECK
-        if (userId) {
-            const today = new Date().toISOString().split('T')[0];
-            const { count, error } = await supabase
-                .from('lox_convert_history')
-                .select('id', { count: 'exact', head: true })
-                .eq('user_id', userId)
-                .gte('created_at', today);
-
-            if (count !== null && count >= 5) {
-                return res.status(403).json({ error: "Daily limit reached (5/5). Please upgrade to Pro for unlimited access." });
-            }
+        // 1. QUICK VALIDATION MODE (CROSS-CHECK)
+        if (mode === 'validate') {
+            const results = validateShipmentData(dossierData);
+            return res.status(200).json(results);
         }
 
-        // REST API Implementation
-        // Brute-force try all known aliases for Gemini 1.5 to find one that works
-        // SMART REST API Implementation
-        // We try combinations of Models AND API Versions because availability differs
+        // 2. AI PROCESSING MODES
         const attempts = [
-            { model: "gemini-1.5-flash", version: "v1" },
-            { model: "gemini-1.5-flash", version: "v1beta" },
             { model: "gemini-2.0-flash", version: "v1" },
-            { model: "gemini-1.5-pro", version: "v1" },
-            { model: "gemini-2.0-flash-exp", version: "v1beta" }
+            { model: "gemini-1.5-flash", version: "v1" },
+            { model: "gemini-1.5-pro", version: "v1" }
         ];
+
+        let prompt = "";
+        if (mode === 'classify') {
+            prompt = `Identify the document type for this logistics file. 
+            Output strictly JSON: { "doc_type": "invoice" | "packing_list" | "bl" | "co" | "specification" | "other" }`;
+        } else {
+            prompt = `Analyze this logistics/trade document. 
+            1. Classify the document type.
+            2. Extract all line items and macro stats.
+            3. Identify "Shipment Identity" markers (Invoice No, BL No, Reference).
+            4. Determine the DESTINATION country for customs simulation.
+
+            Return a STRICT JSON object:
+            - "doc_metadata": { "type": string, "reference_no": string, "issue_date": string, "destination_country": string }.
+            - "items": Array of items. Each item:
+                * "description", "qty", "unit", "weight", "hs_code", "confidence", "logic".
+                * "origin_country": ISO Code.
+                * "value": number.
+                * "taxes": { "duty_percent": number, "vat_percent": number }.
+            - "intelligence": 
+                * "commodity_category", "risk_score", "regulatory_notes".
+                * "incoterms": { "term": string, "is_valid": boolean, "advice": string }.
+                * "validation_hooks": { "total_qty": number, "total_weight": number, "total_value": number, "currency": string }.
+                * "suggested_buyers": [].
+
+            OUTPUT ONLY RAW JSON.`;
+        }
+
         let jsonOutput = null;
         let lastError = null;
 
         for (const { model, version } of attempts) {
             try {
-                console.log(`Trying via REST API: ${model} (${version})`);
-
                 const payload = {
                     contents: [{
                         parts: [
-                            {
-                                text: `Analyze this logistics/trade document. 
-    1. Classify the document type.
-    2. Extract all line items and macro stats.
-    3. Identify "Shipment Identity" markers (Invoice No, BL No, Reference).
-    4. Determine the DESTINATION country from the document.
-
-    Return a STRICT JSON object:
-    - "doc_metadata": { "type": string, "reference_no": string, "issue_date": string, "destination_country": string }.
-    - "items": Array of items. Each item:
-        * "description", "qty", "unit", "weight", "hs_code", "confidence", "logic".
-        * "origin_country": ISO Code.
-        * "value": line value (number).
-        * "taxes": { "duty_percent": number, "vat_percent": number } (Estimated for the detected destination_country).
-    - "intelligence": 
-        * "commodity_category", "risk_score", "regulatory_notes".
-        * "incoterms": { "term": string, "is_valid": boolean, "advice": string }.
-        * "validation_hooks": { "total_qty": number, "total_weight": number, "total_value": number, "currency": string }.
-        * "suggested_buyers": [].
-
-    OUTPUT ONLY RAW JSON. NO MARKDOWN. NO BACKTICKS.` },
-                            {
-                                inlineData: {
-                                    mimeType: mimeType,
-                                    data: fileBase64
-                                }
-                            }
+                            { text: prompt },
+                            { inlineData: { mimeType, data: fileBase64 } }
                         ]
                     }]
                 };
@@ -115,50 +103,86 @@ export default async function handler(req, res) {
                     }
                 );
 
-                if (!response.ok) {
-                    const errText = await response.text();
-                    throw new Error(`API Error ${response.status}: ${errText}`);
-                }
-
+                if (!response.ok) throw new Error(`API Error ${response.status}`);
                 const data = await response.json();
-
-                // Parse response
                 const rawText = data.candidates?.[0]?.content?.parts?.[0]?.text;
                 if (!rawText) throw new Error("No content generated");
 
                 const cleanedText = rawText.replace(/```json/g, "").replace(/```/g, "").trim();
                 jsonOutput = JSON.parse(cleanedText);
-
-                // If success, break
                 break;
-
             } catch (e) {
-                console.warn(`Attempt ${model}/${version} failed:`, e.message);
                 lastError = e;
             }
         }
 
         if (!jsonOutput) {
-            throw new Error(`All AI models failed. Last error: ${lastError?.message}`);
-        }
-
-        // Insert history into Supabase
-        if (userId) {
-            try {
-                await supabase.from('lox_convert_history').insert({
-                    user_id: userId,
-                    file_name: fileName,
-                    items_count: jsonOutput.items?.length || 0,
-                    hs_codes_suggested: (jsonOutput.items || []).filter(i => i.hs_code).length
-                });
-            } catch (dbError) {
-                console.error("Supabase Log Error:", dbError);
-            }
+            throw new Error(`AI analysis failed: ${lastError?.message}`);
         }
 
         return res.status(200).json(jsonOutput);
     } catch (error) {
-        console.error("LoxConvert Error:", error);
         return res.status(500).json({ error: error.message });
     }
+}
+
+// CROSS-CHECK ENGINE
+function validateShipmentData(dossier) {
+    if (!dossier || dossier.length === 0) return null;
+
+    const invoices = dossier.filter(d => d.doc_metadata?.type?.toLowerCase().includes('invoice') || d.doc_metadata?.type === 'invoice');
+    const plists = dossier.filter(d => d.doc_metadata?.type?.toLowerCase().includes('packing') || d.doc_metadata?.type === 'packing_list');
+    const bls = dossier.filter(d => d.doc_metadata?.type?.toLowerCase().includes('bl') || d.doc_metadata?.type === 'bl' || d.doc_metadata?.type?.toLowerCase().includes('bill'));
+
+    const alerts = [];
+    let isConsistent = true;
+
+    // 1. Invoice vs Packing List Quantity Check
+    if (invoices.length > 0 && plists.length > 0) {
+        const invQty = invoices.reduce((sum, d) => sum + (d.intelligence?.validation_hooks?.total_qty || 0), 0);
+        const plQty = plists.reduce((sum, d) => sum + (d.intelligence?.validation_hooks?.total_qty || 0), 0);
+
+        if (Math.abs(invQty - plQty) > 0.01) {
+            alerts.push({
+                type: 'error',
+                message: `Quantity mismatch: Invoice (${invQty}) vs Packing List (${plQty})`,
+                field: 'qty'
+            });
+            isConsistent = false;
+        }
+    }
+
+    // 2. Packing List vs BL Weight Check
+    if (plists.length > 0 && bls.length > 0) {
+        const plWeight = plists.reduce((sum, d) => sum + (d.intelligence?.validation_hooks?.total_weight || 0), 0);
+        const blWeight = bls.reduce((sum, d) => sum + (d.intelligence?.validation_hooks?.total_weight || 0), 0);
+
+        if (Math.abs(plWeight - blWeight) > 0.5) {
+            alerts.push({
+                type: 'warning',
+                message: `Weight discrepancy: PL (${plWeight}kg) vs BL (${blWeight}kg)`,
+                field: 'weight'
+            });
+        }
+    }
+
+    // 3. Missing Documents Check
+    const types = dossier.map(d => d.doc_metadata?.type?.toLowerCase() || '');
+    const hasInvoice = types.some(t => t.includes('invoice'));
+    const hasPL = types.some(t => t.includes('packing'));
+    const hasBL = types.some(t => t.includes('bl') || t.includes('bill'));
+
+    if (!hasInvoice) alerts.push({ type: 'missing', message: 'Missing Document: Commercial Invoice required.' });
+    if (!hasPL) alerts.push({ type: 'missing', message: 'Missing Document: Packing List recommended for customs.' });
+    if (!hasBL) alerts.push({ type: 'missing', message: 'Missing Document: Transport Document (BL/AWB) not detected.' });
+
+    return {
+        isConsistent,
+        alerts,
+        summary: {
+            total_value: invoices.reduce((sum, d) => sum + (d.intelligence?.validation_hooks?.total_value || 0), 0),
+            currency: invoices[0]?.intelligence?.validation_hooks?.currency || 'USD',
+            doc_count: dossier.length
+        }
+    };
 }

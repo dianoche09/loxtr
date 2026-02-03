@@ -97,6 +97,7 @@ export default function LoxConvert() {
     const [saveLoading, setSaveLoading] = useState(false);
     const [showExportWizard, setShowExportWizard] = useState(false);
     const [selectedTemplate, setSelectedTemplate] = useState('STANDARD');
+    const [shipmentAlerts, setShipmentAlerts] = useState<any[]>([]);
     const [isMetric, setIsMetric] = useState(true);
     const [showQRModal, setShowQRModal] = useState(false);
 
@@ -105,6 +106,8 @@ export default function LoxConvert() {
         if (files.length === 0) return;
         setLoading(true);
         setProcessQueue(files.map(f => ({ name: f.name, status: 'pending' })));
+
+        const newDocs: any[] = [];
 
         for (let i = 0; i < files.length; i++) {
             const file = files[i];
@@ -117,21 +120,48 @@ export default function LoxConvert() {
             });
 
             try {
+                // 1. ANALYSIS & EXTRACTION
                 const res = await fetch('/api/loxconvert', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ fileBase64: base64, fileName: file.name, mimeType: file.type || 'application/octet-stream', userId: user?.id })
+                    body: JSON.stringify({
+                        fileBase64: base64,
+                        fileName: file.name,
+                        mimeType: file.type || 'application/octet-stream',
+                        userId: user?.id,
+                        mode: 'extract'
+                    })
                 });
                 const result = await res.json();
                 const localId = Math.random().toString(36).substr(2, 9);
-                setDossier(prev => [...prev, { ...result, localId, fileName: file.name }]);
+                const docWithMeta = { ...result, localId, fileName: file.name };
+                newDocs.push(docWithMeta);
+
+                setDossier(prev => [...prev, docWithMeta]);
                 setProcessQueue(prev => prev.map((p, idx) => idx === i ? { ...p, status: 'done' } : p));
-                if (i === 0) setExpandedDoc(localId);
+                if (i === 0 && dossier.length === 0) setExpandedDoc(localId);
             } catch (err) {
                 setProcessQueue(prev => prev.map((p, idx) => idx === i ? { ...p, status: 'error' } : p));
                 toast.error(`Analysis failed: ${file.name}`);
             }
         }
+
+        // 2. DOSSIER VALIDATION (CROSS-CHECK)
+        if (newDocs.length > 0 || dossier.length > 0) {
+            try {
+                const updatedDossier = [...dossier, ...newDocs];
+                const vRes = await fetch('/api/loxconvert', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ mode: 'validate', dossierData: updatedDossier })
+                });
+                const vResult = await vRes.json();
+                setShipmentAlerts(vResult.alerts || []);
+            } catch (e) {
+                console.error("Validation Error:", e);
+            }
+        }
+
         setLoading(false);
     };
 
@@ -170,29 +200,45 @@ export default function LoxConvert() {
     const runMasterExport = () => {
         try {
             const template = EXPORT_TEMPLATES[selectedTemplate as keyof typeof EXPORT_TEMPLATES];
-            const allItems = dossier.flatMap(d => d.items.map((item: any) => ({
-                ...template.mapping(item, isMetric),
-                'Source': d.doc_metadata?.type || d.fileName,
-                'Ref': d.doc_metadata?.reference_no || 'N/A'
-            })));
-            const ws = XLSX.utils.json_to_sheet(allItems);
+
+            // Consolidate unique items across the dossier (prefer Invoice data for values)
+            const allItemsMap = new Map();
+
+            dossier.forEach(doc => {
+                const docType = doc.doc_metadata?.type?.toLowerCase() || '';
+                doc.items.forEach((item: any) => {
+                    const key = `${item.hs_code}-${item.description?.slice(0, 20)}`;
+                    const existing = allItemsMap.get(key);
+
+                    // If we find the same item in another doc, prefer the one with "value" (Invoice)
+                    if (!existing || (item.value && !existing.value)) {
+                        allItemsMap.set(key, {
+                            ...template.mapping(item, isMetric),
+                            'Source_Doc': docType.toUpperCase(),
+                            'Origin': item.origin_country || 'N/A'
+                        });
+                    }
+                });
+            });
+
+            const uniqueItems = Array.from(allItemsMap.values());
+            const ws = XLSX.utils.json_to_sheet(uniqueItems);
             const wb = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(wb, ws, "Master_Export");
-            XLSX.writeFile(wb, `LOX_Export_${new Date().toISOString().split('T')[0]}.xlsx`);
+            XLSX.writeFile(wb, `LOX_Dossier_Export_${new Date().toISOString().split('T')[0]}.xlsx`);
             setShowExportWizard(false);
-            toast.success("Download Complete");
+            toast.success("Consolidated Export Complete");
         } catch (e) { toast.error("Export failed"); }
     };
 
     const validation = (() => {
-        if (dossier.length < 2) return { isConsistent: true, isWaiting: true, weightError: false, qtyError: false };
-        const weights = dossier.map(d => d.intelligence?.validation_hooks?.total_weight || 0).filter(w => w > 0);
-        const qtys = dossier.map(d => d.intelligence?.validation_hooks?.total_qty || 0).filter(q => q > 0);
+        if (dossier.length === 0) return { isConsistent: true, isWaiting: true };
+        const hasErrors = shipmentAlerts.some(a => a.type === 'error');
+        const hasWarnings = shipmentAlerts.some(a => a.type === 'warning' || a.type === 'missing');
         return {
-            isConsistent: new Set(weights).size <= 1 && new Set(qtys).size <= 1,
-            isWaiting: false,
-            weightError: new Set(weights).size > 1,
-            qtyError: new Set(qtys).size > 1
+            isConsistent: !hasErrors,
+            isWaiting: loading,
+            hasWarnings
         };
     })();
 
@@ -329,7 +375,15 @@ export default function LoxConvert() {
 
                         {/* --- CONTENT MATRIX --- */}
                         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
-                            <div className="lg:col-span-8 space-y-10">
+                            <div className="lg:col-span-8 space-y-8">
+                                <div className="flex items-center justify-between px-4">
+                                    <h3 className="text-[10px] font-black text-navy uppercase tracking-[0.3em] flex items-center gap-3">
+                                        <Database size={14} className="text-yellow" /> Current Shipment Dossier
+                                    </h3>
+                                    <span className="text-[9px] font-black text-slate-300 uppercase tracking-widest bg-white px-3 py-1 rounded-full border border-slate-100 shadow-sm">
+                                        Batch Status: {loading ? 'Syncing...' : 'Ready'}
+                                    </span>
+                                </div>
                                 {dossier.map((doc, idx) => (
                                     <div key={doc.localId} className="group">
                                         <motion.div
@@ -445,26 +499,54 @@ export default function LoxConvert() {
                                         <h4 className="text-[9px] font-black text-navy uppercase tracking-widest leading-none">Intelligence Node</h4>
                                     </div>
 
-                                    <div className="space-y-8">
-                                        <div className="relative bg-white p-6 rounded-2xl border border-slate-100">
+                                    <div className="space-y-6">
+                                        {/* VALIDATION NODE */}
+                                        <div className="relative bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
+                                            <div className="flex items-center justify-between mb-4">
+                                                <p className="text-[9px] font-black text-navy uppercase flex items-center gap-2 italic">
+                                                    <ShieldCheck size={14} className={validation.isConsistent ? "text-emerald-500" : "text-red-500"} />
+                                                    Validation Node
+                                                </p>
+                                                {loading && <Loader2 size={12} className="animate-spin text-slate-300" />}
+                                            </div>
+
+                                            <div className="space-y-2.5">
+                                                {shipmentAlerts.length === 0 && !loading && (
+                                                    <div className="flex items-center gap-2 text-[10px] font-bold text-emerald-600 bg-emerald-50 p-2.5 rounded-lg border border-emerald-100">
+                                                        <Check size={14} /> Data aligned across dossier.
+                                                    </div>
+                                                )}
+                                                {shipmentAlerts.map((alert, i) => (
+                                                    <div key={i} className={`flex items-start gap-2.5 p-3 rounded-lg border text-[10px] font-bold leading-relaxed
+                                                        ${alert.type === 'error' ? 'bg-red-50 border-red-100 text-red-600' :
+                                                            alert.type === 'warning' ? 'bg-amber-50 border-amber-100 text-amber-600' :
+                                                                'bg-slate-50 border-slate-100 text-slate-500'}`}>
+                                                        {alert.type === 'error' ? <ShieldAlert size={14} /> : alert.type === 'warning' ? <AlertCircle size={14} /> : <FileSearch size={14} />}
+                                                        <span>{alert.message}</span>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+
+                                        <div className="relative bg-white p-5 rounded-2xl border border-slate-100">
                                             {!user && (
                                                 <div className="absolute inset-0 bg-white/60 backdrop-blur-sm z-10 flex items-center justify-center rounded-2xl">
                                                     <p className="text-[8px] font-black text-navy uppercase tracking-widest flex items-center gap-2"><Lock size={10} /> Member Briefing</p>
                                                 </div>
                                             )}
-                                            <p className="text-[9px] font-black text-navy/30 uppercase mb-3 flex items-center gap-2 italic"><ShieldCheck size={14} /> Regulatory Advisory</p>
+                                            <p className="text-[9px] font-black text-navy/30 uppercase mb-3 flex items-center gap-2 italic"><TrendingUp size={14} /> Intelligence Node</p>
                                             <p className="text-[11px] font-bold text-slate-500 italic leading-relaxed">"{dossier[0]?.intelligence?.regulatory_notes || 'Analyzing compliance protocols...'}"</p>
                                         </div>
 
                                         <div className="space-y-3">
                                             <p className="text-[9px] font-black text-navy/30 uppercase italic flex items-center gap-2"><TargetIcon size={14} /> Suggested Entities</p>
                                             {(dossier[0]?.intelligence?.suggested_buyers || []).slice(0, user ? 10 : 3).map((buyer: string, i: number) => (
-                                                <div key={i} className="bg-white p-4 rounded-xl border border-slate-100 flex items-center gap-3 group">
-                                                    <div className="w-1.5 h-1.5 rounded-full bg-yellow" />
+                                                <div key={i} className="bg-white p-3 rounded-xl border border-slate-100 flex items-center gap-3 group hover:border-navy transition-all">
+                                                    <div className="w-1 h-1 rounded-full bg-yellow" />
                                                     <span className="text-[10px] font-black uppercase text-navy/70 truncate">{buyer}</span>
                                                 </div>
                                             ))}
-                                            {!user && <p className="text-[7px] font-bold text-center text-slate-300 uppercase italic">Unlock with Premium Account</p>}
+                                            {!user && <p className="text-[7px] font-bold text-center text-slate-200 uppercase italic">Unlock with Intelligence Subscription</p>}
                                         </div>
                                     </div>
                                 </div>
