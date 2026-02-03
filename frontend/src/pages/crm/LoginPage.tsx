@@ -5,9 +5,12 @@ import { Mail, Lock, ArrowRight, Sparkles, Building2, Globe, ShieldCheck, Rocket
 import Logo from '../../components/Logo';
 import toast from 'react-hot-toast';
 import { useAuth } from '../../contexts/crm/AuthContext';
+import { useSearchParams } from 'react-router-dom';
 
 export default function LoginPage() {
     const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
+    const redirectTo = searchParams.get('redirectTo');
     const { login, isAuthenticated, user, isLoading: authLoading } = useAuth();
     const [formData, setFormData] = useState({
         email: '',
@@ -38,13 +41,17 @@ export default function LoginPage() {
     // Redirect if already authenticated
     useEffect(() => {
         if (isAuthenticated && user) {
+            if (redirectTo) {
+                window.location.href = redirectTo;
+                return;
+            }
             if (!user.onboardingCompleted) {
                 navigate('/onboarding');
             } else {
                 navigate('/crm/dashboard');
             }
         }
-    }, [isAuthenticated, user, navigate]);
+    }, [isAuthenticated, user, navigate, redirectTo]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();

@@ -326,7 +326,7 @@ export default function LoxConvert() {
                             </div>
                             <div className="flex items-center gap-3">
                                 {!user && (
-                                    <button onClick={() => window.location.href = `https://www.loxtr.com/login?redirectTo=${encodeURIComponent(window.location.href)}`} className="px-5 py-2.5 bg-yellow text-navy rounded-xl text-[9px] font-black uppercase tracking-widest shadow-lg hover:-translate-y-0.5 transition-all">
+                                    <button onClick={() => window.location.href = `/login?redirectTo=${encodeURIComponent(window.location.href)}`} className="px-5 py-2.5 bg-yellow text-navy rounded-xl text-[9px] font-black uppercase tracking-widest shadow-lg hover:-translate-y-0.5 transition-all">
                                         Login
                                     </button>
                                 )}
@@ -594,7 +594,7 @@ export default function LoxConvert() {
                                 Advanced features like Cloud Vault, Master Export and Digital QR Sync are reserved for registered intelligence nodes.
                             </p>
                             <div className="flex flex-col gap-2.5">
-                                <button onClick={() => window.location.href = `https://www.loxtr.com/register?redirectTo=${encodeURIComponent(window.location.href)}`} className="w-full bg-navy text-white py-3.5 rounded-lg font-black text-[9px] uppercase tracking-widest shadow-lg hover:bg-yellow hover:text-navy transition-all">Create Free Account</button>
+                                <button onClick={() => window.location.href = `/register?redirectTo=${encodeURIComponent(window.location.href)}`} className="w-full bg-navy text-white py-3.5 rounded-lg font-black text-[9px] uppercase tracking-widest shadow-lg hover:bg-yellow hover:text-navy transition-all">Create Free Account</button>
                                 <button onClick={() => setShowAuthGate(false)} className="w-full py-3 rounded-lg text-[9px] font-black uppercase text-slate-300 hover:text-navy transition-all tracking-[0.2em]">Continue Browsing</button>
                             </div>
                         </motion.div>

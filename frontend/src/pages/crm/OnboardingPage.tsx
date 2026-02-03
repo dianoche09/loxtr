@@ -1,7 +1,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import {
     Building2,
     Globe,
@@ -83,6 +83,8 @@ const steps = [
 
 export default function OnboardingPage() {
     const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
+    const redirectTo = searchParams.get('redirectTo');
     const [currentStep, setCurrentStep] = useState(0);
     const [loading, setLoading] = useState(false);
     const [analyzing, setAnalyzing] = useState(false);
@@ -907,7 +909,11 @@ export default function OnboardingPage() {
             }, 8000); // 8 second "WOW" transition for the first setup
 
             toast.success('Setup complete! Welcome to LOXTR.');
-            navigate('/dashboard');
+            if (redirectTo) {
+                window.location.href = redirectTo;
+            } else {
+                navigate('/crm/dashboard');
+            }
         } catch (error) {
             toast.error('Failed to save profile.');
         } finally {

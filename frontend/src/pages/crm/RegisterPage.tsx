@@ -5,9 +5,12 @@ import { Mail, Lock, User, Building, ArrowRight, Sparkles, Check, Globe, Zap, Sh
 import Logo from '../../components/Logo';
 import toast from 'react-hot-toast';
 import { useAuth } from '../../contexts/crm/AuthContext';
+import { useSearchParams } from 'react-router-dom';
 
 export default function RegisterPage() {
     const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
+    const redirectTo = searchParams.get('redirectTo');
     const { register, isLoading: authLoading } = useAuth();
     const [formData, setFormData] = useState({
         email: '',
@@ -61,7 +64,7 @@ export default function RegisterPage() {
                 company: formData.company
             });
             // AuthContext handles success toast and will trigger redirect via auth state change
-            navigate('/onboarding');
+            navigate(redirectTo ? `/onboarding?redirectTo=${encodeURIComponent(redirectTo)}` : '/onboarding');
         } catch (err: any) {
             // Error toast is handled by AuthContext
             console.error('Registration error:', err);
