@@ -76,21 +76,23 @@ export default async function handler(req, res) {
                     contents: [{
                         parts: [
                             {
-                                text: `Analyze this logistics/trade document (packing list, invoice, etc.). 
-    1. Extract all line items with precision.
-    2. Conduct a "Customs Digital Audit" and "Market Intelligence" sweep.
+                                text: `Analyze this logistics/trade document. 
+    1. Classify the document type.
+    2. Extract all line items and macro stats.
+    3. Identify "Shipment Identity" markers (Invoice No, BL No, Reference).
+    4. Determine the DESTINATION country from the document.
 
-    Return a STRICT JSON object with these fields:
-    - "items": Array of items. Each item must have:
-        * "description", "qty", "unit", "weight", "hs_code" (6-digit), "confidence", "logic".
-        * "origin_country": ISO Code (e.g. DE, TR, CN).
-        * "value": Estimate or extract the line value if available (number).
-        * "taxes": { "duty_percent": number, "vat_percent": number, "additional_tax": number }.
+    Return a STRICT JSON object:
+    - "doc_metadata": { "type": string, "reference_no": string, "issue_date": string, "destination_country": string }.
+    - "items": Array of items. Each item:
+        * "description", "qty", "unit", "weight", "hs_code", "confidence", "logic".
+        * "origin_country": ISO Code.
+        * "value": line value (number).
+        * "taxes": { "duty_percent": number, "vat_percent": number } (Estimated for the detected destination_country).
     - "intelligence": 
         * "commodity_category", "risk_score", "regulatory_notes".
         * "incoterms": { "term": string, "is_valid": boolean, "advice": string }.
-        * "market_data": { "total_market_size": string, "growth": string, "competitor_nations": [] }.
-        * "cross_validation": { "is_consistent": boolean, "noted_inconsistencies": [] }.
+        * "validation_hooks": { "total_qty": number, "total_weight": number, "total_value": number, "currency": string }.
         * "suggested_buyers": [].
 
     OUTPUT ONLY RAW JSON. NO MARKDOWN. NO BACKTICKS.` },

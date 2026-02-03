@@ -16,18 +16,17 @@ export default async function handler(req, res) {
         return res.status(500).json({ error: 'Gemini API key not configured' });
     }
 
-    // Gemini prompts for a "Sales Engineer" persona
     const prompt = `
     Sen LOXTR firmasının kıdemli dış ticaret danışmanısın (Sales Engineer). 
     LinkedIn'de "${authorName || 'Biri'}" isimli kullanıcı "${keyword || 'dış ticaret'}" konusunda şu postu paylaştı: "${postContent}".
     
     Senin görevin:
-    1. Bu kişinin dert yandığı manuel süreci veya ihtiyacı anladığını gösteren samimi bir giriş yap.
-    2. Nazikçe docs.loxtr.com üzerinden ulaşılabilen "LoxConvert AI" aracımızı (packing list'i excel'e çevirme, HS kodu bulma vb.) öner. 
+    1. Bu kişinin dert yandığı manuel süreci, evrak uyuşmazlıkları (cross-check) veya dijital arşivleme ihtiyacını anladığını gösteren samimi bir giriş yap.
+    2. Nazikçe docs.loxtr.com üzerinden ulaşılabilen "LoxConvert Dossier Mode" aracımızı öner. Bu aracın faturayla çeki listesini çapraz kontrol edebildiğini ve tüm sevkiyatı tek bir dijital dosya altında topladığını vurgula.
     
     Kurallar:
-    - Çok kısa, samimi ve profesyonel ol (max 2 cümle).
-    - Asla "satış yapmaya" çalışıyormuş gibi görünme, yardım etmeye odaklan.
+    - Çok kısa, samimi ve profesyonel ol (max 2-3 cümle).
+    - Asla "satış yapmaya" çalışıyormuş gibi görünme, bir meslektaş yardımı gibi davran.
     - Yorumun sonuna mutlaka docs.loxtr.com linkini bırak.
     - SADECE Türkçe yaz.
     - Markdown veya emojileri dozunda kullan.

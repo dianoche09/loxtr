@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -35,7 +35,16 @@ import {
     Database,
     Binary,
     Settings2,
-    X
+    X,
+    Layers,
+    ClipboardCheck,
+    AlertTriangle,
+    FileSearch,
+    ChevronDown,
+    Save,
+    Maximize2,
+    MonitorSmartphone,
+    Map
 } from 'lucide-react';
 import * as XLSX from 'xlsx';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, BarChart, Bar, XAxis, YAxis } from 'recharts';
@@ -43,636 +52,432 @@ import { supabase } from '../../supabase';
 import { useAuth } from '../../contexts/crm/AuthContext';
 import toast from 'react-hot-toast';
 
-// --- Global Smart Export Engine ---
+// --- Minimalist Logo Component ---
+const LoxLogo = ({ className = "" }: { className?: string }) => (
+    <div className={`flex items-center gap-2.5 ${className}`}>
+        <div className="relative">
+            <div className="w-8 h-8 bg-navy rounded-lg rotate-3" />
+            <div className="absolute inset-0 w-8 h-8 bg-yellow rounded-lg -rotate-3 mix-blend-multiply opacity-80" />
+            <div className="absolute inset-0 flex items-center justify-center">
+                <Zap size={14} className="text-white fill-white" />
+            </div>
+        </div>
+        <div className="flex flex-col leading-none">
+            <span className="text-xl font-black tracking-tighter text-navy uppercase">LOX<span className="text-yellow">TR</span></span>
+            <span className="text-[8px] font-black tracking-[0.3em] text-slate-400 uppercase">Intelligence</span>
+        </div>
+    </div>
+);
+
+// --- Info Tooltip Component ---
+const InfoButton = ({ title, content }: { title: string, content: string }) => (
+    <div className="group relative inline-block ml-2 cursor-help">
+        <Info size={14} className="text-slate-300 hover:text-navy transition-colors" />
+        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 p-4 bg-navy text-white text-[10px] font-bold rounded-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all shadow-2xl z-[100] border border-white/10 backdrop-blur-xl">
+            <p className="text-yellow mb-1 uppercase tracking-widest">{title}</p>
+            <p className="leading-relaxed font-medium opacity-80">{content}</p>
+            <div className="absolute top-full left-1/2 -translate-x-1/2 border-[6px] border-transparent border-t-navy" />
+        </div>
+    </div>
+);
+
 const EXPORT_TEMPLATES = {
     STANDARD: {
-        id: 'standard',
-        name: 'Standard Logistics',
-        desc: 'General purpose shipping template.',
-        icon: FileText,
-        mapping: (item: any, isMetric: boolean) => ({
-            'Item': item.description,
-            'Description': item.description,
-            'HS_Code': item.hs_code,
-            'Quantity': item.qty,
-            'Unit': item.unit,
-            'Weight': isMetric ? (item.weight || 0) : ((item.weight || 0) * 2.20462).toFixed(2),
-            'Weight_Unit': isMetric ? 'KG' : 'LBS'
-        })
+        id: 'standard', name: 'Standard Logistics', desc: 'General purpose shipping template.', icon: FileText,
+        mapping: (item: any, isMetric: boolean) => ({ 'Item': item.description, 'HS_Code': item.hs_code, 'Quantity': item.qty, 'Unit': item.unit, 'Weight': isMetric ? (item.weight || 0) : ((item.weight || 0) * 2.20462).toFixed(2), 'Weight_Unit': isMetric ? 'KG' : 'LBS' })
     },
     CUSTOMS: {
-        id: 'customs',
-        name: 'Customs Ready (WCO)',
-        desc: 'Compliant with global customs systems.',
-        icon: ShieldCheck,
-        mapping: (item: any, isMetric: boolean) => ({
-            'Tariff_Code (12-digit)': item.hs_code?.padEnd(12, '0'),
-            'Description': item.description,
-            'Origin_Country': item.origin_country || 'UNKNOWN',
-            'Net_Weight': isMetric ? (item.weight || 0) : ((item.weight || 0) * 2.20462).toFixed(2),
-            'Incoterms_2020': 'DAP',
-            'Currency': 'USD',
-            'Total_Value': item.value || '0.00'
-        })
+        id: 'customs', name: 'Customs Ready (WCO)', desc: 'Compliant with global customs systems.', icon: ShieldCheck,
+        mapping: (item: any, isMetric: boolean) => ({ 'Tariff_Code (12-digit)': item.hs_code?.padEnd(12, '0'), 'Description': item.description, 'Origin_Country': item.origin_country || 'UNKNOWN', 'Net_Weight': isMetric ? (item.weight || 0) : ((item.weight || 0) * 2.20462).toFixed(2), 'Total_Value': item.value || '0.00' })
     },
     ERP: {
-        id: 'erp',
-        name: 'ERP/SAP Integrated',
-        desc: 'Ideal for SAP/Oracle import.',
-        icon: Database,
-        mapping: (item: any, isMetric: boolean) => ({
-            'Material_Number (SKU)': `LOX-${item.hs_code?.slice(0, 4)}`,
-            'Line_Item_Text': item.description,
-            'Quantity': item.qty,
-            'Base_Unit_of_Measure': item.unit,
-            'Net_Weight_Custom': isMetric ? (item.weight || 0) : ((item.weight || 0) * 2.20462).toFixed(2),
-            'Line_Value': item.value || '0',
-            'Plant_Code': '1000'
-        })
+        id: 'erp', name: 'ERP/SAP Integrated', desc: 'Ideal for SAP/Oracle import.', icon: Database,
+        mapping: (item: any, isMetric: boolean) => ({ 'Material_Number (SKU)': `LOX-${item.hs_code?.slice(0, 4)}`, 'Line_Item_Text': item.description, 'Quantity': item.qty, 'Base_Unit_of_Measure': item.unit, 'Net_Weight_Custom': isMetric ? (item.weight || 0) : ((item.weight || 0) * 2.20462).toFixed(2), 'Plant_Code': '1000' })
     }
 };
 
 export default function LoxConvert() {
     const { user } = useAuth();
-    const navigate = useNavigate();
-    const [data, setData] = useState<any | null>(null);
+    const [dossier, setDossier] = useState<any[]>([]);
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
-    const [fileName, setFileName] = useState<string>("");
+    const [processQueue, setProcessQueue] = useState<{ name: string, status: 'pending' | 'processing' | 'done' | 'error' }[]>([]);
 
     // UI State
-    const [insightData, setInsightData] = useState<any>(null);
-    const [insightLoading, setInsightLoading] = useState(false);
-    const [targetCountry, setTargetCountry] = useState("Germany");
     const [selectedItem, setSelectedItem] = useState<any>(null);
     const [saveLoading, setSaveLoading] = useState(false);
-    const [invoiceLoading, setInvoiceLoading] = useState(false);
-    const [invoiceData, setInvoiceData] = useState<any>(null);
-    const [showInvoiceModal, setShowInvoiceModal] = useState(false);
-    const [showQR, setShowQR] = useState(false);
-
-    // Export Wizard State
     const [showExportWizard, setShowExportWizard] = useState(false);
     const [selectedTemplate, setSelectedTemplate] = useState('STANDARD');
     const [isMetric, setIsMetric] = useState(true);
+    const [showQRLabel, setShowQRLabel] = useState(false);
 
-    const runSmartExport = () => {
-        if (!data?.items) return;
+    const handleFiles = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const files = Array.from(e.target.files || []);
+        if (files.length === 0) return;
+        setLoading(true);
+        setProcessQueue(files.map(f => ({ name: f.name, status: 'pending' })));
 
-        try {
-            const template = EXPORT_TEMPLATES[selectedTemplate as keyof typeof EXPORT_TEMPLATES];
-            const mappedData = data.items.map((item: any) => template.mapping(item, isMetric));
-
-            const ws = XLSX.utils.json_to_sheet(mappedData);
-            const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, "Lox_Export");
-
-            const date = new Date().toISOString().split('T')[0];
-            XLSX.writeFile(wb, `LOX_Export_Report_${date}_${template.id.toUpperCase()}.xlsx`);
-
-            toast.success(`${template.name} Export successful!`);
-            setShowExportWizard(false);
-        } catch (e) {
-            toast.error("Export engine failed. Please report.");
+        for (let i = 0; i < files.length; i++) {
+            const file = files[i];
+            setProcessQueue(prev => prev.map((p, idx) => idx === i ? { ...p, status: 'processing' } : p));
+            const reader = new FileReader();
+            const base64: string = await new Promise((resolve) => {
+                reader.onload = () => resolve((reader.result as string).split(',')[1]);
+                reader.readAsDataURL(file);
+            });
+            try {
+                const res = await fetch('/api/loxconvert', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ fileBase64: base64, fileName: file.name, mimeType: file.type || 'application/octet-stream', userId: user?.id })
+                });
+                const result = await res.json();
+                setDossier(prev => [...prev, { ...result, localId: Math.random(), fileName: file.name }]);
+                setProcessQueue(prev => prev.map((p, idx) => idx === i ? { ...p, status: 'done' } : p));
+            } catch (err) {
+                setProcessQueue(prev => prev.map((p, idx) => idx === i ? { ...p, status: 'error' } : p));
+                toast.error(`Analysis failed for ${file.name}`);
+            }
         }
+        setLoading(false);
     };
 
-    const handleSaveToFolder = async () => {
-        if (!user || !data) return;
+    const handleSaveToVault = async () => {
+        if (!user || dossier.length === 0) return;
         setSaveLoading(true);
         try {
-            const { data: folder, error: fError } = await supabase
-                .from('lox_folders')
-                .insert({
-                    user_id: user.id,
-                    name: `AI Report: ${fileName.split('.')[0]}`,
-                    metadata: { type: 'intelligence', count: data.items.length, sector: data.intelligence.commodity_category }
-                })
-                .select()
-                .single();
-
+            const shipmentName = dossier[0]?.doc_metadata?.reference_no || `Shipment_${new Date().getTime()}`;
+            const { data: folder, error: fError } = await supabase.from('lox_folders').insert({
+                user_id: user.id,
+                name: `Dossier: ${shipmentName}`,
+                metadata: {
+                    type: 'shipment_dossier',
+                    docs_count: dossier.length,
+                    destination: dossier[0]?.doc_metadata?.destination_country || 'Global'
+                }
+            }).select().single();
             if (fError) throw fError;
 
-            const { error: dError } = await supabase
-                .from('lox_documents')
-                .insert({
-                    user_id: user.id,
-                    folder_id: folder.id,
-                    doc_type: 'marking_list_report',
-                    content: data,
-                    file_name: fileName
-                });
-
+            const docInserts = dossier.map(doc => ({
+                user_id: user.id,
+                folder_id: folder.id,
+                doc_type: doc.doc_metadata?.type || 'shipment_document',
+                content: doc,
+                file_name: doc.fileName
+            }));
+            const { error: dError } = await supabase.from('lox_documents').insert(docInserts);
             if (dError) throw dError;
-            toast.success("📊 Intelligence Report saved to LOX Vault!");
+
+            toast.success("Shipment Dossier synchronized to Vault!");
         } catch (e: any) {
-            console.error(e);
-            toast.error("Vault error: " + e.message);
+            toast.error(`Vault sync failed: ${e.message}`);
         } finally {
             setSaveLoading(false);
         }
     };
 
-    const handleGenerateInvoice = async () => {
-        if (!data?.items) return;
-        setInvoiceLoading(true);
+    const runMasterExport = () => {
         try {
-            const response = await fetch('/api/loxconvert/generate-invoice', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    items: data.items,
-                    targetCountry,
-                    companyInfo: { name: user?.email?.split('@')[0].toUpperCase(), address: "Global Logistics Hub" }
-                })
-            });
-            const result = await response.json();
-            if (result.error) throw new Error(result.error);
-            setInvoiceData(result);
-            setShowInvoiceModal(true);
-        } catch (e: any) {
-            console.error(e);
-            toast.error("Invoice engine failed: " + e.message);
-        } finally {
-            setInvoiceLoading(false);
-        }
+            const template = EXPORT_TEMPLATES[selectedTemplate as keyof typeof EXPORT_TEMPLATES];
+            const allItems = dossier.flatMap(d => d.items.map((item: any) => ({
+                ...template.mapping(item, isMetric),
+                'Source_Doc': d.doc_metadata?.type || d.fileName,
+                'Shipment_Ref': d.doc_metadata?.reference_no || 'N/A'
+            })));
+            const ws = XLSX.utils.json_to_sheet(allItems);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "LOX_Master_Dossier");
+            XLSX.writeFile(wb, `LOX_Master_Export_${new Date().toISOString().split('T')[0]}.xlsx`);
+            toast.success("Master Excel Downloaded");
+            setShowExportWizard(false);
+        } catch (e) { toast.error("Export process failed."); }
     };
 
-    const handleInsights = async (item: any) => {
-        setSelectedItem(item);
-        setInsightLoading(true);
-        setInsightData(null);
-
-        try {
-            const res = await fetch('/api/loxconvert/insights', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    hsCode: item.hs_code,
-                    productDescription: item.description,
-                    targetCountry: targetCountry
-                })
-            });
-
-            if (!res.ok) throw new Error("Failed to get insights");
-            const result = await res.json();
-            setInsightData(result);
-        } catch (err) {
-            console.error(err);
-        } finally {
-            setInsightLoading(false);
-        }
-    };
-
-    const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-        if (!file) return;
-
-        setError(null);
-        setData(null);
-        setFileName(file.name);
-        setLoading(true);
-
-        const validTypes = ['application/pdf', 'application/x-pdf', 'image/jpeg', 'image/png', 'image/webp'];
-        if (!validTypes.includes(file.type) && !file.name.toLowerCase().endsWith('.pdf')) {
-            setError(`Format not supported. Please use PDF or Image.`);
-            setLoading(false);
-            return;
-        }
-
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = async () => {
-            try {
-                const res = await fetch('/api/loxconvert', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        fileBase64: (reader.result as string).split(',')[1],
-                        fileName: file.name,
-                        mimeType: file.type || 'application/octet-stream',
-                        userId: user?.id
-                    })
-                });
-
-                if (!res.ok) throw new Error('AI Intelligence Engine failed. Please try a cleaner document.');
-                const resultData = await res.json();
-                setData(resultData);
-            } catch (err: any) {
-                setError(err.message || "An error occurred.");
-            } finally {
-                setLoading(false);
-                if (e.target) e.target.value = '';
-            }
+    const validation = (() => {
+        if (dossier.length < 2) return null;
+        const totalQtys = dossier.map(d => d.intelligence?.validation_hooks?.total_qty || 0).filter(q => q > 0);
+        const totalWeights = dossier.map(d => d.intelligence?.validation_hooks?.total_weight || 0).filter(w => w > 0);
+        return {
+            isConsistent: new Set(totalQtys).size <= 1 && new Set(totalWeights).size <= 1,
+            qtyMismatch: new Set(totalQtys).size > 1,
+            weightMismatch: new Set(totalWeights).size > 1
         };
+    })();
+
+    // Aggregated Stats for Cards
+    const aggregatedStats = {
+        totalValue: dossier.reduce((sum, d) => sum + (d.intelligence?.validation_hooks?.total_value || 0), 0),
+        currency: dossier[0]?.intelligence?.validation_hooks?.currency || 'USD',
+        mainDestination: dossier[0]?.doc_metadata?.destination_country || 'Global Market',
+        mainIncoterm: dossier[0]?.intelligence?.incoterms?.term || 'N/A',
+        avgTax: dossier[0]?.items?.[0]?.taxes?.duty_percent || 0
     };
-
-    const marketShareData = data?.intelligence?.market_data?.competitor_nations?.map((nation: string, idx: number) => ({
-        name: nation,
-        value: Math.floor(Math.random() * 40) + 10
-    })) || [
-            { name: 'China', value: 40 },
-            { name: 'Germany', value: 30 },
-            { name: 'Turkey', value: 20 },
-            { name: 'Others', value: 10 }
-        ];
-
-    const COLORS = ['#003366', '#F59E0B', '#10B981', '#6366F1', '#EC4899'];
 
     return (
-        <div className="min-h-screen bg-slate-50 font-outfit text-slate-900 pb-20 selection:bg-yellow/30">
+        <div className="min-h-screen bg-white font-outfit text-navy pb-32">
+            {/* --- SLIM HEADER --- */}
+            <header className="fixed top-0 inset-x-0 h-20 bg-white/80 backdrop-blur-md z-[100] border-b border-slate-100 px-8 py-4">
+                <div className="max-w-[1700px] mx-auto flex items-center justify-between h-full">
+                    <LoxLogo />
+                    <div className="flex items-center gap-6">
+                        <button onClick={() => navigate('/vault')} className="text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-navy transition-colors">Digital Vault</button>
+                        <div className="w-10 h-10 rounded-full bg-navy flex items-center justify-center text-white font-black text-xs">U</div>
+                    </div>
+                </div>
+            </header>
+
             <AnimatePresence mode="wait">
-                {!data ? (
-                    <motion.div
-                        key="landing"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0, scale: 0.98 }}
-                        className="max-w-6xl mx-auto px-6 pt-24 md:pt-32"
-                    >
-                        {/* Hero Section */}
-                        <div className="text-center mb-20">
-                            <motion.div
-                                initial={{ opacity: 0, y: -10 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                className="inline-flex items-center gap-2 px-4 py-1.5 bg-navy text-white text-[10px] font-black uppercase tracking-[0.3em] rounded-full mb-8 shadow-xl"
-                            >
-                                <Sparkles size={12} className="text-yellow" /> LOX AI RADAR • INTELLIGENCE NODE
+                {dossier.length === 0 ? (
+                    <motion.div key="landing" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="pt-48 max-w-7xl mx-auto px-6">
+                        <div className="flex flex-col items-center text-center">
+                            <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="bg-slate-50 border border-slate-100 p-3 rounded-2xl mb-12 shadow-inner">
+                                <BoxIcon className="w-20 h-20 text-navy" />
                             </motion.div>
-                            <h2 className="text-5xl md:text-8xl font-black tracking-tight text-navy mb-8 leading-none">
-                                Don't just extract.<br />
-                                <span className="text-yellow bg-navy px-5 py-2 rounded-2xl inline-block -rotate-1 shadow-2xl">Understand.</span>
-                            </h2>
-                            <p className="text-xl md:text-2xl text-slate-500 max-w-2xl mx-auto font-bold leading-relaxed mb-12">
-                                The world's first <span className="text-navy underline decoration-yellow decoration-4 underline-offset-4">Customs AI</span> that conducts digital audits, tax forecasting and market intelligence from a single upload.
+                            <h1 className="text-6xl md:text-[5rem] font-black tracking-tighter leading-[0.9] mb-8">
+                                Transform Shipments into <span className="text-yellow">Pure Logic.</span>
+                            </h1>
+                            <p className="max-w-xl text-slate-400 font-bold mb-16 leading-relaxed">
+                                Upload invoices, packing lists, and certificates in bulk. Our AI connects the dots, validates data, and builds your digital shipment dossier.
                             </p>
 
-                            <div className="max-w-3xl mx-auto mb-24">
-                                <div className="bg-white rounded-[3rem] p-4 shadow-2xl shadow-slate-200/80 border-t-8 border-yellow relative group overflow-hidden transition-all hover:shadow-yellow/10">
-                                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/2 h-1 bg-yellow/50 blur-xl group-hover:w-full transition-all duration-700" />
-
-                                    <div className={`relative border-2 border-dashed rounded-[2.5rem] p-12 md:p-20 text-center transition-all duration-500
-                                        ${loading ? 'border-yellow bg-yellow/5' : 'border-slate-100 bg-slate-50/50 hover:border-yellow hover:bg-white'}`}
-                                    >
-                                        <input
-                                            type="file"
-                                            onChange={handleFile}
-                                            className="absolute inset-0 opacity-0 cursor-pointer z-10"
-                                            disabled={loading}
-                                            accept=".pdf,.png,.jpg,.jpeg,.webp"
-                                        />
-
-                                        <div className="flex flex-col items-center">
-                                            <div className={`w-28 h-28 rounded-[2rem] flex items-center justify-center mb-8 transition-all shadow-2xl
-                                                ${loading ? 'bg-navy text-yellow ring-4 ring-yellow/20 translate-y-2' : 'bg-white text-navy border border-slate-100 group-hover:-translate-y-2'}`}
-                                            >
-                                                {loading ? <Loader2 size={40} className="animate-spin" /> : <Upload size={40} />}
-                                            </div>
-                                            <h3 className="text-3xl font-black text-navy mb-3 italic tracking-tighter">
-                                                {loading ? 'ANALYZING...' : 'INJECT SHIPMENT'}
-                                            </h3>
-                                            <p className="text-slate-400 text-xs font-black uppercase tracking-[0.3em]">Vision-LLM Powered Gümrük Radarı</p>
-                                        </div>
+                            <div className="relative group">
+                                <div className="absolute inset-0 bg-yellow blur-3xl opacity-20 group-hover:opacity-40 transition-opacity" />
+                                <div className="relative bg-navy rounded-[3.5rem] p-4 text-white shadow-[0_40px_80px_-20px_rgba(0,0,0,0.3)] transition-transform hover:-translate-y-2">
+                                    <div className="border-2 border-dashed border-white/10 rounded-[2.5rem] p-16 md:p-24 text-center">
+                                        <input type="file" multiple onChange={handleFiles} className="absolute inset-0 opacity-0 cursor-pointer z-10" />
+                                        <Upload size={48} className="mx-auto mb-8 text-yellow" />
+                                        <h3 className="text-2xl font-black italic mb-2">Drop Shipment Documents</h3>
+                                        <p className="text-[9px] font-black uppercase tracking-[0.3em] opacity-50">Bulk Analysis Engine Active</p>
                                     </div>
                                 </div>
-                            </div>
-
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 text-left">
-                                {[
-                                    { icon: Scale, title: "CUSTOMS AI", desc: "Digital duty calculation and GTİP suggestions with 12-digit accuracy.", tag: "LIVE" },
-                                    { icon: ShieldCheck, title: "COMPLIANCE", desc: "Incoterms validation and regulatory documentation audits.", tag: "PRO" },
-                                    { icon: BarChart3, title: "MARKER BI", desc: "Automatic market share reports and top competitor identifying.", tag: "BETA" },
-                                    { icon: QrIcon, title: "LOX WALLET", desc: "Dossier management with unique QR code physical sync.", tag: "CORE" }
-                                ].map((item, i) => (
-                                    <motion.div
-                                        key={i}
-                                        initial={{ opacity: 0, scale: 0.95 }}
-                                        animate={{ opacity: 1, scale: 1 }}
-                                        transition={{ delay: i * 0.1 }}
-                                        className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-xl relative group hover:border-yellow/50 transition-all cursor-default"
-                                    >
-                                        <div className="absolute top-6 right-8 text-[8px] font-black bg-slate-50 text-slate-400 px-2 py-1 rounded-full uppercase tracking-widest">{item.tag}</div>
-                                        <div className="w-14 h-14 bg-slate-50 text-navy rounded-2xl flex items-center justify-center mb-6 shadow-inner group-hover:bg-navy group-hover:text-yellow transition-colors">
-                                            <item.icon size={28} />
-                                        </div>
-                                        <h4 className="text-xl font-black text-navy mb-3 italic tracking-tighter uppercase">{item.title}</h4>
-                                        <p className="text-sm text-slate-500 font-bold leading-relaxed">{item.desc}</p>
-                                    </motion.div>
-                                ))}
                             </div>
                         </div>
                     </motion.div>
                 ) : (
-                    /* Dashboard View */
-                    <motion.div
-                        key="results"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        className="max-w-[1600px] mx-auto px-6 md:px-12 pt-12"
-                    >
-                        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-8 mb-10 bg-navy p-10 rounded-[3rem] text-white shadow-2xl relative overflow-hidden">
-                            <div className="absolute top-0 right-0 w-64 h-64 bg-yellow/10 blur-[100px] rounded-full animate-pulse" />
-
-                            <div className="flex items-center gap-8 relative z-10">
-                                <button onClick={() => setData(null)} className="w-14 h-14 bg-white/10 rounded-2xl flex items-center justify-center text-white hover:bg-yellow hover:text-navy transition-all shadow-xl backdrop-blur-md">
-                                    <RefreshCcw size={24} />
-                                </button>
+                    /* --- SOPHISTICATED DOSSIER DASHBOARD --- */
+                    <motion.div key="dashboard" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="pt-28 max-w-[1700px] mx-auto px-8">
+                        {/* Control Bar */}
+                        <div className="flex flex-col lg:flex-row items-center justify-between mb-16 p-10 bg-navy rounded-[3.5rem] text-white shadow-2xl relative overflow-hidden">
+                            <div className="absolute top-0 right-0 w-96 h-96 bg-yellow/10 blur-[120px] rounded-full" />
+                            <div className="flex items-center gap-10 relative z-10">
+                                <button onClick={() => setDossier([])} className="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center hover:bg-white hover:text-navy transition-all border border-white/5"><RefreshCcw size={28} /></button>
                                 <div>
                                     <div className="flex items-center gap-4 mb-2">
-                                        <h1 className="text-lg font-black tracking-tighter uppercase italic text-yellow">LOX<span className="text-white">CONVERT PRO IQ</span></h1>
-                                        <span className="px-3 py-1 bg-emerald-500 text-navy text-[8px] font-black uppercase tracking-widest rounded-full">AUDIT PASSED</span>
+                                        <span className="text-[10px] font-black tracking-[0.4em] text-yellow uppercase">LOX AI CORE</span>
+                                        <span className="px-3 py-1 bg-emerald-500/20 text-emerald-400 text-[8px] font-black rounded-full border border-emerald-500/30">AUDIT READY</span>
                                     </div>
-                                    <h2 className="text-4xl font-black uppercase tracking-tight italic">Commercial <span className="text-yellow">Intelligence.</span></h2>
+                                    <h2 className="text-4xl font-black italic tracking-tighter uppercase">Shipment Dossier <span className="text-yellow opacity-50"># {dossier[0]?.doc_metadata?.reference_no || 'UNLINKED'}</span></h2>
                                 </div>
                             </div>
 
-                            <div className="flex flex-wrap items-center gap-4 relative z-10">
-                                <button onClick={() => setShowExportWizard(true)} className="px-8 py-4 bg-yellow text-navy rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] shadow-xl hover:-translate-y-1 transition-all flex items-center gap-3">
-                                    <Download size={18} /> Global Export Engine
+                            <div className="flex flex-wrap items-center gap-4 relative z-10 mt-10 lg:mt-0">
+                                <button onClick={() => setShowQRLabel(true)} className="px-10 py-5 bg-white/10 border border-white/20 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] hover:bg-white hover:text-navy transition-all flex items-center gap-3"><QrIcon size={18} /> Generate PR Label</button>
+                                <button onClick={handleSaveToVault} disabled={saveLoading} className="px-10 py-5 bg-white/10 border border-white/20 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] hover:bg-white hover:text-navy transition-all flex items-center gap-3">
+                                    {saveLoading ? <Loader2 size={18} className="animate-spin" /> : <Save size={18} />} Push to Vault
                                 </button>
-                                <button onClick={() => setShowQR(!showQR)} className="px-8 py-4 bg-white/10 text-white border border-white/20 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] shadow-xl hover:-translate-y-1 transition-all flex items-center gap-3">
-                                    <QrIcon size={18} /> Physical QR Sync
-                                </button>
-                                <button onClick={handleSaveToFolder} className="px-8 py-4 bg-navy text-white border border-white/10 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] shadow-xl hover:-translate-y-1 transition-all flex items-center gap-3">
-                                    {saveLoading ? <Loader2 size={18} className="animate-spin" /> : <Boxes size={18} />} Push to Vault
-                                </button>
+                                <button onClick={() => setShowExportWizard(true)} className="px-10 py-5 bg-yellow text-navy rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] shadow-xl hover:-translate-y-1 transition-all flex items-center gap-3"><Download size={18} /> Global Export Engine</button>
                             </div>
                         </div>
 
-                        {/* Digital Audit Grid */}
-                        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 mb-12">
-                            <div className="bg-white p-8 rounded-[3rem] border border-slate-200 shadow-xl flex flex-col justify-between group overflow-hidden relative">
-                                <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-all"><Globe size={60} /></div>
+                        {/* --- COMPLIANCE & INTELLIGENCE GRID --- */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
+                            {/* Incoterms */}
+                            <div className="bg-slate-50 p-10 rounded-[3rem] border border-slate-100 flex flex-col justify-between group hover:shadow-2xl transition-all relative overflow-hidden">
+                                <div className="absolute -top-4 -right-4 w-24 h-24 bg-navy/5 rounded-full blur-xl group-hover:scale-150 transition-transform" />
                                 <div>
-                                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 italic">Incoterms Protocol</p>
-                                    <div className="flex items-center gap-4 mb-4">
-                                        <div className="w-12 h-12 bg-navy rounded-2xl flex items-center justify-center text-yellow shadow-xl font-black">
-                                            {data.intelligence?.incoterms?.term || 'DAP'}
-                                        </div>
-                                        <span className={`text-[10px] font-black px-2 py-1 rounded uppercase ${data.intelligence?.incoterms?.is_valid ? 'bg-emerald-50 text-emerald-600' : 'bg-red-50 text-red-600'}`}>
-                                            {data.intelligence?.incoterms?.is_valid ? 'Valid Alignment' : 'Audit Alert'}
-                                        </span>
+                                    <div className="flex items-center justify-between mb-8">
+                                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest italic">Incoterms Protocol <InfoButton title="Incoterms 2020" content="Analyzes the detected trade term against the shipment flow to ensure logistical alignment." /></p>
+                                        <ShieldCheck size={20} className="text-navy" />
+                                    </div>
+                                    <div className="flex items-center gap-5">
+                                        <div className="w-16 h-16 bg-navy rounded-2xl flex items-center justify-center text-yellow text-2xl font-black shadow-xl">{aggregatedStats.mainIncoterm}</div>
+                                        <span className="text-[10px] font-black px-3 py-1 bg-emerald-50 text-emerald-600 rounded-full uppercase">Valid Term</span>
                                     </div>
                                 </div>
-                                <p className="text-xs text-slate-500 font-bold leading-relaxed italic">"{data.intelligence?.incoterms?.advice || 'Protocol confirmed based on freight payment records.'}"</p>
+                                <p className="mt-8 text-xs text-slate-400 font-bold italic leading-relaxed">"{dossier[0]?.intelligence?.incoterms?.advice || 'Protocol verified.'}"</p>
                             </div>
 
-                            <div className="bg-white p-8 rounded-[3rem] border border-slate-200 shadow-xl flex flex-col justify-between group overflow-hidden relative">
-                                <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-all"><Scale size={60} /></div>
+                            {/* Financial */}
+                            <div className="bg-slate-50 p-10 rounded-[3rem] border border-slate-100 flex flex-col justify-between group hover:shadow-2xl transition-all">
                                 <div>
-                                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 italic">Digital Tax Forecast</p>
-                                    <div className="grid grid-cols-2 gap-4">
+                                    <div className="flex items-center justify-between mb-8">
+                                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest italic">Financial Forecast <InfoButton title="Tax Analysis" content="Aggregated tax liability (Duty/VAT) based on the target country's customs regulations." /></p>
+                                        <Scale size={20} className="text-navy" />
+                                    </div>
+                                    <div className="grid grid-cols-2 gap-8">
                                         <div>
-                                            <p className="text-[9px] font-black text-slate-400 uppercase">Est. Duty</p>
-                                            <p className="text-lg font-black text-navy">%{data.items[0]?.taxes?.duty_percent || '4.2'}</p>
+                                            <p className="text-[9px] font-black text-slate-400 uppercase mb-1">Avg Duty</p>
+                                            <p className="text-2xl font-black text-navy tracking-tighter">%{aggregatedStats.avgTax}</p>
                                         </div>
                                         <div>
-                                            <p className="text-[9px] font-black text-slate-400 uppercase">Est. VAT</p>
-                                            <p className="text-lg font-black text-navy">%{data.items[0]?.taxes?.vat_percent || '20'}</p>
+                                            <p className="text-[9px] font-black text-slate-400 uppercase mb-1">Dossier Total</p>
+                                            <p className="text-2xl font-black text-navy tracking-tighter">{aggregatedStats.currency} {aggregatedStats.totalValue.toLocaleString()}</p>
                                         </div>
                                     </div>
                                 </div>
-                                <div className="mt-4 pt-4 border-t border-slate-50">
-                                    <p className="text-[9px] font-bold text-slate-400 italic font-mono uppercase">Calculated via GTİP Node</p>
+                                <div className="mt-8 pt-8 border-t border-slate-200/50">
+                                    <p className="text-[9px] font-black text-slate-300 uppercase italic">Market: {aggregatedStats.mainDestination}</p>
                                 </div>
                             </div>
 
-                            <div className="bg-white p-8 rounded-[3rem] border border-slate-200 shadow-xl flex flex-col justify-between group overflow-hidden relative">
-                                <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-all"><ShieldQuestion size={60} /></div>
+                            {/* Integrity */}
+                            <div className="bg-slate-50 p-10 rounded-[3rem] border border-slate-100 flex flex-col justify-between group hover:shadow-2xl transition-all relative overflow-hidden">
+                                {validation?.qtyMismatch && <div className="absolute top-0 right-0 p-8 text-red-500 animate-pulse"><AlertTriangle size={40} /></div>}
                                 <div>
-                                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 italic">Document Integrity</p>
-                                    <div className="space-y-3">
+                                    <div className="flex items-center justify-between mb-8">
+                                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest italic">Dossier Integrity <InfoButton title="Cross-Check Engine" content="Automated comparison between Invoice, Packing List and other docs to find quantity/weight mismatches." /></p>
+                                        <ShieldQuestion size={20} className="text-navy" />
+                                    </div>
+                                    <div className="space-y-4">
                                         <div className="flex items-center justify-between">
-                                            <span className="text-[11px] font-bold text-slate-500 italic uppercase">Weight Sync</span>
-                                            {data.intelligence?.cross_validation?.is_consistent ? <Check size={14} className="text-emerald-500" /> : <AlertCircle size={14} className="text-red-500" />}
+                                            <span className="text-[11px] font-bold text-slate-500 uppercase italic">Quantity Sync</span>
+                                            {validation?.qtyMismatch ? <AlertCircle size={14} className="text-red-500" /> : <Check size={14} className="text-emerald-500" />}
                                         </div>
                                         <div className="flex items-center justify-between">
-                                            <span className="text-[11px] font-bold text-slate-500 italic uppercase">Quantity Sync</span>
-                                            <Check size={14} className="text-emerald-500" />
+                                            <span className="text-[11px] font-bold text-slate-500 uppercase italic">Weight Sync</span>
+                                            {validation?.weightMismatch ? <AlertCircle size={14} className="text-red-500" /> : <Check size={14} className="text-emerald-500" />}
                                         </div>
                                     </div>
                                 </div>
-                                <p className="text-[10px] font-black text-navy italic mt-4 uppercase">"{data.intelligence?.cross_validation?.noted_inconsistencies?.[0] || '100% Data Coherence Detected'}"</p>
+                                <p className={`mt-8 text-[10px] font-black uppercase ${validation?.isConsistent ? 'text-emerald-500' : 'text-red-500 animate-bounce'}`}>
+                                    {validation?.isConsistent ? 'Dossier 100% Consistent' : 'CRITICAL MISMATCH DETECTED'}
+                                </p>
                             </div>
 
-                            <div className="bg-white p-8 rounded-[3rem] border border-slate-200 shadow-xl flex flex-col justify-between group overflow-hidden relative">
-                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 italic">Origin Market Share</p>
-                                <div className="h-28 w-full">
-                                    <ResponsiveContainer width="100%" height="100%">
-                                        <PieChart>
-                                            <Pie data={marketShareData} cx="50%" cy="50%" innerRadius={25} outerRadius={40} dataKey="value">
-                                                {marketShareData.map((entry: any, index: number) => (
-                                                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                                                ))}
-                                            </Pie>
-                                            <Tooltip />
-                                        </PieChart>
-                                    </ResponsiveContainer>
+                            {/* Intelligence / Geography */}
+                            <div className="bg-navy p-10 rounded-[3rem] text-white flex flex-col justify-between group hover:-translate-y-2 transition-all shadow-xl">
+                                <div>
+                                    <div className="flex items-center justify-between mb-8">
+                                        <p className="text-[10px] font-black text-yellow uppercase tracking-widest italic">Destination Radar <InfoButton title="Target Market" content="Real-time identification of the destination market and sector-specific risk scoring." /></p>
+                                        <Map size={20} className="text-yellow" />
+                                    </div>
+                                    <h5 className="text-3xl font-black italic tracking-tighter uppercase mb-2">{aggregatedStats.mainDestination}</h5>
+                                    <p className="text-[10px] font-bold text-blue-200 uppercase tracking-widest italic">{dossier[0]?.intelligence?.commodity_category || 'General Cargo'}</p>
+                                </div>
+                                <div className="mt-8 flex items-center justify-between">
+                                    <div className="flex flex-col">
+                                        <span className="text-[8px] font-black text-white/40 uppercase mb-1">Risk Factor</span>
+                                        <span className="text-lg font-black text-yellow">{dossier[0]?.intelligence?.risk_score || '1'}/10</span>
+                                    </div>
+                                    <TrendingUp size={24} className="text-emerald-400" />
                                 </div>
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
-                            <div className="lg:col-span-8 bg-white rounded-[3rem] shadow-2xl border border-slate-100 overflow-hidden">
-                                <div className="p-10 border-b border-slate-50 flex justify-between items-center bg-slate-50/50">
-                                    <h4 className="text-xs font-black text-navy uppercase tracking-[0.2em] flex items-center gap-3">
-                                        <Zap size={20} className="text-yellow" /> Shipment Extraction Matrix
-                                    </h4>
-                                    <button onClick={handleGenerateInvoice} className="text-[10px] font-black text-navy uppercase tracking-widest px-6 py-3 bg-white border border-slate-200 rounded-2xl hover:bg-navy hover:text-white transition-all shadow-sm">
-                                        Create AI Draft Invoice
-                                    </button>
-                                </div>
-                                <div className="overflow-x-auto">
-                                    <table className="w-full text-left">
-                                        <thead>
-                                            <tr className="bg-white border-b border-slate-100">
-                                                <th className="px-10 py-8 text-[10px] font-black text-slate-400 uppercase tracking-widest">Trade Item</th>
-                                                <th className="px-10 py-8 text-[10px] font-black text-slate-400 uppercase tracking-widest">Unit Stats</th>
-                                                <th className="px-10 py-8 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">Zap Intelligence</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody className="divide-y divide-slate-50">
-                                            {data.items.map((item: any, i: number) => (
-                                                <tr key={i} className={`group hover:bg-slate-50/80 transition-all ${selectedItem === item ? 'bg-yellow/5' : ''}`}>
-                                                    <td className="px-10 py-10">
-                                                        <div className="flex flex-col">
-                                                            <span className="text-sm font-black text-navy mb-1 uppercase italic">{item.description}</span>
-                                                            <div className="flex items-center gap-3">
-                                                                <code className="text-[10px] font-black bg-navy text-yellow px-2 py-0.5 rounded italic shadow-sm tracking-wider">{item.hs_code}</code>
-                                                                <span className="text-[9px] font-bold text-slate-400 uppercase italic">Conf: {(item.confidence * 100).toFixed(0)}%</span>
-                                                            </div>
-                                                        </div>
-                                                    </td>
-                                                    <td className="px-10 py-10">
-                                                        <div className="flex flex-col italic">
-                                                            <span className="text-lg font-black text-navy">{item.qty} {item.unit}</span>
-                                                            <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">{item.weight || '0'} KG GROSS</span>
-                                                        </div>
-                                                    </td>
-                                                    <td className="px-10 py-10 text-center">
-                                                        <button
-                                                            onClick={() => handleInsights(item)}
-                                                            className={`p-5 rounded-[1.5rem] transition-all ${selectedItem === item ? 'bg-yellow text-navy rotate-12 scale-110 shadow-xl' : 'bg-slate-50 text-slate-300 hover:bg-navy hover:text-white group-hover:scale-105'}`}
-                                                        >
-                                                            <Sparkles size={24} />
-                                                        </button>
-                                                    </td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-
-                            <div className="lg:col-span-4 space-y-10">
-                                <div className="bg-white rounded-[3rem] p-12 border border-slate-200 shadow-2xl">
-                                    <div className="flex items-center justify-between mb-10">
-                                        <div>
-                                            <h4 className="text-sm font-black text-navy uppercase tracking-widest">Growth Forecast</h4>
-                                            <p className="text-[10px] font-black text-slate-400 italic">Global Market Potential</p>
-                                        </div>
-                                        <div className="w-10 h-10 bg-slate-50 rounded-xl flex items-center justify-center text-navy shadow-inner"><TrendingUp size={20} /></div>
-                                    </div>
-                                    <div className="h-48 w-full">
-                                        <ResponsiveContainer width="100%" height="100%">
-                                            <BarChart data={marketShareData}>
-                                                <XAxis dataKey="name" hide />
-                                                <Bar dataKey="value" fill="#003366" radius={[10, 10, 0, 0]} />
-                                            </BarChart>
-                                        </ResponsiveContainer>
-                                    </div>
-                                </div>
-
-                                <AnimatePresence mode="wait">
-                                    {selectedItem ? (
-                                        <motion.div
-                                            key={selectedItem.description}
-                                            initial={{ opacity: 0, x: 20 }}
-                                            animate={{ opacity: 1, x: 0 }}
-                                            className="bg-navy p-10 rounded-[3rem] text-white shadow-2xl relative overflow-hidden"
-                                        >
-                                            <div className="absolute top-0 right-0 w-64 h-64 bg-yellow/5 blur-[80px] rounded-full" />
-                                            <div className="relative z-10">
-                                                <div className="flex items-center gap-4 mb-10 pb-8 border-b border-white/5">
-                                                    <div className="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center text-yellow animate-pulse"><Zap size={24} /></div>
-                                                    <div>
-                                                        <h4 className="text-[10px] font-black text-blue-200 uppercase tracking-[0.3em]">AI Trade Intelligence</h4>
-                                                    </div>
+                        {/* --- MAIN MATRIX & LIST --- */}
+                        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+                            <div className="lg:col-span-8 space-y-8">
+                                {dossier.map((doc, idx) => (
+                                    <motion.div key={doc.localId} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: idx * 0.1 }} className="bg-white rounded-[3rem] p-4 border border-slate-100 shadow-xl group hover:border-navy transition-all overflow-hidden">
+                                        <div className="p-6 flex flex-col lg:flex-row items-center justify-between gap-8">
+                                            <div className="flex items-center gap-8">
+                                                <div className="w-16 h-16 bg-slate-50 rounded-2xl flex items-center justify-center text-navy shadow-inner group-hover:bg-navy group-hover:text-yellow transition-all">
+                                                    <FileSearch size={28} />
                                                 </div>
-                                                <div className="space-y-8">
-                                                    <div className="p-8 bg-white/5 rounded-[2rem] border border-white/5 backdrop-blur-md">
-                                                        <p className="text-[10px] font-black text-yellow uppercase tracking-widest mb-4 italic">Regulatory Sweep</p>
-                                                        <p className="text-xs text-blue-100 font-bold leading-relaxed italic">
-                                                            {insightData?.summary || "Analyzing specific import barriers for this tariff code in Turkey region..."}
-                                                        </p>
+                                                <div>
+                                                    <div className="flex items-center gap-3 mb-1">
+                                                        <span className="text-[9px] font-black text-navy uppercase px-2 py-0.5 bg-yellow rounded shadow-sm">{doc.doc_metadata?.type || 'UNLINKED'}</span>
+                                                        <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest">ID: {doc.doc_metadata?.reference_no || 'N/A'}</span>
                                                     </div>
+                                                    <h3 className="text-xl font-black italic text-navy truncate max-w-sm uppercase">{doc.fileName}</h3>
                                                 </div>
                                             </div>
-                                        </motion.div>
-                                    ) : (
-                                        <div className="bg-slate-200/30 rounded-[3rem] p-20 text-center border-4 border-dotted border-slate-200 flex flex-col items-center">
-                                            <div className="w-24 h-24 bg-white rounded-[2.5rem] flex items-center justify-center text-slate-300 mb-8 shadow-xl"><Scan size={40} /></div>
-                                            <p className="text-xs font-black text-slate-400 uppercase tracking-widest max-w-[200px]">Select any item from the matrix to reveal deep AI trade intelligence</p>
+                                            <div className="flex items-center gap-12 text-center lg:text-right px-8 border-l border-slate-50">
+                                                <div>
+                                                    <p className="text-[8px] font-black text-slate-300 uppercase mb-1">Items</p>
+                                                    <p className="text-xl font-black">{doc.items.length}</p>
+                                                </div>
+                                                <div>
+                                                    <p className="text-[8px] font-black text-slate-300 uppercase mb-1">Total Wt</p>
+                                                    <p className="text-xl font-black">{doc.intelligence?.validation_hooks?.total_weight || '0'} kg</p>
+                                                </div>
+                                                <button className="w-12 h-12 rounded-2xl bg-slate-50 flex items-center justify-center hover:bg-navy hover:text-white transition-all"><Maximize2 size={20} /></button>
+                                            </div>
                                         </div>
-                                    )}
-                                </AnimatePresence>
+                                    </motion.div>
+                                ))}
+                            </div>
+
+                            <div className="lg:col-span-4 sticky top-28 space-y-8">
+                                <div className="bg-navy p-12 rounded-[3.5rem] text-white shadow-2xl relative overflow-hidden">
+                                    <div className="absolute top-0 right-0 w-64 h-64 bg-yellow/5 blur-[100px] rounded-full" />
+                                    <div className="relative z-10">
+                                        <div className="flex items-center gap-4 mb-10 pb-8 border-b border-white/5">
+                                            <div className="w-14 h-14 bg-white/10 rounded-2xl flex items-center justify-center text-yellow"><BrainCircuit size={32} /></div>
+                                            <div>
+                                                <h4 className="text-[10px] font-black text-blue-200 uppercase tracking-[0.3em]">AI Intelligence Node</h4>
+                                                <p className="text-[9px] font-bold text-white/30 uppercase italic">Operational Protocol analysis</p>
+                                            </div>
+                                        </div>
+
+                                        <div className="space-y-10">
+                                            <div>
+                                                <p className="text-[10px] font-black text-yellow uppercase mb-3 flex items-center gap-2 italic"><ShieldAlert size={14} /> Regulatory Briefing</p>
+                                                <p className="text-xs font-bold leading-relaxed text-blue-50 italic">
+                                                    "{dossier[0]?.intelligence?.regulatory_notes || "Awaiting specific document context for exhaustive regulatory sweep..."}"
+                                                </p>
+                                            </div>
+
+                                            <div className="grid grid-cols-1 gap-4">
+                                                {(dossier[0]?.intelligence?.suggested_buyers || []).map((buyer: string, i: number) => (
+                                                    <div key={i} className="bg-white/5 p-4 rounded-2xl border border-white/5 flex items-center gap-4 group cursor-pointer hover:bg-white/10 transition-all">
+                                                        <div className="w-10 h-10 bg-yellow rounded-xl flex items-center justify-center text-navy group-hover:rotate-12 transition-transform"><TargetIcon size={18} /></div>
+                                                        <span className="text-[10px] font-black uppercase italic text-white/80">{buyer}</span>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </motion.div>
                 )}
             </AnimatePresence>
 
-            {/* Smart Invoice Draft Modal */}
+            {/* --- PHYSICAL QR LABEL OVERLAY --- */}
             <AnimatePresence>
-                {showInvoiceModal && invoiceData && (
-                    <div className="fixed inset-0 z-[200] flex items-center justify-center p-6 bg-navy/40 backdrop-blur-2xl">
-                        <motion.div
-                            initial={{ opacity: 0, y: 100, scale: 0.95 }}
-                            animate={{ opacity: 1, y: 0, scale: 1 }}
-                            className="bg-white rounded-[4.5rem] max-w-6xl w-full max-h-[92vh] overflow-y-auto shadow-2xl p-12 md:p-24 relative border border-slate-100"
-                        >
-                            <button onClick={() => setShowInvoiceModal(false)} className="absolute top-12 right-12 w-16 h-16 bg-slate-50 rounded-[2rem] flex items-center justify-center hover:bg-navy hover:text-white transition-all shadow-xl">
-                                <X size={32} />
-                            </button>
-                            {/* Invoice content preserved... */}
+                {showQRLabel && (
+                    <div className="fixed inset-0 z-[300] flex items-center justify-center p-6 bg-navy/60 backdrop-blur-xl">
+                        <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="bg-white rounded-[4rem] p-12 max-w-md w-full shadow-2xl text-center relative">
+                            <button onClick={() => setShowQRLabel(false)} className="absolute top-8 right-8 text-slate-300 hover:text-navy"><X size={24} /></button>
+                            <div className="flex justify-center mb-10"><LoxLogo /></div>
+                            <div className="bg-slate-50 p-8 rounded-[3rem] mb-10 border border-slate-100 flex items-center justify-center aspect-square shadow-inner">
+                                <img src={`https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=LOXDOSSIER_${dossier[0]?.doc_metadata?.reference_no}`} alt="QR" className="w-full h-full mix-blend-multiply opacity-80" />
+                            </div>
+                            <h4 className="text-xl font-black italic text-navy uppercase mb-2">Shipment ID: {dossier[0]?.doc_metadata?.reference_no || 'Pending'}</h4>
+                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-10">Scan to access Digital Dossier at Port</p>
+                            <button className="w-full bg-navy text-white py-6 rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl hover:bg-yellow hover:text-navy transition-all">Download Label PDF</button>
                         </motion.div>
                     </div>
                 )}
             </AnimatePresence>
 
-            {/* --- Global Smart Export Wizard (MODAL) --- */}
+            {/* --- EXPORT WIZARD --- */}
             <AnimatePresence>
                 {showExportWizard && (
                     <div className="fixed inset-0 z-[300] flex items-center justify-center p-6 bg-navy/60 backdrop-blur-xl">
-                        <motion.div
-                            initial={{ opacity: 0, scale: 0.9, y: 20 }}
-                            animate={{ opacity: 1, scale: 1, y: 0 }}
-                            exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                            className="bg-white rounded-[4rem] max-w-4xl w-full overflow-hidden shadow-[0_50px_100px_rgba(0,0,0,0.4)] border border-white/20 relative"
-                        >
-                            {/* Wizard Header */}
-                            <div className="bg-navy p-12 text-white relative">
-                                <div className="absolute top-0 right-0 w-64 h-64 bg-yellow/10 blur-[80px] rounded-full" />
-                                <button onClick={() => setShowExportWizard(false)} className="absolute top-10 right-10 text-white/40 hover:text-white transition-colors">
-                                    <X size={24} />
-                                </button>
-
-                                <div className="flex items-center gap-6 mb-4">
-                                    <div className="w-16 h-16 bg-yellow rounded-3xl flex items-center justify-center text-navy shadow-xl"><Binary size={32} /></div>
+                        <motion.div initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} className="bg-white rounded-[4rem] max-w-4xl w-full overflow-hidden shadow-2xl">
+                            <div className="bg-navy p-12 text-white flex items-center justify-between">
+                                <div className="flex items-center gap-6 text-left">
+                                    <div className="w-16 h-16 bg-yellow rounded-[1.5rem] flex items-center justify-center text-navy shadow-xl"><Binary size={32} /></div>
                                     <div>
-                                        <h2 className="text-3xl font-black italic tracking-tighter uppercase">Smart <span className="text-yellow">Export Engine.</span></h2>
-                                        <p className="text-[10px] font-black text-blue-200 uppercase tracking-[0.4em]">Global ERP & Customs Mapping Node</p>
+                                        <h2 className="text-3xl font-black italic tracking-tighter uppercase">Master <span className="text-yellow">Dossier Engine.</span></h2>
+                                        <p className="text-[10px] font-black text-blue-200 uppercase tracking-[0.4em]">Integrated Logistics Analytics</p>
                                     </div>
                                 </div>
+                                <button onClick={() => setShowExportWizard(false)} className="text-white/40 hover:text-white"><X size={28} /></button>
                             </div>
-
-                            {/* Wizard Body */}
-                            <div className="p-12 md:p-16">
+                            <div className="p-16">
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
                                     {Object.entries(EXPORT_TEMPLATES).map(([key, template]) => (
-                                        <button
-                                            key={key}
-                                            onClick={() => setSelectedTemplate(key)}
-                                            className={`p-8 rounded-[2.5rem] border-2 text-left transition-all relative group
-                                                ${selectedTemplate === key ? 'border-yellow bg-yellow/5' : 'border-slate-100 hover:border-slate-200 bg-slate-50/50'}`}
-                                        >
-                                            <div className={`w-12 h-12 rounded-2xl flex items-center justify-center mb-6 shadow-sm
-                                                ${selectedTemplate === key ? 'bg-navy text-yellow' : 'bg-white text-slate-400'}`}>
-                                                <template.icon size={24} />
-                                            </div>
-                                            <h4 className="text-sm font-black text-navy uppercase mb-2 italic">{template.name}</h4>
+                                        <button key={key} onClick={() => setSelectedTemplate(key)} className={`p-8 rounded-[2.5rem] border-2 text-left transition-all ${selectedTemplate === key ? 'border-yellow bg-yellow/5 shadow-xl' : 'border-slate-50 bg-slate-50/50'}`}>
+                                            <h5 className="text-sm font-black text-navy uppercase mb-2 italic">{template.name}</h5>
                                             <p className="text-[10px] font-bold text-slate-400 uppercase leading-relaxed">{template.desc}</p>
-
-                                            {selectedTemplate === key && (
-                                                <div className="absolute top-6 right-6 text-yellow"><Check size={20} /></div>
-                                            )}
                                         </button>
                                     ))}
                                 </div>
-
-                                <div className="flex flex-col md:flex-row items-center justify-between gap-8 p-10 bg-slate-50 rounded-[3rem] border border-slate-100">
-                                    <div className="flex items-center gap-6">
-                                        <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-navy shadow-inner"><Settings2 size={24} /></div>
-                                        <div>
-                                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Measurement System</p>
-                                            <p className="text-sm font-black text-navy italic">Currently formatted in <span className="text-yellow bg-navy px-1.5 rounded">{isMetric ? 'METRIC (KG)' : 'IMPERIAL (LBS)'}</span></p>
-                                        </div>
-                                    </div>
-
-                                    <label className="relative inline-flex items-center cursor-pointer">
-                                        <input type="checkbox" checked={!isMetric} onChange={() => setIsMetric(!isMetric)} className="sr-only peer" />
-                                        <div className="w-14 h-8 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-navy"></div>
-                                    </label>
-                                </div>
-                            </div>
-
-                            {/* Wizard Footer */}
-                            <div className="px-12 pb-12">
-                                <button
-                                    onClick={runSmartExport}
-                                    className="w-full bg-navy text-white py-8 rounded-[2.5rem] font-black text-xs uppercase tracking-[0.4em] shadow-2xl hover:bg-yellow hover:text-navy hover:-translate-y-2 transition-all flex items-center justify-center gap-6 group italic"
-                                >
-                                    <Download size={28} className="group-hover:translate-y-1 transition-transform" /> Generate & Download Master File
+                                <button onClick={runMasterExport} className="w-full bg-navy text-white py-8 rounded-[3rem] font-black text-xs uppercase tracking-[0.4em] shadow-xl hover:bg-yellow hover:text-navy hover:-translate-y-2 transition-all flex items-center justify-center gap-6 group italic">
+                                    <Download size={28} className="group-hover:translate-y-1 transition-transform" /> Generate Dossier Package (Excel)
                                 </button>
                             </div>
                         </motion.div>
@@ -680,5 +485,14 @@ export default function LoxConvert() {
                 )}
             </AnimatePresence>
         </div>
+    );
+}
+
+function BoxIcon({ className }: { className: string }) {
+    return (
+        <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z" />
+            <path d="m3.3 7 8.7 5 8.7-5" /><path d="M12 22V12" />
+        </svg>
     );
 }

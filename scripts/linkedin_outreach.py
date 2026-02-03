@@ -52,7 +52,7 @@ async def run_outreach():
         print("[*] Bot is currently INACTIVE in settings. Skipping...")
         return
 
-    keywords = settings.get("target_keywords", ["#ihracat", "#packinglist"])
+    keywords = settings.get("target_keywords", ["#ihracat", "#packinglist", "#evraktakibi", "#gümrük", "#dis_ticaret"])
     daily_limit = settings.get("daily_limit", 20)
 
     print(f"[*] Starting LOX AI Outreach Bot (Limit: {daily_limit})...")
