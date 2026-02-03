@@ -274,7 +274,7 @@ export default function LoxConvert() {
                             <LoxLogo />
                             <div className="flex items-center gap-6">
                                 {!user && (
-                                    <button onClick={() => window.location.href = 'https://www.loxtr.com/login'} className="px-5 py-2.5 bg-yellow text-navy rounded-xl text-[9px] font-black uppercase tracking-widest shadow-xl hover:-translate-y-1 transition-all flex items-center gap-2">
+                                    <button onClick={() => window.location.href = `https://www.loxtr.com/login?redirectTo=${encodeURIComponent(window.location.href)}`} className="px-5 py-2.5 bg-yellow text-navy rounded-xl text-[9px] font-black uppercase tracking-widest shadow-xl hover:-translate-y-1 transition-all flex items-center gap-2">
                                         <Key size={14} /> Account Login
                                     </button>
                                 )}
@@ -428,7 +428,7 @@ export default function LoxConvert() {
                                                                     <div className="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center text-yellow mx-auto mb-6"><Lock size={32} /></div>
                                                                     <h5 className="text-2xl font-black italic text-white mb-3 uppercase tracking-tighter">Intelligence Locked</h5>
                                                                     <p className="text-[10px] font-bold text-blue-200 uppercase tracking-widest leading-relaxed mb-8 opacity-60">Full line-item extraction and digital audit requires an active LOXTR node.</p>
-                                                                    <button onClick={() => window.location.href = 'https://www.loxtr.com/register'} className="w-full bg-yellow text-navy py-5 rounded-2xl font-black text-[11px] uppercase tracking-[0.2em] shadow-xl hover:-translate-y-1 transition-all flex items-center justify-center gap-3">
+                                                                    <button onClick={() => window.location.href = `https://www.loxtr.com/register?redirectTo=${encodeURIComponent(window.location.href)}`} className="w-full bg-yellow text-navy py-5 rounded-2xl font-black text-[11px] uppercase tracking-[0.2em] shadow-xl hover:-translate-y-1 transition-all flex items-center justify-center gap-3">
                                                                         <UserPlus size={18} /> Claim This Dossier
                                                                     </button>
                                                                 </div>
@@ -573,7 +573,7 @@ export default function LoxConvert() {
                                 Dossier Vaulting, QR Digital Twin Sync and Advanced Multi-Document Integrity checks are reserved for LOXTR Premium members. Join the future of customs logic.
                             </p>
                             <div className="flex flex-col gap-4">
-                                <button onClick={() => window.location.href = 'https://www.loxtr.com/register'} className="w-full bg-navy text-white py-6 rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl hover:bg-yellow hover:text-navy transition-all">Create Free Account</button>
+                                <button onClick={() => window.location.href = `https://www.loxtr.com/register?redirectTo=${encodeURIComponent(window.location.href)}`} className="w-full bg-navy text-white py-6 rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl hover:bg-yellow hover:text-navy transition-all">Create Free Account</button>
                                 <button onClick={() => setShowAuthGate(false)} className="w-full py-6 rounded-2xl text-[10px] font-black uppercase text-slate-300 hover:text-navy transition-all tracking-[0.3em]">Not Now, Keep Analyzing</button>
                             </div>
                         </motion.div>
