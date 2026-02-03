@@ -11,6 +11,7 @@ Building a **Global Customs Operating System**. COUNTRY-AGNOSTIC. Not a Turkey-f
 5.  **Gated Intelligence:** Locked granular data (line items/suggested buyers) for non-members to drive registration.
 6.  **Country-Agnostic Logic:** Removed "Turkey" bias. AI now extracts destination from docs and calculates taxes accordingly.
 7.  **Unified Authentication:** Redirected all auth actions to central `loxtr.com` with a `redirectTo` loop to ensure users return back to the tool after login/register.
+8.  **Minimalist Dashboard (v2):** Transformed the bulky UI into a clean, 'Operations Bar' based interface. Reduced visual noise while keeping high-value KPIs (Destination, Value, Integrity) visible.
 
 ## Current System State
 - **Frontend:** React + Tailwind.

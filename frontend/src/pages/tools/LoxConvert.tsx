@@ -265,110 +265,64 @@ export default function LoxConvert() {
                             </div>
                         </div>
                     </motion.div>
-                ) : (
-                    /* --- REFINED CUSTOMS DASHBOARD --- */
-                    <motion.div key="dashboard" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="max-w-[1750px] mx-auto px-10 pt-10">
-
-                        {/* HEADER LOGO & NAV */}
-                        <div className="flex items-center justify-between mb-10 px-4">
-                            <LoxLogo />
-                            <div className="flex items-center gap-6">
+                    <motion.div key="dashboard" initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} className="max-w-[1600px] mx-auto px-8 pt-6 pb-32">
+                        
+                        {/* CLEAN MINIMALIST HEADER */}
+                        <div className="flex items-center justify-between mb-8 px-4">
+                            <div className="flex items-center gap-10">
+                                <LoxLogo />
+                                <div className="h-8 w-px bg-slate-100 hidden md:block" />
+                                <div className="hidden md:flex items-center gap-4">
+                                    <span className="text-[10px] font-black text-slate-300 uppercase tracking-[0.3em]">Session Node:</span>
+                                    <span className="text-[10px] font-black text-navy uppercase tracking-widest bg-slate-50 px-3 py-1 rounded-lg border border-slate-100 italic">Dossier #{dossier[0]?.doc_metadata?.reference_no || 'ACTIVE'}</span>
+                                </div>
+                            </div>
+                            <div className="flex items-center gap-3">
                                 {!user && (
-                                    <button onClick={() => window.location.href = `https://www.loxtr.com/login?redirectTo=${encodeURIComponent(window.location.href)}`} className="px-5 py-2.5 bg-yellow text-navy rounded-xl text-[9px] font-black uppercase tracking-widest shadow-xl hover:-translate-y-1 transition-all flex items-center gap-2">
-                                        <Key size={14} /> Account Login
+                                    <button onClick={() => window.location.href = `https://www.loxtr.com/login?redirectTo=${encodeURIComponent(window.location.href)}`} className="px-5 py-2.5 bg-yellow text-navy rounded-xl text-[9px] font-black uppercase tracking-widest shadow-lg hover:-translate-y-0.5 transition-all">
+                                        Login
                                     </button>
                                 )}
-                                <div className="flex items-center gap-2 bg-white p-1.5 rounded-2xl border border-slate-100 shadow-sm">
-                                    <button onClick={() => setDossier([])} className="w-10 h-10 bg-slate-50 rounded-xl flex items-center justify-center text-slate-300 hover:text-navy transition-all"><RefreshCcw size={18} /></button>
-                                    <div className="w-10 h-10 rounded-xl bg-navy text-white flex items-center justify-center font-black text-[10px] shadow-lg">{user ? 'U' : '?'}</div>
+                                <div className="bg-white p-1 rounded-xl border border-slate-100 shadow-sm flex items-center gap-1">
+                                    <button onClick={() => setDossier([])} className="w-8 h-8 rounded-lg flex items-center justify-center text-slate-300 hover:text-navy hover:bg-slate-50 transition-all"><RefreshCcw size={14} /></button>
+                                    <div className="w-8 h-8 rounded-lg bg-navy text-white flex items-center justify-center font-black text-[9px]">{user ? 'U' : '?'}</div>
                                 </div>
                             </div>
                         </div>
 
-                        {/* NAVY COMMAND BAR */}
-                        <div className="flex flex-col lg:flex-row items-center justify-between mb-12 p-12 bg-navy rounded-[4rem] text-white shadow-[0_40px_80px_-20px_rgba(0,0,0,0.3)] relative overflow-hidden">
-                            <div className="absolute top-0 right-0 w-[40rem] h-[40rem] bg-yellow/5 blur-[150px] rounded-full" />
-                            <div className="relative z-10">
-                                <div className="flex items-center gap-4 mb-3">
-                                    <span className="text-[10px] font-black tracking-[0.5em] text-yellow uppercase">LOXCONVERT PRO IQ</span>
-                                    <span className="px-4 py-1.5 bg-emerald-500/20 text-emerald-400 text-[9px] font-black rounded-full border border-emerald-500/20 uppercase tracking-widest">Audit Verified</span>
+                        {/* SLIM OPERATIONS BAR */}
+                        <div className="bg-navy rounded-[2.5rem] p-5 mb-10 shadow-2xl flex flex-wrap items-center justify-between gap-8 relative overflow-hidden">
+                            <div className="absolute top-0 right-0 w-64 h-64 bg-yellow/5 blur-[80px] rounded-full" />
+                            
+                            <div className="flex items-center gap-10 relative z-10 px-6">
+                                <div className="flex flex-col">
+                                    <span className="text-[8px] font-black text-yellow/40 uppercase tracking-[0.2em] mb-1">Destination Radar</span>
+                                    <span className="text-[13px] font-black text-white uppercase italic tracking-tight">{aggregated.destination || 'Global'}</span>
                                 </div>
-                                <h2 className="text-5xl font-black italic tracking-tighter uppercase leading-tight">Global Customs <span className="text-yellow">Intelligence.</span></h2>
+                                <div className="w-px h-8 bg-white/10" />
+                                <div className="flex flex-col">
+                                    <span className="text-[8px] font-black text-yellow/40 uppercase tracking-[0.2em] mb-1">Dossier Value</span>
+                                    <span className="text-[13px] font-black text-white italic tracking-tight">{aggregated.currency} {aggregated.value.toLocaleString()}</span>
+                                </div>
+                                <div className="w-px h-8 bg-white/10" />
+                                <div className="flex flex-col">
+                                    <span className="text-[8px] font-black text-yellow/40 uppercase tracking-[0.2em] mb-1">Integrity Status</span>
+                                    <div className="flex items-center gap-2">
+                                        <div className={`w-1.5 h-1.5 rounded-full ${validation?.isConsistent ? 'bg-emerald-400' : 'bg-red-400 animate-pulse'}`} />
+                                        <span className={`text-[10px] font-black uppercase tracking-widest ${validation?.isConsistent ? 'text-emerald-400' : 'text-red-400'}`}>
+                                            {validation?.isWaiting ? 'Ready' : (validation?.isConsistent ? 'Verified' : 'Mismatch')}
+                                        </span>
+                                    </div>
+                                </div>
                             </div>
 
-                            <div className="flex flex-wrap items-center gap-4 relative z-10 mt-8 lg:mt-0">
-                                <button onClick={() => handleProtectedAction(() => setShowQRModal(true))} className="px-8 py-4 bg-white/5 hover:bg-white hover:text-navy border border-white/10 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] transition-all flex items-center gap-3">
-                                    <QrIcon size={16} /> Physical QR Sync {!user && <Lock size={12} className="opacity-40" />}
+                            <div className="flex items-center gap-3 relative z-10 pr-2">
+                                <button onClick={() => handleProtectedAction(() => setShowQRModal(true))} className="h-11 px-6 bg-white/5 hover:bg-white hover:text-navy rounded-xl text-[9px] font-black uppercase tracking-widest border border-white/5 transition-all flex items-center gap-2">
+                                    <QrIcon size={14} /> Physical Sync
                                 </button>
-                                <button onClick={() => handleProtectedAction(handleVaultSync)} disabled={saveLoading} className="px-8 py-4 bg-white/5 hover:bg-white hover:text-navy border border-white/10 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] transition-all flex items-center gap-3">
-                                    {saveLoading ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />} Push to Vault {!user && <Lock size={12} className="opacity-40" />}
+                                <button onClick={() => setShowExportWizard(true)} className="h-11 px-8 bg-yellow text-navy rounded-xl text-[9px] font-black uppercase tracking-widest shadow-xl hover:-translate-y-1 transition-all flex items-center gap-2">
+                                    <Download size={14} /> Global Export
                                 </button>
-                                <button onClick={() => setShowExportWizard(true)} className="px-10 py-4 bg-yellow text-navy rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] shadow-xl hover:-translate-y-2 transition-all flex items-center gap-3"><Download size={18} /> Master Export</button>
-                            </div>
-                        </div>
-
-                        {/* --- THE AUDIT QUAD --- */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
-                            <div className="bg-white p-10 rounded-[3.5rem] border border-slate-100 flex flex-col justify-between group hover:shadow-[0_40px_80px_-20px_rgba(0,0,0,0.08)] transition-all h-[340px]">
-                                <div>
-                                    <div className="flex items-center justify-between mb-10">
-                                        <p className="text-[10px] font-black text-slate-300 uppercase tracking-widest italic flex items-center">Incoterms Protocol <InfoButton title="Incoterms 2020" content="Analyzes the delivery terms and responsibilities between exporter and importer." /></p>
-                                        <div className="w-12 h-12 bg-slate-50 rounded-2xl flex items-center justify-center text-navy shadow-inner group-hover:bg-navy group-hover:text-yellow transition-all"><ShieldCheck size={24} /></div>
-                                    </div>
-                                    <div className="flex items-center gap-8">
-                                        <div className="w-24 h-24 bg-navy rounded-[2rem] flex items-center justify-center text-yellow text-4xl font-black shadow-2xl rotate-3 group-hover:rotate-0 transition-transform">{aggregated.incoterm}</div>
-                                        <span className="text-[10px] font-black px-4 py-2 bg-emerald-50 text-emerald-600 rounded-full uppercase tracking-tighter border border-emerald-100">Valid Alignment</span>
-                                    </div>
-                                </div>
-                                <p className="text-xs text-slate-400 font-bold italic leading-relaxed px-2">"{dossier[0]?.intelligence?.incoterms?.advice || 'Protocol verified.'}"</p>
-                            </div>
-
-                            <div className="bg-white p-10 rounded-[3.5rem] border border-slate-100 flex flex-col justify-between group hover:shadow-[0_40px_80px_-20px_rgba(0,0,0,0.08)] transition-all h-[340px]">
-                                <div>
-                                    <div className="flex items-center justify-between mb-10">
-                                        <p className="text-[10px] font-black text-slate-300 uppercase tracking-widest italic flex items-center">Tariff & Duty Forecast <InfoButton title="Global Tariff Analysis" content="Estimated Duty and VAT liability based on the WCO HS Codes and target market regulations." /></p>
-                                        <div className="w-12 h-12 bg-slate-50 rounded-2xl flex items-center justify-center text-navy shadow-inner group-hover:bg-navy group-hover:text-yellow transition-all"><Scale size={24} /></div>
-                                    </div>
-                                    <div className="grid grid-cols-2 gap-10">
-                                        <div><p className="text-[9px] font-black text-slate-300 uppercase mb-2">Avg Duty</p><p className="text-4xl font-black text-navy tracking-tighter">%{aggregated.tax}</p></div>
-                                        <div><p className="text-[9px] font-black text-slate-300 uppercase mb-2">Total Value</p><p className="text-2xl font-black text-navy tracking-tighter opacity-60">{aggregated.currency} {aggregated.value.toLocaleString()}</p></div>
-                                    </div>
-                                </div>
-                                <div className="mt-8 pt-8 border-t border-slate-50 flex items-center justify-between"><span className="text-[10px] font-black text-slate-300 uppercase tracking-widest italic">Market: <span className="text-navy">{aggregated.destination}</span></span> <Fingerprint size={16} className="text-slate-100" /></div>
-                            </div>
-
-                            <div className="bg-white p-10 rounded-[3.5rem] border border-slate-100 flex flex-col justify-between group hover:shadow-[0_40px_80px_-20px_rgba(0,0,0,0.08)] transition-all h-[340px] relative">
-                                <div>
-                                    <div className="flex items-center justify-between mb-10">
-                                        <p className="text-[10px] font-black text-slate-300 uppercase tracking-widest italic flex items-center">Document Integrity <InfoButton title="Cross-Check Engine" content="Automated validation to ensure weight and quantity data is consistent across all documents." /></p>
-                                        <div className="w-12 h-12 bg-slate-50 rounded-2xl flex items-center justify-center text-navy shadow-inner group-hover:bg-navy group-hover:text-yellow transition-all"><ShieldQuestion size={24} /></div>
-                                    </div>
-                                    <div className="space-y-5">
-                                        <div className="flex items-center justify-between"><span className="text-[12px] font-black text-slate-400 uppercase italic">Quantity Sync</span>{validation?.qtyError ? <AlertTriangle size={18} className="text-red-500" /> : <Check size={18} className="text-emerald-500" />}</div>
-                                        <div className="flex items-center justify-between"><span className="text-[12px] font-black text-slate-400 uppercase italic">Weight Sync</span>{validation?.weightError ? <AlertTriangle size={18} className="text-red-500" /> : <Check size={18} className="text-emerald-500" />}</div>
-                                    </div>
-                                </div>
-                                <div className={`p-4 rounded-2xl flex items-center gap-4 ${validation?.isConsistent ? 'bg-emerald-50 text-emerald-600' : 'bg-red-50 text-red-500 animate-pulse'}`}>
-                                    {validation?.isConsistent ? <Check size={16} /> : <AlertCircle size={16} />}
-                                    <span className="text-[10px] font-black uppercase tracking-widest">
-                                        {validation?.isWaiting ? 'Dossier Logic: Standing By' : (validation?.isConsistent ? 'Dossier 100% Consistent' : 'CRITICAL MISMATCH FOUND')}
-                                    </span>
-                                </div>
-                            </div>
-
-                            <div className="bg-navy p-10 rounded-[3.5rem] text-white flex flex-col justify-between group shadow-2xl h-[340px] hover:-translate-y-2 transition-all">
-                                <div>
-                                    <div className="flex items-center justify-between mb-10">
-                                        <p className="text-[10px] font-black text-yellow uppercase tracking-widest italic flex items-center">Destination Radar <InfoButton title="Target Market" content="Real-time identification of the destination market and sector-specific risk scoring." /></p>
-                                        <Map size={24} className="text-yellow/40" />
-                                    </div>
-                                    <h5 className="text-5xl font-black italic tracking-tighter uppercase mb-2">{aggregated.destination}</h5>
-                                    <p className="text-[11px] font-bold text-blue-200 uppercase tracking-[0.3em] opacity-40 italic">{dossier[0]?.intelligence?.commodity_category || 'General Cargo'}</p>
-                                </div>
-                                <div className="mt-8 flex items-center justify-between">
-                                    <div className="flex flex-col"><span className="text-[9px] font-black text-white/30 uppercase mb-1">Market Risk Factor</span><span className="text-3xl font-black text-yellow italic">{dossier[0]?.intelligence?.risk_score || '1'}<span className="text-sm opacity-30">/10</span></span></div>
-                                    <TrendingUp size={36} className="text-emerald-400" />
-                                </div>
                             </div>
                         </div>
 
@@ -378,34 +332,33 @@ export default function LoxConvert() {
                                 {dossier.map((doc, idx) => (
                                     <div key={doc.localId} className="group">
                                         <motion.div
-                                            initial={{ opacity: 0, x: -20 }}
-                                            animate={{ opacity: 1, x: 0 }}
-                                            className={`bg-white rounded-[3.5rem] p-4 border transition-all cursor-pointer shadow-lg
-                                                ${expandedDoc === doc.localId ? 'border-navy shadow-2xl' : 'border-slate-100 hover:border-navy/30'}`}
+                                            initial={{ opacity: 0, y: 10 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            className={`bg-white rounded-3xl p-3 border transition-all cursor-pointer hover:shadow-xl
+                                                ${expandedDoc === doc.localId ? 'border-navy bg-slate-50/50' : 'border-slate-100'}`}
                                             onClick={() => setExpandedDoc(expandedDoc === doc.localId ? null : doc.localId)}
                                         >
-                                            <div className="p-8 flex items-center justify-between gap-10">
-                                                <div className="flex items-center gap-12">
-                                                    <div className={`w-24 h-24 rounded-[2.5rem] flex items-center justify-center transition-all shadow-inner
+                                            <div className="p-4 flex items-center justify-between">
+                                                <div className="flex items-center gap-6">
+                                                    <div className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-all
                                                         ${expandedDoc === doc.localId ? 'bg-navy text-yellow' : 'bg-slate-50 text-navy'}`}>
-                                                        <FileSearch size={36} />
+                                                        <FileText size={20} />
                                                     </div>
                                                     <div>
-                                                        <div className="flex items-center gap-3 mb-3">
-                                                            <span className="text-[9px] font-black text-navy uppercase px-3 py-1 bg-yellow rounded-lg shadow-sm tracking-widest">{doc.doc_metadata?.type || 'DOC'}</span>
-                                                            <span className="text-[11px] font-black text-slate-300 uppercase tracking-[0.3em]">ID: {doc.doc_metadata?.reference_no || 'N/A'}</span>
+                                                        <div className="flex items-center gap-2 mb-1">
+                                                            <span className="text-[8px] font-black text-navy uppercase px-2 py-0.5 bg-yellow rounded shadow-sm">{doc.doc_metadata?.type || 'DOC'}</span>
+                                                            <span className="text-[9px] font-bold text-slate-300 uppercase tracking-widest">{doc.doc_metadata?.reference_no}</span>
                                                         </div>
-                                                        <h3 className="text-3xl font-black italic text-navy uppercase truncate max-w-md tracking-tighter">{doc.fileName}</h3>
+                                                        <h3 className="text-lg font-black italic text-navy uppercase truncate max-w-xs">{doc.fileName}</h3>
                                                     </div>
                                                 </div>
-                                                <div className="flex items-center gap-12 text-right px-12 border-l border-slate-50">
-                                                    <div className="hidden md:block">
-                                                        <p className="text-[10px] font-black text-slate-300 uppercase mb-2 tracking-widest">Total Weight</p>
-                                                        <p className="text-3xl font-black text-navy">{doc.intelligence?.validation_hooks?.total_weight || '0'} <span className="text-sm opacity-30 font-bold">kg</span></p>
+                                                <div className="flex items-center gap-8 text-right">
+                                                    <div className="hidden sm:block">
+                                                        <p className="text-[8px] font-black text-slate-300 uppercase mb-1">Net Weight</p>
+                                                        <p className="text-xl font-black text-navy">{doc.intelligence?.validation_hooks?.total_weight || '0'} <span className="text-[10px] opacity-30">kg</span></p>
                                                     </div>
-                                                    <div className={`w-16 h-16 rounded-[2rem] flex items-center justify-center transition-all
-                                                        ${expandedDoc === doc.localId ? 'bg-navy text-yellow' : 'bg-slate-50 text-slate-300 group-hover:bg-navy group-hover:text-yellow'}`}>
-                                                        {expandedDoc === doc.localId ? <ChevronUp size={28} /> : <Maximize2 size={24} />}
+                                                    <div className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-300">
+                                                        {expandedDoc === doc.localId ? <ChevronUp size={18} /> : <Maximize2 size={16} />}
                                                     </div>
                                                 </div>
                                             </div>
@@ -497,35 +450,33 @@ export default function LoxConvert() {
                                 ))}
                             </div>
 
-                            <div className="lg:col-span-4 sticky top-10 space-y-10">
-                                <div className="bg-navy p-14 rounded-[4.5rem] text-white shadow-2xl relative overflow-hidden">
-                                    <div className="flex items-center gap-6 mb-12 pb-10 border-b border-white/5">
-                                        <div className="w-16 h-16 bg-white/10 rounded-[2rem] flex items-center justify-center text-yellow shadow-inner"><BrainCircuit size={36} /></div>
-                                        <div>
-                                            <h4 className="text-[13px] font-black text-blue-200 uppercase tracking-[0.5em] mb-1">Intelligence Node</h4>
-                                            <p className="text-[10px] font-bold text-white/20 uppercase italic tracking-widest">Operational Protocol Analysis</p>
-                                        </div>
+                            <div className="lg:col-span-4 sticky top-10">
+                                <div className="bg-slate-50 rounded-[2.5rem] border border-slate-100 p-8">
+                                    <div className="flex items-center gap-4 mb-8">
+                                        <div className="w-10 h-10 bg-navy text-yellow rounded-xl flex items-center justify-center"><BrainCircuit size={20} /></div>
+                                        <h4 className="text-[10px] font-black text-navy uppercase tracking-widest">Global Intelligence Node</h4>
                                     </div>
-                                    <div className="space-y-12">
-                                        <div className="relative">
+
+                                    <div className="space-y-8">
+                                        <div className="relative bg-white p-6 rounded-2xl border border-slate-100">
                                             {!user && (
-                                                <div className="absolute inset-0 bg-navy/80 backdrop-blur-sm z-10 flex items-center justify-center rounded-3xl">
-                                                    <span className="text-[9px] font-black text-yellow uppercase tracking-widest flex items-center gap-2"><Lock size={12} /> Member Only Insights</span>
+                                                <div className="absolute inset-0 bg-white/60 backdrop-blur-sm z-10 flex items-center justify-center rounded-2xl">
+                                                    <p className="text-[8px] font-black text-navy uppercase tracking-widest flex items-center gap-2"><Lock size={10} /> Member Briefing</p>
                                                 </div>
                                             )}
-                                            <p className="text-[11px] font-black text-yellow uppercase mb-5 flex items-center gap-3 italic tracking-[0.2em]"><ShieldAlert size={18} /> Regulatory Briefing</p>
-                                            <div className="bg-white/5 p-8 rounded-[2.5rem] border border-white/5">
-                                                <p className="text-[13px] font-bold leading-relaxed text-blue-50 italic">"{dossier[0]?.intelligence?.regulatory_notes || "Document context scan complete. Strategic audit ready."}"</p>
-                                            </div>
+                                            <p className="text-[9px] font-black text-navy/30 uppercase mb-3 flex items-center gap-2 italic"><ShieldCheck size={14} /> Regulatory Advisory</p>
+                                            <p className="text-[11px] font-bold text-slate-500 italic leading-relaxed">"{dossier[0]?.intelligence?.regulatory_notes || 'Analyzing compliance protocols...'}"</p>
                                         </div>
-                                        <div className="grid grid-cols-1 gap-5">
-                                            {(dossier[0]?.intelligence?.suggested_buyers || []).slice(0, user ? 10 : 1).map((buyer: string, i: number) => (
-                                                <div key={i} className="bg-white/5 p-6 rounded-[2rem] border border-white/5 flex items-center gap-5 group cursor-pointer hover:bg-white/10 transition-all">
-                                                    <div className="w-12 h-12 bg-yellow rounded-2xl flex items-center justify-center text-navy group-hover:rotate-12 transition-transform shadow-xl"><TargetIcon size={20} /></div>
-                                                    <span className="text-[11px] font-black uppercase italic tracking-widest text-white/80">{buyer}</span>
+
+                                        <div className="space-y-3">
+                                            <p className="text-[9px] font-black text-navy/30 uppercase italic flex items-center gap-2"><TargetIcon size={14} /> Suggested Entities</p>
+                                            {(dossier[0]?.intelligence?.suggested_buyers || []).slice(0, user ? 10 : 3).map((buyer: string, i: number) => (
+                                                <div key={i} className="bg-white p-4 rounded-xl border border-slate-100 flex items-center gap-3 group">
+                                                    <div className="w-1.5 h-1.5 rounded-full bg-yellow" />
+                                                    <span className="text-[10px] font-black uppercase text-navy/70 truncate">{buyer}</span>
                                                 </div>
                                             ))}
-                                            {!user && <p className="text-[8px] font-bold text-center text-white/20 uppercase tracking-widest">Register to unlock more buyers</p>}
+                                            {!user && <p className="text-[7px] font-bold text-center text-slate-300 uppercase italic">Unlock with Premium Account</p>}
                                         </div>
                                     </div>
                                 </div>

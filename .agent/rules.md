@@ -8,3 +8,4 @@
 6.  **No Placeholders:** Never use placeholders. Generate real UI or realistic mock data using AI logic.
 7.  **Consistent Logo:** Always use the `LoxLogo` component with the navy/yellow Zap icon.
 8.  **Record Milestones:** After every significant feature/fix, update `.agent/project_status.md`.
+9.  **Minimalist OS Aesthetic:** Prioritize a clean, operating-system-like interface. Avoid bulky cards and dashboards; use slim KPI bars and focused toolsets. 
