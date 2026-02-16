@@ -60,6 +60,9 @@ import LoxConvert from './pages/tools/LoxConvert';
 import LoxWallet from './pages/tools/LoxWallet';
 import HSCodeGuide from './pages/tools/HSCodeGuide';
 import PackingListTips from './pages/tools/PackingListTips';
+import RadarDashboard from './pages/radar/RadarDashboard';
+import PredictDashboard from './pages/predict/PredictDashboard';
+import AuditDashboard from './pages/audit/AuditDashboard';
 
 // Simple CRM Auth Guard
 const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
@@ -339,6 +342,60 @@ function App() {
     );
   }
 
+  // SUBDOMAIN ROUTING (radar.loxtr.com)
+  if (window.location.hostname === 'radar.loxtr.com') {
+    return (
+      <AuthProvider>
+        <SettingsProvider>
+          <BrowserRouter>
+            <Routes>
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/register" element={<RegisterPage />} />
+              <Route path="/" element={<RadarDashboard />} />
+              <Route path="*" element={<RadarDashboard />} />
+            </Routes>
+          </BrowserRouter>
+        </SettingsProvider>
+      </AuthProvider>
+    );
+  }
+
+  // SUBDOMAIN ROUTING (predict.loxtr.com)
+  if (window.location.hostname === 'predict.loxtr.com') {
+    return (
+      <AuthProvider>
+        <SettingsProvider>
+          <BrowserRouter>
+            <Routes>
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/register" element={<RegisterPage />} />
+              <Route path="/" element={<PredictDashboard />} />
+              <Route path="*" element={<PredictDashboard />} />
+            </Routes>
+          </BrowserRouter>
+        </SettingsProvider>
+      </AuthProvider>
+    );
+  }
+
+  // SUBDOMAIN ROUTING (audit.loxtr.com)
+  if (window.location.hostname === 'audit.loxtr.com') {
+    return (
+      <AuthProvider>
+        <SettingsProvider>
+          <BrowserRouter>
+            <Routes>
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/register" element={<RegisterPage />} />
+              <Route path="/" element={<AuditDashboard />} />
+              <Route path="*" element={<AuditDashboard />} />
+            </Routes>
+          </BrowserRouter>
+        </SettingsProvider>
+      </AuthProvider>
+    );
+  }
+
   return (
     <AuthProvider>
       <SettingsProvider>
@@ -349,6 +406,21 @@ function App() {
             {/* Tool Routes */}
             <Route path="/convert" element={<LoxConvert />} />
             <Route path="/vault" element={<LoxWallet />} />
+            <Route path="/radar-system" element={
+              <PrivateRoute>
+                <RadarDashboard />
+              </PrivateRoute>
+            } />
+            <Route path="/predict-system" element={
+              <PrivateRoute>
+                <PredictDashboard />
+              </PrivateRoute>
+            } />
+            <Route path="/audit-system" element={
+              <PrivateRoute>
+                <AuditDashboard />
+              </PrivateRoute>
+            } />
             <Route path="/guide/hs-codes" element={<HSCodeGuide />} />
             <Route path="/guide/packing-list" element={<PackingListTips />} />
 

@@ -152,7 +152,7 @@ export default function LoxRadarLanding() {
                             className="flex flex-col sm:flex-row items-center gap-6"
                         >
                             <button
-                                onClick={() => navigate('/register')}
+                                onClick={() => navigate('/radar-system')}
                                 className="bg-yellow hover:bg-white text-navy font-black px-12 py-5 rounded-xl shadow-2xl shadow-yellow/20 transition-all flex items-center gap-3 uppercase tracking-widest text-sm"
                             >
                                 <span>{content.hero.cta}</span>

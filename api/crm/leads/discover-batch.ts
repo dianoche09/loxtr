@@ -18,7 +18,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         Return ONLY a JSON array with: {companyName, country, website, email, logic, aiScore}.`;
 
         const aiResponse = await gemini.generateText(prompt);
-        const leads = gemini.extractJSON(aiMessage); // Error in variable name, will fix below
+        const leads = gemini.extractJSON(aiResponse);
 
         if (!leads) throw new Error('Failed to parse AI response');
 

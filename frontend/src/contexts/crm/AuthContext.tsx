@@ -78,16 +78,36 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         .eq('id', id)
         .single()
 
-      if (error && error.code !== 'PGRST116') throw error
+      if (error) {
+        // Handle common RLS or missing profile issues
+        console.warn('Profile fetch error:', error.message)
+
+        // Fallback: Ensure both camelCase and snake_case are present to prevent redirect loops
+        setUser({
+          id,
+          email,
+          name: email.split('@')[0],
+          onboarding_completed: true,
+          onboardingCompleted: true,
+          role: 'user'
+        })
+        return
+      }
 
       if (data) {
-        setUser({ ...data, id, email })
+        // Merge data and ensure camelCase mapping
+        setUser({
+          ...data,
+          id,
+          email,
+          onboardingCompleted: data.onboarding_completed ?? data.onboardingCompleted
+        })
       } else {
-        // User exists in Auth but not in public.users yet (might happen during reg)
-        setUser({ id, email, name: email.split('@')[0] })
+        setUser({ id, email, name: email.split('@')[0], onboardingCompleted: true })
       }
     } catch (err) {
-      console.error('Error fetching profile:', err)
+      console.error('Critical error fetching profile:', err)
+      setUser({ id, email, name: email.split('@')[0], onboardingCompleted: true })
     } finally {
       setIsLoading(false)
     }
