@@ -45,6 +45,7 @@ import {
 import toast from 'react-hot-toast';
 import LoadingSpinner from '../../components/crm/LoadingSpinner';
 import Logo from '../../components/Logo';
+import { useAuth } from '../../contexts/crm/AuthContext';
 import { authAPI, aiAPI, hsCodeAPI, certificatesAPI, setupAPI, strategyAPI, icpAPI, leadsAPI } from '../../services/crm/api';
 import { INDUSTRIES, COUNTRIES, LANGUAGES, PHONE_CODES } from '../../constants/crm/onboarding';
 
@@ -85,6 +86,7 @@ export default function OnboardingPage() {
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
     const redirectTo = searchParams.get('redirectTo');
+    const { refreshProfile } = useAuth();
     const [currentStep, setCurrentStep] = useState(0);
     const [loading, setLoading] = useState(false);
     const [analyzing, setAnalyzing] = useState(false);
@@ -889,6 +891,7 @@ export default function OnboardingPage() {
                     onboardingCompleted: true,
                     onboarding_completed: true // Backup for snake_case
                 });
+                await refreshProfile(); // Sync context state
             } catch (profileError) {
                 console.warn('Profile update failed during final step, continuing anyway for demo...', profileError);
                 // We'll still try to proceed so the user isn't stuck

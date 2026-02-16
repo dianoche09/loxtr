@@ -38,6 +38,7 @@ interface AuthContextType {
     company: string
   }) => Promise<void>
   logout: () => void
+  refreshProfile: () => Promise<void>
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -50,6 +51,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // Check for active session on mount
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) {
+        // Sync tokens for Axios api instance
+        localStorage.setItem('token', session.access_token)
+        localStorage.setItem('refreshToken', session.refresh_token || '')
+
         // Fetch additional user profile data from public.users table if needed
         fetchUserProfile(session.user.id, session.user.email!)
       } else {
@@ -60,8 +65,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       if (session) {
+        // Sync tokens for Axios api instance
+        localStorage.setItem('token', session.access_token)
+        localStorage.setItem('refreshToken', session.refresh_token || '')
+
         fetchUserProfile(session.user.id, session.user.email!)
       } else {
+        localStorage.removeItem('token')
+        localStorage.removeItem('refreshToken')
         setUser(null)
         setIsLoading(false)
       }
@@ -166,10 +177,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }
 
-  const logout = async () => {
-    await supabase.auth.signOut()
-    setUser(null)
-    toast.success('Logged out successfully')
+  const refreshProfile = async () => {
+    const { data: { session } } = await supabase.auth.getSession()
+    if (session) {
+      await fetchUserProfile(session.user.id, session.user.email!)
+    }
   }
 
   return (
@@ -181,6 +193,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         login,
         register,
         logout,
+        refreshProfile,
       }}
     >
       {children}
