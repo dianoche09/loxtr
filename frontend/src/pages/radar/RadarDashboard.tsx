@@ -1,4 +1,7 @@
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../contexts/crm/AuthContext';
+import { AnimatePresence, motion } from 'framer-motion';
 import {
     Search, Radar, ShieldCheck, Download, Filter,
     Loader2, Gauge, ChevronDown, ChevronUp, Zap,
@@ -6,6 +9,17 @@ import {
     Ship, Globe
 } from 'lucide-react';
 import toast from 'react-hot-toast';
+
+interface Importer {
+    id: string;
+    companyName: string;
+    description: string;
+    country: string;
+    tradeVolumeValue?: string;
+    confidenceScore: number;
+    reasoning?: string;
+    tags: string[];
+}
 
 export default function RadarDashboard() {
     const { isAuthenticated, user, isLoading: authLoading } = useAuth();
@@ -21,6 +35,43 @@ export default function RadarDashboard() {
             navigate('/login');
         }
     }, [isAuthenticated, authLoading, navigate]);
+
+    // Mock/Real fetch function
+    const fetchRadarData = async (searchQuery: string): Promise<Importer[]> => {
+        // Simulate API call delay
+        await new Promise(resolve => setTimeout(resolve, 1500));
+
+        // Return mock data for demo
+        return [
+            {
+                id: '1',
+                companyName: 'Global Imports GmbH',
+                country: 'Germany',
+                description: 'Leading distributor of automotive components.',
+                confidenceScore: 92,
+                tags: ['Automotive', 'Distributor'],
+                reasoning: 'High trade volume in your target sector.'
+            },
+            {
+                id: '2',
+                companyName: 'American Retail Corp',
+                country: 'USA',
+                description: 'Large retail chain expanding into organic foods.',
+                confidenceScore: 88,
+                tags: ['Retail', 'Organic'],
+                reasoning: 'Matches your product "Hazelnut" profile.'
+            },
+            {
+                id: '3',
+                companyName: 'TechSource Ltd',
+                country: 'UK',
+                description: 'Specialized electronics importer.',
+                confidenceScore: 75,
+                tags: ['Electronics', 'Tech'],
+                reasoning: 'Active buyer in recent customs data.'
+            }
+        ];
+    };
 
     const handleSearch = async () => {
         if (!query) return;

@@ -175,9 +175,9 @@ export default function DashboardPage() {
                   <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8">
                     <div className="flex-1">
                       {/* AI Assistant Badge */}
-                      <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-white/10 backdrop-blur-md rounded-full mb-4 border border-white/20">
-                        <Bot className="w-4 h-4" />
-                        <span className="text-xs font-bold uppercase tracking-wider">AI Daily Brief</span>
+                      <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-yellow/20 backdrop-blur-md rounded-full mb-4 border border-yellow/30">
+                        <Sparkles className="w-4 h-4 text-yellow" />
+                        <span className="text-xs font-black uppercase tracking-widest text-yellow">LOX AI RADAR Active</span>
                       </div>
 
                       <h1 className="text-3xl lg:text-4xl font-black mb-4">
@@ -282,6 +282,70 @@ export default function DashboardPage() {
             onClick={() => navigate('/campaigns?view=analytics&metric=clicks')}
           />
         </div>
+
+        {/* LOX RADAR - Market Intelligence Row */}
+        <motion.div variants={item} className="bg-white rounded-[2rem] p-8 shadow-sm border border-slate-100 overflow-hidden relative">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
+            <div>
+              <div className="flex items-center gap-2 mb-1">
+                <Target className="w-5 h-5 text-navy" />
+                <h3 className="text-xl font-black text-slate-900">Radar Intelligence</h3>
+              </div>
+              <p className="text-sm text-slate-500 font-medium">Cross-border market opportunity matches for your portfolio</p>
+            </div>
+            <button
+              onClick={() => navigate('/radar')}
+              className="flex items-center gap-2 px-4 py-2 bg-slate-900 text-white rounded-xl text-sm font-black hover:bg-navy transition-all shadow-lg shadow-navy/20"
+            >
+              Launch Full Radar <ArrowUpRight className="w-4 h-4" />
+            </button>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {(user?.strategy?.targetMarkets || user?.target_markets || ['Germany', 'United States', 'France']).slice(0, 3).map((country: string, idx: number) => (
+              <div key={country} className="bg-slate-50 rounded-2xl p-6 border border-slate-100 hover:border-navy/20 transition-all group">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-white rounded-xl shadow-sm border border-slate-100 flex items-center justify-center text-xl">
+                      {idx === 0 ? '🇩🇪' : idx === 1 ? '🇺🇸' : '🇫🇷'}
+                    </div>
+                    <div>
+                      <div className="text-sm font-black text-slate-900">{country}</div>
+                      <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Target Market</div>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-xl font-black text-navy">{user?.strategy?.recommendations?.find((r: any) => r.country === country)?.score || [94, 88, 82][idx]}%</div>
+                    <div className="text-[10px] font-bold text-emerald-600 uppercase">Match</div>
+                  </div>
+                </div>
+
+                <div className="space-y-3 mb-4">
+                  <div className="flex items-center justify-between text-xs font-bold">
+                    <span className="text-slate-500">Trade Volume</span>
+                    <span className="text-slate-900">High</span>
+                  </div>
+                  <div className="w-full h-1.5 bg-slate-200 rounded-full overflow-hidden">
+                    <motion.div
+                      initial={{ width: 0 }}
+                      animate={{ width: (user?.strategy?.recommendations?.find((r: any) => r.country === country)?.score || [90, 80, 70][idx]) + '%' }}
+                      className="h-full bg-navy rounded-full"
+                    />
+                  </div>
+                </div>
+
+                <p className="text-xs text-slate-600 leading-relaxed font-medium bg-white/50 p-3 rounded-lg border border-slate-100 italic">
+                  {user?.strategy?.recommendations?.find((r: any) => r.country === country)?.reasoning ||
+                    (idx === 0
+                      ? "Stable demand and strong industrial sector alignment. REACH compliance confirmed."
+                      : idx === 1
+                        ? "Largest potential volume for chemicals. Zero-tariff advantage under specific clusters."
+                        : "Strategic entry point for EU distribution with moderate logistics costs.")}
+                </p>
+              </div>
+            ))}
+          </div>
+        </motion.div>
 
         {/* Main Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

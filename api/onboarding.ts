@@ -10,16 +10,17 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         if (action === 'hs-suggestions') {
             const { product } = req.body;
             const query = (req.query.q as string) || product;
-            const prompt = `Provide 3 HS Code and Description matches for "${query}". 
-            Return ONLY JSON array of items: [{code: "1234.56", description: "Product Name"}]`;
+            const prompt = `Act as an expert Customs Specialist. Find the most accurate 4-digit or 6-digit HS Codes for the product: "${query}".
+            Include broad categories if a specific specific match is hard to find.
+            Return ONLY a JSON array of objects: [{ "code": "HS_CODE", "description": "Accurate Product Description" }]`;
 
             const aiResponse = await gemini.generateText(prompt);
             let extracted = gemini.extractJSON(aiResponse);
 
-            if (!Array.isArray(extracted)) {
-                if (extracted.recommendations) extracted = extracted.recommendations;
-                else if (extracted.codes) extracted = extracted.codes;
-                else if (extracted.results) extracted = extracted.results;
+            if (!extracted || !Array.isArray(extracted)) {
+                if (extracted && extracted.recommendations) extracted = extracted.recommendations;
+                else if (extracted && extracted.codes) extracted = extracted.codes;
+                else if (extracted && extracted.results) extracted = extracted.results;
                 else extracted = [];
             }
 
@@ -29,9 +30,30 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         if (action === 'strategy') {
             const { products, originCountry = 'Turkey' } = req.body;
             const productDetails = products.map((p: any) => `${p.name} (HS: ${p.hsCode})`).join(', ');
-            const prompt = `Analyze market for ${productDetails} from ${originCountry}. Suggest top 3 countries with score, reasoning, and breakdown. Return ONLY JSON: { "recommendations": [...] }`;
+
+            const prompt = `Act as an Export Strategy Consultant like LOX Radar.
+            Analyze global markets for these products: ${productDetails}.
+            Origin Country: ${originCountry}.
+            
+            Task: Suggest top 3 countries with a high-match score (0-100).
+            Scoring Criteria:
+            - Trade Volume (Imports of these HS codes)
+            - Tariff Favorability (Free trade agreements vs high duties)
+            - Logistics (Distance from ${originCountry})
+            - Certificate Match (Industry standards)
+
+            Return ONLY JSON: { "recommendations": [
+                { 
+                    "country": "Germany", 
+                    "score": 95, 
+                    "breakdown": { "tradeVolume": 40, "tariff": 30, "logistics": 20, "certificates": 10 },
+                    "reasoning": "Top importer in EU. REACH compliance is key." 
+                }
+            ] }`;
+
             const aiResponse = await gemini.generateText(prompt);
-            return res.status(200).json({ success: true, data: gemini.extractJSON(aiResponse) });
+            let extracted = gemini.extractJSON(aiResponse);
+            return res.status(200).json({ success: true, data: extracted });
         }
 
         if (action === 'icp') {
@@ -57,7 +79,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             const aiResponse = await gemini.generateText(prompt);
             let extracted = gemini.extractJSON(aiResponse);
 
-            if (extracted.products && Array.isArray(extracted.products)) {
+            if (extracted && extracted.products && Array.isArray(extracted.products)) {
                 extracted.products = extracted.products.map((p: any) => typeof p === 'object' ? (p.name || p.title || JSON.stringify(p)) : String(p));
             }
 

@@ -21,7 +21,8 @@ export default function Layout() {
     }
 
     // Force onboarding if not completed and not already on onboarding page
-    if (user && !(user.onboarding_completed || user.onboardingCompleted) && location.pathname !== '/onboarding') {
+    const onboardingBypass = sessionStorage.getItem('onboarding_just_finished') === 'true';
+    if (user && !(user.onboarding_completed || user.onboardingCompleted) && location.pathname !== '/onboarding' && !onboardingBypass) {
         return <Navigate to="/onboarding" />;
     }
 

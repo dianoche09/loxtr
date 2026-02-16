@@ -20,28 +20,42 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         ]);
 
         const totalLeads = leadsCount.count || 0;
+        const userProfile = profile.data;
+        const products = userProfile?.product_groups || [];
+        const markets = userProfile?.target_markets || [];
 
         // Generate AI Briefing
-        const prompt = `You are LOXTR Export AI. Generate a 1-sentence briefing for ${profile.data?.name || 'Hunter'}.
+        const prompt = `You are LOXTR Export AI (LOX Radar). 
+        User: ${userProfile?.name || 'Hunter'}
+        Company: ${userProfile?.company || 'Export Hunter'}
+        Products: ${products.map((p: any) => p.name).join(', ')}
+        Target Markets: ${markets.join(', ')}
         Stats: ${totalLeads} total leads, ${activeCampaigns.count || 0} active campaigns. 
-        Focus on motivation. Return ONLY text.`;
+        
+        Task: 
+        1. Generate a 1-sentence briefing summary.
+        2. Suggest 2 high-priority opportunities (type: 'hot' or 'opportunity').
+        
+        Return ONLY JSON: { "summary": "...", "opportunities": [{ "title": "...", "description": "...", "type": "...", "action": { "label": "...", "endpoint": "..." } }] }`;
 
-        const aiMessage = await gemini.generateText(prompt);
+        const aiResponse = await gemini.generateText(prompt);
+        const aiData = gemini.extractJSON(aiResponse);
 
         return res.status(200).json({
             success: true,
             data: {
                 briefing: {
-                    greeting: `Welcome back, ${profile.data?.name?.split(' ')[0] || 'Hunter'} 👋`,
-                    summary: aiMessage,
+                    greeting: `Welcome back, ${userProfile?.name?.split(' ')[0] || 'Hunter'} 👋`,
+                    summary: aiData?.summary || `Your Radar is active. We are monitoring ${products.length} product groups across ${markets.length} markets.`,
                 },
+                opportunities: aiData?.opportunities || [],
                 stats: {
                     overview: {
                         totalLeads,
                         totalCampaigns: activeCampaigns.count || 0,
                     }
                 },
-                user: profile.data
+                user: userProfile
             }
         });
 

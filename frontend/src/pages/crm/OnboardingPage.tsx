@@ -119,6 +119,7 @@ export default function OnboardingPage() {
         targetIndustries: [] as string[],
         targetJobTitles: [] as string[],
         targetCustomerProfile: [] as string[],
+        strategyRecommendations: [] as any[],
         subscription: 'free'
     });
 
@@ -556,8 +557,25 @@ export default function OnboardingPage() {
                                 ...prev,
                                 companyDescription: bio || prev.companyDescription,
                                 logo: logo || prev.logo,
-                                productGroups: [...prev.productGroups, ...newProducts]
+                                productGroups: [...prev.productGroups, ...newProducts].filter((p, i, self) =>
+                                    i === self.findIndex(t => t.name.toLowerCase() === p.name.toLowerCase())
+                                )
                             };
+                        });
+
+                        // Auto-fetch HS codes for newly found products in background
+                        newProducts.forEach(async (prod: any) => {
+                            try {
+                                const hsRes = (await hsCodeAPI.search(prod.name)) as any;
+                                if (hsRes.success && hsRes.data?.[0]) {
+                                    setFormData(prev => ({
+                                        ...prev,
+                                        productGroups: prev.productGroups.map(pg =>
+                                            pg.name === prod.name ? { ...pg, hsCode: hsRes.data[0].code } : pg
+                                        )
+                                    }));
+                                }
+                            } catch (e) { /* ignore fallback failures */ }
                         });
 
                         // Immediately save to backend (bio & logo only for now, products saved on next step)
@@ -806,7 +824,8 @@ export default function OnboardingPage() {
 
                 setFormData(prev => ({
                     ...prev,
-                    targetMarkets: selectedCountries
+                    targetMarkets: selectedCountries,
+                    strategyRecommendations: recommendations
                 }));
             }
         } catch (error) {
@@ -870,77 +889,60 @@ export default function OnboardingPage() {
     const finishOnboarding = async () => {
         setLoading(true);
         try {
-            // 1. Save Profile & Complete Onboarding
-            try {
-                await authAPI.updateProfile({
-                    name: formData.name,
-                    company: formData.companyName,
+            // 1. Persist ALL Data to Profile
+            console.log('🏁 Finalizing onboarding for user...', formData);
+
+            const productsToSave = formData.productGroups.map(p => ({
+                name: p.name,
+                hsCode: p.hsCode,
+                certificates: p.certificates
+            }));
+
+            const finalProfile = {
+                name: formData.name,
+                company: formData.companyName,
+                phone: formData.phone,
+                website: formData.website,
+                onboarding_completed: true,
+                onboardingCompleted: true,
+                profile: {
                     jobTitle: formData.jobTitle,
-                    phone: formData.phone,
-                    phoneCountryCode: formData.phoneCountryCode,
-                    website: formData.website,
-                    country: formData.country,
                     industry: formData.industry,
                     companyType: formData.companyType,
-                    companyDescription: formData.companyDescription,
                     city: formData.city,
-                    preferredLanguage: formData.preferredLanguage,
-                    apiKeys: { gemini: formData.geminiKey },
-                    productGroups: formData.productGroups,
+                    description: formData.companyDescription,
+                    language: formData.preferredLanguage
+                },
+                product_groups: productsToSave,
+                strategy: {
                     targetMarkets: formData.targetMarkets,
+                    originCountry: formData.country || 'Turkey',
+                    recommendations: formData.strategyRecommendations
+                },
+                icp: {
                     targetIndustries: formData.targetIndustries,
-                    targetJobTitles: formData.targetJobTitles,
-                    subscription: formData.subscription as any,
-                    onboardingCompleted: true,
-                    onboarding_completed: true // Backup for snake_case
-                });
-                await refreshProfile(); // Sync context state
-            } catch (profileError) {
-                console.warn('Profile update failed during final step, continuing anyway for demo...', profileError);
-                // We'll still try to proceed so the user isn't stuck
-            }
-
-            // 2. Trigger Initial "Hunt" (First Research) with WOW transition
-            await triggerAITransition(async () => {
-                try {
-                    const primaryProduct = formData.productGroups[0];
-                    if (primaryProduct) {
-                        console.log('🚀 Triggering initial lead discovery for dashboard...');
-                        await leadsAPI.discoverLeads({
-                            product: primaryProduct.name,
-                            targetMarkets: formData.targetMarkets.slice(0, 3), // Focus on top 3 for speed
-                            industry: formData.targetIndustries[0] || formData.industry,
-                            count: 5, // Just a few to start
-                            groupName: 'Initial Research',
-                            preview: false // Actually save them!
-                        });
-                    }
-                } catch (discoveryError) {
-                    console.warn('Initial discovery failed, user will start with empty dashboard', discoveryError);
+                    decisionMakers: formData.targetJobTitles
                 }
-            }, 8000); // 8 second "WOW" transition for the first setup
+            };
+
+            const updateRes = await authAPI.updateProfile(finalProfile);
+            console.log('✅ Profile update response:', updateRes);
+
+            await refreshProfile(); // Force context update
 
             toast.success('Setup complete! Welcome to LOXTR.');
+            sessionStorage.setItem('onboarding_just_finished', 'true');
 
-            // Critical: Wait a small bit for state to settle or just force redirect
+            // Forces a hard navigation to avoid state race conditions in Layout
             setTimeout(() => {
-                if (redirectTo) {
-                    window.location.href = redirectTo;
-                } else {
-                    navigate('/crm/dashboard');
-                    // Backup: If navigate doesn't work, use window.location
-                    setTimeout(() => {
-                        if (window.location.pathname.includes('onboarding')) {
-                            window.location.href = '/crm/dashboard';
-                        }
-                    }, 500);
-                }
-            }, 100);
+                window.location.href = '/crm/dashboard';
+            }, 300);
 
-        } catch (error) {
+        } catch (error: any) {
             console.error('Final onboarding error:', error);
-            toast.error('Could not complete setup. Redirecting anyway...');
-            setTimeout(() => navigate('/crm/dashboard'), 2000);
+            toast.error(`Could not complete setup: ${error.message || 'Network error'}`);
+            // Backup redirect 
+            setTimeout(() => { window.location.href = '/crm/dashboard'; }, 3000);
         } finally {
             setLoading(false);
         }

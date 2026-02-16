@@ -8,10 +8,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     try {
         const authHeader = req.headers.authorization || '';
-        const token = authHeader.replace('Bearer ', '');
+        const token = authHeader.replace('Bearer ', '').trim();
 
-        if (!token) {
-            console.warn('No token provided in auth header');
+        if (!token || token === 'null' || token === 'undefined') {
+            console.warn('Invalid or missing token in auth header');
             return res.status(401).json({ error: 'Unauthorized: No token provided' });
         }
 
@@ -47,6 +47,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
                 delete updateData.onboardingCompleted;
             }
 
+            console.log(`Updating profile for user ${user.id}:`, updateData);
             const { data, error } = await supabase
                 .from('users')
                 .update(updateData)
@@ -59,6 +60,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
                 return res.status(500).json({ error: error.message });
             }
 
+            console.log('Profile updated successfully:', data.onboarding_completed);
             return res.status(200).json({ success: true, data });
         }
 

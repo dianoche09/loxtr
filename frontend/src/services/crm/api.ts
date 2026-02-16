@@ -162,7 +162,7 @@ export const aiAPI = {
     api.post('/ai/discover-suggestions', data),
 
   getHsCodeSuggestions: (data: { product: string }) =>
-    api.post('/ai/hs-code-suggestions', data),
+    api.post('/onboarding?action=hs-suggestions', data),
 
   analyzeSupplyChain: (data: { product: string; origin?: string; target: string }) =>
     api.post('/ai/analyze-supply-chain', data),
@@ -171,7 +171,7 @@ export const aiAPI = {
     api.post('/ai/enrich-lead', data),
 
   generateBio: (data: { website: string }) =>
-    api.post('/ai/generate-bio', data),
+    api.post('/onboarding?action=bio', data),
 
   // New Magic Command
   command: (data: { command: string }) => api.post('/ai/command', data),
@@ -196,7 +196,7 @@ export const aiAPI = {
     api.post('/ai/buyer-profile-suggestions', data),
 
   generateValueProp: (data: { companyName: string; industry: string; products: string[]; certificates?: string[]; description?: string }) =>
-    api.post('/ai/generate-value-prop', data),
+    api.post('/onboarding?action=value-prop', data),
 
   suggest: (data: { context: 'industry' | 'market' | 'buyer_profile'; query: string; product?: string; originCountry?: string; industry?: string }) =>
     api.post('/ai/suggest', data),
@@ -204,14 +204,14 @@ export const aiAPI = {
 
 // HS Code Database Search API (Database + AI Fallback)
 export const hsCodeAPI = {
-  search: (query: string) => api.get(`/hs-codes/search?q=${encodeURIComponent(query)}`),
-  getByCode: (code: string) => api.get(`/hs-codes/${code}`),
+  search: (query: string) => api.post(`/onboarding?action=hs-suggestions&q=${encodeURIComponent(query)}`),
+  getByCode: (code: string) => api.post(`/onboarding?action=hs-suggestions&q=${code}`),
 }
 
 // Certificates API (Smart Suggestions Based on Industry)
 export const certificatesAPI = {
-  search: (industry?: string) => api.get(`/certificates/search${industry ? `?industry=${encodeURIComponent(industry)}` : ''}`),
-  getByCode: (code: string) => api.get(`/certificates/${code}`),
+  search: (industry?: string) => api.post(`/onboarding?action=certificates${industry ? `&industry=${encodeURIComponent(industry)}` : ''}`),
+  getByCode: (code: string) => api.post(`/onboarding?action=certificates&code=${code}`),
 }
 
 // Dashboard API (New)
@@ -243,14 +243,14 @@ export default api
 
 // Setup & Validation API (Onboarding Step 3)
 export const setupAPI = {
-  validateGemini: (apiKey: string) => api.post('/setup/validate-gemini', { apiKey }),
-  validateResend: (apiKey: string) => api.post('/setup/validate-resend', { apiKey }),
+  validateGemini: (apiKey: string) => api.post('/onboarding?action=validate-gemini', { apiKey }),
+  validateResend: (apiKey: string) => api.post('/onboarding?action=validate-resend', { apiKey }),
 }
 
 // Strategy API (Global Expansion Strategy)
 export const strategyAPI = {
   getRecommendations: (data: { products: any[]; originCountry: string }) =>
-    api.post('/strategy/recommendations', data),
+    api.post('/onboarding?action=strategy', data),
   saveStrategy: (data: { targetCountries: any[] }) =>
     api.post('/strategy/save', data),
 }
@@ -258,7 +258,7 @@ export const strategyAPI = {
 // ICP API (Ideal Customer Profile)
 export const icpAPI = {
   generate: (data: { products: any[]; targetCountries: any[] }) =>
-    api.post('/icp/generate', data),
+    api.post('/onboarding?action=icp', data),
   save: (data: { targetIndustries: any[]; decisionMakers: any[]; customEntries?: any[] }) =>
     api.post('/icp/save', data),
   validate: (data: { targetIndustries: any[]; decisionMakers: any[] }) =>
