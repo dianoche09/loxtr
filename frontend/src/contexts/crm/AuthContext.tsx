@@ -177,6 +177,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }
 
+  const logout = async () => {
+    await supabase.auth.signOut()
+    setUser(null)
+    toast.success('Logged out successfully')
+  }
+
   const refreshProfile = async () => {
     const { data: { session } } = await supabase.auth.getSession()
     if (session) {
