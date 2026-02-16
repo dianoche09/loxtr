@@ -8,12 +8,21 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     try {
         const authHeader = req.headers.authorization || '';
-        const token = authHeader.split(' ')[1];
+        const token = authHeader.replace('Bearer ', '');
 
-        if (!token) return res.status(401).json({ error: 'Unauthorized' });
+        if (!token) {
+            console.warn('No token provided in auth header');
+            return res.status(401).json({ error: 'Unauthorized: No token provided' });
+        }
 
-        const { data: { user }, error: authError } = await supabase.auth.getUser(token);
-        if (authError || !user) return res.status(401).json({ error: 'Unauthorized' });
+        const { data: authData, error: authError } = await supabase.auth.getUser(token);
+
+        if (authError || !authData?.user) {
+            console.error('Supabase Auth Error:', authError?.message || 'User not found');
+            return res.status(401).json({ error: 'Unauthorized: Invalid token' });
+        }
+
+        const user = authData.user;
 
         if (req.method === 'GET') {
             const { data, error } = await supabase
@@ -22,7 +31,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
                 .eq('id', user.id)
                 .single();
 
-            if (error) return res.status(500).json({ error: error.message });
+            if (error) {
+                console.error('Database Fetch User Error:', error);
+                return res.status(500).json({ error: error.message });
+            }
             return res.status(200).json({ success: true, data: { user: data } });
         }
 
@@ -43,7 +55,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
                 .single();
 
             if (error) {
-                console.error('Update Profile Error:', error);
+                console.error('Database Update Profile Error:', error);
                 return res.status(500).json({ error: error.message });
             }
 
@@ -51,7 +63,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         }
 
     } catch (error: any) {
-        console.error('Auth/Me Error:', error);
-        return res.status(500).json({ error: 'Internal Server Error' });
+        console.error('Auth/Me Critical Error:', error);
+        return res.status(500).json({ error: error.message || 'Internal Server Error' });
     }
 }

@@ -340,7 +340,7 @@ export default function OnboardingPage() {
             let dbData = [];
             try {
                 const dbRes = (await hsCodeAPI.search(val)) as any;
-                if (dbRes.success && dbRes.data) {
+                if (dbRes.success && dbRes.data && Array.isArray(dbRes.data)) {
                     dbData = dbRes.data;
                 }
             } catch (dbErr) {
@@ -360,7 +360,7 @@ export default function OnboardingPage() {
                 // If query changed while waiting, discard results
                 if (currentSearchValRef.current !== val) return;
 
-                if (aiRes.success && aiRes.data && aiRes.data.length > 0) {
+                if (aiRes.success && aiRes.data && Array.isArray(aiRes.data)) {
                     setHsSuggestions(aiRes.data);
                     setShowHsDropdown(true);
                 } else {
@@ -539,9 +539,12 @@ export default function OnboardingPage() {
 
                         setFormData(prev => {
                             // Merge new products if any
-                            const currentNames = prev.productGroups.map(p => p.name.toLowerCase());
+                            const currentNames = prev.productGroups
+                                .map(p => (p.name || '').toLowerCase())
+                                .filter(name => name !== '');
+
                             const newProducts = (products || [])
-                                .filter((p: string) => !currentNames.includes(p.toLowerCase()))
+                                .filter((p: any) => typeof p === 'string' && p.trim() !== '' && !currentNames.includes(p.toLowerCase()))
                                 .map((p: string) => ({
                                     name: p,
                                     hsCode: '',
