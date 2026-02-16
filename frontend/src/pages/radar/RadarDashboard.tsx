@@ -128,8 +128,8 @@ export default function RadarDashboard() {
     }
 
     return (
-        <div className="min-h-screen bg-[#f8fafc] pt-24 pb-12 font-outfit">
-            <main className="max-w-7xl mx-auto px-6">
+        <div className="bg-slate-50 p-8 min-h-full font-outfit transition-all duration-300">
+            <div className="max-w-[1600px] mx-auto space-y-6">
 
                 {/* Header Section */}
                 <div className="flex items-center gap-4 mb-8">
@@ -429,7 +429,7 @@ export default function RadarDashboard() {
                         )}
                     </div>
                 </motion.div>
-            </main>
+            </div>
         </div>
     );
 }

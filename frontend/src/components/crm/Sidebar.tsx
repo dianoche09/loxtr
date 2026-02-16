@@ -12,12 +12,12 @@ export default function Sidebar() {
     const { user: currentUser, logout } = useAuth()
 
     const menuItems = [
-        { icon: Bot, label: 'Daily Brief', path: '/dashboard' },
-        { icon: Radar, label: 'AI Radar', path: '/radar-system' },
-        { icon: Users, label: 'My Leads', path: '/leads' },
-        { icon: Mail, label: 'Outreach Ops', path: '/campaigns' },
-        { icon: FileText, label: 'Smart Assets', path: '/assets' },
-        { icon: Brain, label: 'System Brain', path: '/settings' },
+        { icon: Bot, label: 'Daily Brief', path: '/crm/dashboard' },
+        { icon: Radar, label: 'AI Radar', path: '/crm/radar' },
+        { icon: Users, label: 'My Leads', path: '/crm/leads' },
+        { icon: Mail, label: 'Outreach Ops', path: '/crm/campaigns' },
+        { icon: FileText, label: 'Smart Assets', path: '/crm/assets' },
+        { icon: Brain, label: 'System Brain', path: '/crm/settings' },
     ]
 
     const handleLogout = () => {

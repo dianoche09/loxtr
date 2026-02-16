@@ -446,6 +446,7 @@ function App() {
             }>
               <Route index element={<Navigate to="dashboard" replace />} />
               <Route path="dashboard" element={<DashboardPage />} />
+              <Route path="radar" element={<RadarDashboard />} />
               <Route path="leads" element={<LeadsPage />} />
               <Route path="campaigns" element={<CampaignsPage />} />
               <Route path="campaigns/:id" element={<CampaignDetailsPage />} />
