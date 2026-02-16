@@ -21,7 +21,7 @@ export default function Layout() {
     }
 
     // Force onboarding if not completed and not already on onboarding page
-    if (user && !user.onboarding_completed && location.pathname !== '/onboarding') {
+    if (user && !(user.onboarding_completed || user.onboardingCompleted) && location.pathname !== '/onboarding') {
         return <Navigate to="/onboarding" />;
     }
 

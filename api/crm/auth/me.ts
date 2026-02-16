@@ -23,7 +23,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
                 .single();
 
             if (error) return res.status(500).json({ error: error.message });
-            return res.status(200).json({ success: true, data });
+            return res.status(200).json({ success: true, data: { user: data } });
         }
 
         if (req.method === 'PUT') {

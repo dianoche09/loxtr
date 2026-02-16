@@ -585,8 +585,8 @@ export default function OnboardingPage() {
             try {
                 const res = (await authAPI.getCurrentUser()) as any;
                 const user = res.data.user;
-                if (user.onboardingCompleted) {
-                    navigate('/dashboard');
+                if (user.onboardingCompleted || user.onboarding_completed) {
+                    navigate('/crm/dashboard');
                     return;
                 }
 
