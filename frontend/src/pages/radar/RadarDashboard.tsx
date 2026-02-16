@@ -1,34 +1,33 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/crm/AuthContext';
+import { aiAPI, discoveryAPI, leadsAPI } from '../../services/crm/api';
+import toast from 'react-hot-toast';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
-    Search, Radar, ShieldCheck, Download, Filter,
-    Loader2, Gauge, ChevronDown, ChevronUp, Zap,
-    Timer, TrendingUp, Target, Plus, Building2,
-    Ship, Globe
+    Radar, Sparkles, Check, ShoppingBag, Globe, Building2,
+    Lock, Unlock, Loader2, ArrowRight
 } from 'lucide-react';
-import toast from 'react-hot-toast';
 
-interface Importer {
-    id: string;
-    companyName: string;
-    description: string;
-    country: string;
-    tradeVolumeValue?: string;
-    confidenceScore: number;
-    reasoning?: string;
-    tags: string[];
-}
+type Step = 'search' | 'refine' | 'loading' | 'results';
 
 export default function RadarDashboard() {
-    const { isAuthenticated, user, isLoading: authLoading } = useAuth();
+    const { isAuthenticated, isLoading: authLoading } = useAuth();
     const navigate = useNavigate();
-    const [query, setQuery] = useState('');
-    const [results, setResults] = useState<Importer[]>([]);
-    const [isSearching, setIsSearching] = useState(false);
-    const [hideLowQuality, setHideLowQuality] = useState(true);
-    const [expandedId, setExpandedId] = useState<string | null>(null);
+
+    // Wizard State
+    const [step, setStep] = useState<Step>('search');
+    const [searchTerm, setSearchTerm] = useState('');
+    const [isSuggesting, setIsSuggesting] = useState(false);
+    const [suggestions, setSuggestions] = useState<{ industries: string[], markets: Array<{ country: string, reason: string }> }>({
+        industries: [],
+        markets: []
+    });
+    const [industry, setIndustry] = useState('');
+    const [selectedMarkets, setSelectedMarkets] = useState<string[]>([]);
+    const [results, setResults] = useState<any[]>([]);
+    const [selectedResults, setSelectedResults] = useState<Set<number>>(new Set());
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         if (!authLoading && !isAuthenticated) {
@@ -36,73 +35,94 @@ export default function RadarDashboard() {
         }
     }, [isAuthenticated, authLoading, navigate]);
 
-    // Mock/Real fetch function
-    const fetchRadarData = async (searchQuery: string): Promise<Importer[]> => {
-        // Simulate API call delay
-        await new Promise(resolve => setTimeout(resolve, 1500));
-
-        // Return mock data for demo
-        return [
-            {
-                id: '1',
-                companyName: 'Global Imports GmbH',
-                country: 'Germany',
-                description: 'Leading distributor of automotive components.',
-                confidenceScore: 92,
-                tags: ['Automotive', 'Distributor'],
-                reasoning: 'High trade volume in your target sector.'
-            },
-            {
-                id: '2',
-                companyName: 'American Retail Corp',
-                country: 'USA',
-                description: 'Large retail chain expanding into organic foods.',
-                confidenceScore: 88,
-                tags: ['Retail', 'Organic'],
-                reasoning: 'Matches your product "Hazelnut" profile.'
-            },
-            {
-                id: '3',
-                companyName: 'TechSource Ltd',
-                country: 'UK',
-                description: 'Specialized electronics importer.',
-                confidenceScore: 75,
-                tags: ['Electronics', 'Tech'],
-                reasoning: 'Active buyer in recent customs data.'
+    // Debounced suggestion fetch
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            if (searchTerm && searchTerm.length > 2) {
+                fetchSuggestions();
+            } else {
+                setSuggestions({ industries: [], markets: [] });
             }
-        ];
-    };
+        }, 800);
+        return () => clearTimeout(timer);
+    }, [searchTerm]);
 
-    const handleSearch = async () => {
-        if (!query) return;
-        setIsSearching(true);
-        setResults([]);
+    const fetchSuggestions = async () => {
+        setIsSuggesting(true);
         try {
-            const data = await fetchRadarData(query);
-            setResults(data);
-        } catch (error) {
-            console.error('Search error:', error);
+            const res = await aiAPI.getDiscoverySuggestions({ product: searchTerm }) as any;
+            if (res.success || res.data) {
+                const data = res.data || res;
+                setSuggestions({
+                    industries: data.industries || [],
+                    markets: data.markets || []
+                });
+            }
+        } catch (err) {
+            console.error('Failed to fetch suggestions', err);
         } finally {
-            setIsSearching(false);
+            setIsSuggesting(false);
         }
     };
 
-    const handleSaveToCRM = (item: Importer) => {
-        toast.success(`${item.companyName} added to your LOX CRM! Routing to Outreach Ops...`);
-        // In a real app, this would call an API, then navigate
-        setTimeout(() => {
-            navigate('/crm/leads?open_wizard=true');
-        }, 1500);
+    const handleRunDiscovery = async () => {
+        if (!searchTerm || !industry || selectedMarkets.length === 0) {
+            return toast.error('Please fill in all fields');
+        }
+
+        setStep('loading');
+        setLoading(true);
+
+        try {
+            const res = await discoveryAPI.runDiscovery({
+                product: searchTerm,
+                industry,
+                targetMarkets: selectedMarkets,
+                count: 15
+            }) as any;
+
+            const leads = res.data?.leads || res.leads || [];
+
+            if (leads.length > 0) {
+                setResults(leads);
+                const allIndexes = new Set<number>(leads.map((_: any, i: number) => i));
+                setSelectedResults(allIndexes);
+                setStep('results');
+            } else {
+                toast.error('No leads found matching your criteria.');
+                setStep('search');
+            }
+        } catch (err: any) {
+            toast.error(err.response?.data?.error || 'Discovery failed');
+            setStep('search');
+        } finally {
+            setLoading(false);
+        }
     };
 
-    const filteredResults = hideLowQuality
-        ? results.filter(r => r.confidenceScore >= 60)
-        : results;
+    const handleUnlockLeads = async () => {
+        if (selectedResults.size === 0) return toast.error('Select at least one lead');
+
+        setLoading(true);
+        const leadsToSave = results.filter((_, i) => selectedResults.has(i));
+
+        try {
+            const res = await leadsAPI.createLeadsBulk(leadsToSave) as any;
+            if (res.success || res.data) {
+                toast.success(`Successfully unlocked ${leadsToSave.length} leads!`);
+                navigate('/leads');
+            }
+        } catch (err: any) {
+            toast.error(err.response?.data?.error || 'Failed to unlock leads');
+        } finally {
+            setLoading(false);
+        }
+    };
 
     if (authLoading) {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-off-white">
-                <Loader2 className="w-8 h-8 animate-spin text-navy" />
+            <div className="min-h-screen flex items-center justify-center bg-slate-50">
+                <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
             </div>
         );
     }
@@ -110,328 +130,306 @@ export default function RadarDashboard() {
     return (
         <div className="min-h-screen bg-[#f8fafc] pt-24 pb-12 font-outfit">
             <main className="max-w-7xl mx-auto px-6">
-                {/* Radar Header */}
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
-                    <div>
-                        <div className="flex items-center gap-3 mb-2 text-blue-600 font-bold tracking-widest text-sm">
-                            <Radar className="w-5 h-5 animate-pulse" />
-                            LOX AI RADAR SYSTEM
-                        </div>
-                        <h1 className="text-4xl font-black text-navy leading-tight uppercase tracking-tighter">
-                            Market <span className="text-blue-600">Intelligence Node</span>
-                        </h1>
-                        <p className="text-slate-500 mt-2 max-w-xl text-lg font-medium">
-                            Step into the lead discovery engine. Intercept global buyers with strategic AI signals.
-                        </p>
-                    </div>
 
-                    <div className="flex bg-white p-2 rounded-2xl shadow-sm border border-slate-100 gap-4">
-                        <div className="px-6 py-2 text-center border-r border-slate-100">
-                            <div className="text-[10px] text-slate-400 font-black uppercase tracking-widest">Discovery Credits</div>
-                            <div className="text-2xl font-black text-navy">500</div>
-                        </div>
-                        <div className="px-6 py-2 text-center">
-                            <div className="text-[10px] text-slate-400 font-black uppercase tracking-widest">Growth Plan</div>
-                            <div className="text-2xl font-black text-blue-600 uppercase tracking-tighter italic">Pro Hunter</div>
-                        </div>
+                {/* Header Section */}
+                <div className="flex items-center gap-4 mb-8">
+                    <div className="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-blue-200">
+                        <Radar size={32} />
+                    </div>
+                    <div>
+                        <h1 className="text-3xl font-black text-slate-900 leading-tight">AI Lead Radar</h1>
+                        <p className="text-lg font-medium text-slate-500">
+                            {step === 'search' ? 'Define your target market and product.' :
+                                step === 'results' ? 'Market intelligence results ready.' : 'Analyzing global trade data...'}
+                        </p>
                     </div>
                 </div>
 
-                {/* Search Section */}
-                <section className="bg-navy rounded-[2.5rem] shadow-2xl p-10 mb-12 relative overflow-hidden group">
-                    <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-blue-500/10 rounded-full blur-[100px] -mr-48 -mt-48 transition-all group-hover:bg-blue-500/15 duration-1000"></div>
-
-                    <div className="relative z-10 flex flex-col md:flex-row gap-4 items-stretch">
-                        <div className="flex-1 relative">
-                            <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 w-6 h-6" />
-                            <input
-                                type="text"
-                                placeholder="HS Code, Product (e.g. Hazelnut) or Country..."
-                                className="w-full pl-14 pr-4 py-6 bg-white/5 border border-white/10 rounded-2xl text-white placeholder:text-slate-500 focus:bg-white/10 focus:border-blue-500 outline-none backdrop-blur-md transition-all text-xl font-bold"
-                                value={query}
-                                onChange={(e) => setQuery(e.target.value)}
-                                onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-                            />
-                        </div>
-                        <button
-                            onClick={handleSearch}
-                            disabled={isSearching}
-                            className="bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white px-12 py-6 rounded-2xl font-black flex items-center justify-center gap-3 transition-all shadow-xl active:scale-95 text-lg uppercase tracking-widest"
-                        >
-                            {isSearching ? <Loader2 className="animate-spin" /> : <Radar size={24} />}
-                            {isSearching ? 'SCANNİNG...' : 'Start Global Scan'}
-                        </button>
-                    </div>
-                </section>
-
-                {/* Results Area */}
-                <AnimatePresence mode="wait">
-                    {isSearching ? (
-                        <motion.div
-                            key="loading"
-                            initial={{ opacity: 0, scale: 0.95 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            exit={{ opacity: 0, scale: 1.05 }}
-                            className="flex flex-col items-center justify-center py-24 bg-white rounded-[3rem] border border-slate-100 shadow-sm relative overflow-hidden"
-                        >
-                            <div className="absolute inset-0 bg-slate-50/50 -z-0" />
-                            <div className="relative w-32 h-32 mb-8">
-                                <Radar className="w-full h-full text-blue-600 animate-pulse" />
-                                <div className="absolute inset-0 border-[6px] border-blue-600/10 border-t-blue-600 rounded-full animate-spin"></div>
-                            </div>
-                            <h3 className="text-2xl font-black text-navy uppercase tracking-tighter">AI Signal Processing</h3>
-                            <p className="text-slate-500 mt-2 font-medium">Intercepting customs records and filtering noise...</p>
-                        </motion.div>
-                    ) : filteredResults.length > 0 ? (
-                        <motion.div
-                            key="results"
-                            initial={{ opacity: 0, y: 30 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            className="space-y-6"
-                        >
-                            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 px-2">
-                                <div className="flex items-center gap-4">
-                                    <h2 className="text-2xl font-black text-navy uppercase tracking-tight">Qualified Signals</h2>
-                                    <div className="bg-blue-600 text-white px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-widest">
-                                        {filteredResults.length} High-Potential Leads
+                {/* Main Content Card */}
+                <motion.div
+                    layout
+                    className="bg-white rounded-[2.5rem] shadow-xl border border-slate-100 overflow-hidden min-h-[600px] relative"
+                >
+                    <div className="p-8 md:p-12">
+                        {step === 'search' && (
+                            <motion.div
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                className="max-w-3xl mx-auto space-y-10"
+                            >
+                                {/* Product Input */}
+                                <div className="space-y-4">
+                                    <label className="text-sm font-black text-slate-400 uppercase tracking-[0.2em] ml-1">
+                                        What are you exporting?
+                                    </label>
+                                    <div className="relative group">
+                                        <input
+                                            type="text"
+                                            value={searchTerm}
+                                            onChange={(e) => setSearchTerm(e.target.value)}
+                                            placeholder="Enter product name (e.g. Electric Bicycles)"
+                                            className="w-full px-8 py-6 bg-white border-2 border-slate-100 focus:border-blue-500 rounded-[2rem] outline-none font-bold text-slate-700 transition-all text-2xl shadow-sm group-hover:shadow-md"
+                                            autoFocus
+                                        />
+                                        <div className="absolute right-8 top-1/2 -translate-y-1/2 flex items-center gap-4">
+                                            {isSuggesting && <Loader2 className="animate-spin text-blue-500" />}
+                                            <ShoppingBag className="text-slate-300 w-8 h-8" />
+                                        </div>
                                     </div>
                                 </div>
 
-                                <div className="flex items-center gap-4">
-                                    <label className="flex items-center gap-3 cursor-pointer bg-white px-5 py-2.5 rounded-2xl border border-slate-100 shadow-sm transition-all hover:border-blue-200">
-                                        <Filter size={18} className={hideLowQuality ? "text-blue-600" : "text-slate-400"} />
-                                        <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Cleanlab Protocol</span>
-                                        <div className="relative inline-block w-10 h-6">
-                                            <input
-                                                type="checkbox"
-                                                className="sr-only"
-                                                checked={hideLowQuality}
-                                                onChange={() => setHideLowQuality(!hideLowQuality)}
-                                            />
-                                            <div className={`block w-full h-full rounded-full transition-colors ${hideLowQuality ? 'bg-blue-600' : 'bg-slate-200'}`}></div>
-                                            <div className={`absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform ${hideLowQuality ? 'translate-x-4' : 'translate-x-0'}`}></div>
-                                        </div>
-                                    </label>
-                                    <button className="bg-white text-navy font-black px-5 py-2.5 rounded-2xl border border-slate-100 shadow-sm hover:bg-slate-50 transition-all flex items-center gap-2 text-[10px] uppercase tracking-widest">
-                                        <Download size={18} /> Export Intelligence
-                                    </button>
-                                </div>
-                            </div>
-
-                            <div className="grid grid-cols-1 gap-4">
-                                {filteredResults.map((item) => (
-                                    <div key={item.id} className="group">
+                                <AnimatePresence>
+                                    {searchTerm.length > 2 && (
                                         <motion.div
-                                            layout
-                                            className={`bg-white rounded-[2rem] border transition-all duration-300 overflow-hidden ${expandedId === item.id ? 'border-blue-500 shadow-2xl ring-4 ring-blue-500/5' : 'border-slate-100 shadow-sm hover:border-blue-200 hover:shadow-xl'}`}
+                                            initial={{ opacity: 0, height: 0 }}
+                                            animate={{ opacity: 1, height: 'auto' }}
+                                            exit={{ opacity: 0, height: 0 }}
+                                            className="space-y-10 overflow-hidden"
                                         >
-                                            {/* Main Row */}
-                                            <div
-                                                className="p-8 cursor-pointer flex flex-col md:flex-row md:items-center justify-between gap-6"
-                                                onClick={() => setExpandedId(expandedId === item.id ? null : item.id)}
-                                            >
-                                                <div className="flex items-center gap-6">
-                                                    <div className="w-16 h-16 bg-slate-50 rounded-2xl flex items-center justify-center font-black text-navy text-2xl group-hover:bg-blue-600 group-hover:text-white transition-all duration-500 shadow-inner">
-                                                        {item.companyName[0]}
-                                                    </div>
-                                                    <div>
-                                                        <div className="flex items-center gap-3 mb-1">
-                                                            <h3 className="text-xl font-black text-navy tracking-tight uppercase leading-none">{item.companyName}</h3>
-                                                            {item.intelligence?.growthSignal && <Zap className="w-4 h-4 text-yellow-500 fill-yellow-500 animate-bounce" />}
-                                                        </div>
-                                                        <div className="flex items-center gap-3 text-slate-500 font-bold uppercase text-[10px] tracking-widest">
-                                                            <span className="flex items-center gap-1"><Globe className="w-3 h-3" /> {item.country}</span>
-                                                            <span className="w-1 h-1 bg-slate-300 rounded-full"></span>
-                                                            <span>HS: {item.hscode}</span>
-                                                        </div>
-                                                    </div>
+                                            {/* Industry Selection */}
+                                            <div className="space-y-5">
+                                                <div className="flex items-center justify-between ml-1">
+                                                    <label className="text-sm font-black text-slate-400 uppercase tracking-[0.2em]">Target Buyer Industry</label>
+                                                    {isSuggesting && (
+                                                        <span className="text-[10px] font-black text-blue-500 flex items-center gap-1.5 px-3 py-1 bg-blue-50 rounded-lg">
+                                                            <Sparkles size={12} className="animate-pulse" />
+                                                            AI ANALYZING...
+                                                        </span>
+                                                    )}
                                                 </div>
 
-                                                <div className="flex items-center gap-12">
-                                                    <div className="flex flex-col items-center gap-2">
-                                                        <div className="flex items-center gap-2">
-                                                            <Gauge size={16} className={item.confidenceScore > 80 ? 'text-green-500' : 'text-yellow-500'} />
-                                                            <span className="text-xs font-black text-slate-400 uppercase tracking-widest leading-none">AI Score</span>
-                                                            <span className={`font-black text-lg ${item.confidenceScore > 80 ? 'text-green-500' : 'text-yellow-500'}`}>
-                                                                {item.confidenceScore}%
-                                                            </span>
-                                                        </div>
-                                                        <div className="w-32 bg-slate-100 rounded-full h-1.5 overflow-hidden">
-                                                            <motion.div
-                                                                initial={{ width: 0 }}
-                                                                animate={{ width: `${item.confidenceScore}%` }}
-                                                                className={`h-full ${item.confidenceScore > 80 ? 'bg-green-500' : 'bg-yellow-500'}`}
-                                                            ></motion.div>
-                                                        </div>
-                                                    </div>
+                                                <div className="flex flex-wrap gap-3">
+                                                    {isSuggesting && suggestions.industries.length === 0 ? (
+                                                        [1, 2, 3].map(i => (
+                                                            <div key={i} className="h-12 w-32 bg-slate-100 animate-pulse rounded-2xl" />
+                                                        ))
+                                                    ) : (
+                                                        (suggestions.industries || []).map((ind, idx) => (
+                                                            <motion.button
+                                                                key={ind}
+                                                                initial={{ opacity: 0, scale: 0.8 }}
+                                                                animate={{ opacity: 1, scale: 1 }}
+                                                                transition={{ delay: idx * 0.05 }}
+                                                                onClick={() => setIndustry(ind)}
+                                                                className={`px-6 py-3 rounded-2xl text-sm font-bold border-2 transition-all ${industry === ind ? 'bg-blue-600 border-blue-600 text-white shadow-lg shadow-blue-100 scale-105' : 'bg-white border-slate-100 text-slate-600 hover:border-blue-200'}`}
+                                                            >
+                                                                {ind}
+                                                            </motion.button>
+                                                        ))
+                                                    )}
+                                                </div>
 
-                                                    <span className={`inline-flex items-center px-4 py-2 rounded-xl font-black text-[10px] uppercase tracking-widest border ${item.type === 'Direct Importer'
-                                                        ? 'bg-green-50 text-green-700 border-green-100'
-                                                        : 'bg-slate-50 text-slate-700 border-slate-200'
-                                                        }`}>
-                                                        {item.type}
-                                                    </span>
-
-                                                    <div className="flex items-center gap-3">
-                                                        <button
-                                                            className={`p-3 rounded-xl transition-all ${expandedId === item.id ? 'bg-blue-600 text-white' : 'bg-slate-50 text-navy hover:bg-slate-100'}`}
-                                                        >
-                                                            {expandedId === item.id ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
-                                                        </button>
-                                                    </div>
+                                                <div className="relative max-w-xl">
+                                                    <input
+                                                        type="text"
+                                                        value={industry}
+                                                        onChange={(e) => setIndustry(e.target.value)}
+                                                        placeholder="Or type custom industry..."
+                                                        className="w-full px-6 py-4 bg-white border-2 border-slate-100 focus:border-blue-500 rounded-2xl outline-none font-bold text-slate-700 transition-all"
+                                                    />
+                                                    <Building2 className="absolute right-6 top-1/2 -translate-y-1/2 text-slate-300" size={20} />
                                                 </div>
                                             </div>
 
-                                            {/* Expanded Intelligence Panel */}
-                                            <AnimatePresence>
-                                                {expandedId === item.id && (
-                                                    <motion.div
-                                                        initial={{ opacity: 0, height: 0 }}
-                                                        animate={{ opacity: 1, height: 'auto' }}
-                                                        exit={{ opacity: 0, height: 0 }}
-                                                        className="border-t border-slate-100 bg-slate-50/50"
-                                                    >
-                                                        <div className="p-10 grid grid-cols-1 lg:grid-cols-2 gap-10">
-                                                            {/* Logistics Battleground */}
-                                                            <div className="space-y-6">
-                                                                <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] flex items-center gap-2">
-                                                                    <Timer className="w-4 h-4" /> Logistics Battleground
-                                                                </h4>
-                                                                <div className="bg-white p-8 rounded-[2rem] shadow-sm border border-slate-200/50 relative overflow-hidden">
-                                                                    <div className="relative z-10 space-y-8">
-                                                                        <div className="flex justify-between items-end">
-                                                                            <div className="space-y-1">
-                                                                                <p className="text-[10px] font-black text-blue-600 uppercase tracking-widest">Turkey Route</p>
-                                                                                <p className="text-3xl font-black text-navy">{item.intelligence?.transitTimeTurkey} Days</p>
-                                                                            </div>
-                                                                            <div className="text-right space-y-1">
-                                                                                <p className="text-[10px] font-black text-red-400 uppercase tracking-widest">{item.intelligence?.competitorCountry} Rival</p>
-                                                                                <p className="text-3xl font-black text-slate-400">{item.intelligence?.transitTimeAsia} Days</p>
-                                                                            </div>
-                                                                        </div>
+                                            {/* Market Selection */}
+                                            <div className="space-y-5">
+                                                <div className="flex items-center justify-between ml-1">
+                                                    <label className="text-sm font-black text-slate-400 uppercase tracking-[0.2em]">Recommended Markets</label>
+                                                </div>
 
-                                                                        <div className="relative h-2 bg-slate-100 rounded-full overflow-hidden">
-                                                                            <motion.div
-                                                                                initial={{ width: 0 }}
-                                                                                animate={{ width: `${(item.intelligence!.transitTimeTurkey / item.intelligence!.transitTimeAsia) * 100}%` }}
-                                                                                className="absolute inset-y-0 left-0 bg-blue-600 rounded-full"
-                                                                            />
-                                                                        </div>
-
-                                                                        <div className="p-4 bg-blue-50 rounded-2xl flex items-center gap-4 border border-blue-100">
-                                                                            <TrendingUp className="w-8 h-8 text-blue-600" />
-                                                                            <p className="text-sm font-bold text-blue-900 leading-relaxed">
-                                                                                <span className="font-black">LOX Insight:</span> Turkey delivers <span className="text-blue-600">{item.intelligence?.transitTimeAsia! - item.intelligence?.transitTimeTurkey!} days faster</span>. This eliminates {Math.round((item.intelligence!.transitTimeAsia - item.intelligence!.transitTimeTurkey) / 7)} weeks of inventory carrying costs.
-                                                                            </p>
-                                                                        </div>
-
-                                                                        {/* Market Share Indicator */}
-                                                                        <div className="pt-4">
-                                                                            <div className="flex justify-between items-center mb-2">
-                                                                                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Market Share: Supply from Turkey</span>
-                                                                                <span className="text-xs font-black text-navy">{item.intelligence?.marketShareTurkey}%</span>
-                                                                            </div>
-                                                                            <div className="h-4 bg-slate-100 rounded-full overflow-hidden p-1 shadow-inner">
-                                                                                <motion.div
-                                                                                    initial={{ width: 0 }}
-                                                                                    animate={{ width: `${item.intelligence?.marketShareTurkey}%` }}
-                                                                                    className="h-full bg-gradient-to-r from-blue-400 to-blue-600 rounded-full"
-                                                                                />
-                                                                            </div>
-                                                                            <p className="text-[9px] text-slate-400 mt-2 font-medium italic">
-                                                                                *Based on intercepted Bill of Lading (BoL) data from the last 12 months.
-                                                                            </p>
-                                                                        </div>
+                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                    {isSuggesting && suggestions.markets.length === 0 ? (
+                                                        [1, 2].map(i => (
+                                                            <div key={i} className="h-24 w-full bg-slate-100 animate-pulse rounded-[1.5rem]" />
+                                                        ))
+                                                    ) : (
+                                                        suggestions.markets.map((m, idx) => (
+                                                            <motion.button
+                                                                key={m.country}
+                                                                initial={{ opacity: 0, x: -20 }}
+                                                                animate={{ opacity: 1, x: 0 }}
+                                                                transition={{ delay: idx * 0.1 }}
+                                                                onClick={() => {
+                                                                    setSelectedMarkets(prev => prev.includes(m.country) ? prev.filter(p => p !== m.country) : [...prev, m.country])
+                                                                }}
+                                                                className={`flex items-center justify-between p-5 rounded-[1.5rem] border-2 transition-all group ${selectedMarkets.includes(m.country) ? 'bg-blue-50/50 border-blue-600' : 'bg-white border-slate-100 hover:border-blue-200 hover:shadow-md'}`}
+                                                            >
+                                                                <div className="flex items-center gap-4 text-left">
+                                                                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center text-xl transition-colors ${selectedMarkets.includes(m.country) ? 'bg-blue-600' : 'bg-slate-50'}`}>
+                                                                        {selectedMarkets.includes(m.country) ? <Check size={20} className="text-white" /> : <Globe size={20} className="text-slate-400" />}
+                                                                    </div>
+                                                                    <div>
+                                                                        <div className="font-black text-slate-800 text-lg">{m.country}</div>
+                                                                        <div className="text-xs font-bold text-slate-400 tracking-tight leading-relaxed max-w-sm">{m.reason}</div>
                                                                     </div>
                                                                 </div>
+                                                                <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center transition-all ${selectedMarkets.includes(m.country) ? 'bg-blue-600 border-blue-600 text-white shadow-lg shadow-blue-100' : 'border-slate-200 bg-white'}`}>
+                                                                    {selectedMarkets.includes(m.country) && <Check size={16} />}
+                                                                </div>
+                                                            </motion.button>
+                                                        ))
+                                                    )}
+                                                </div>
+                                            </div>
+
+                                            <motion.button
+                                                initial={{ opacity: 0, scale: 0.9 }}
+                                                animate={{ opacity: 1, scale: 1 }}
+                                                whileHover={{ scale: 1.02 }}
+                                                whileTap={{ scale: 0.98 }}
+                                                onClick={handleRunDiscovery}
+                                                disabled={!industry || selectedMarkets.length === 0}
+                                                className="w-full py-6 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-[2rem] font-black text-xl shadow-xl shadow-blue-200 hover:shadow-blue-300 transition-all flex items-center justify-center gap-4 disabled:opacity-50 disabled:grayscale"
+                                            >
+                                                <Sparkles size={28} />
+                                                Deep Scan Markets
+                                            </motion.button>
+                                        </motion.div>
+                                    )}
+                                </AnimatePresence>
+                            </motion.div>
+                        )}
+
+                        {step === 'loading' && (
+                            <div className="flex flex-col items-center justify-center py-32 text-center animate-in zoom-in-95 duration-500">
+                                <div className="relative mb-12">
+                                    <motion.div
+                                        animate={{ rotate: 360 }}
+                                        transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+                                        className="w-48 h-48 border-[6px] border-slate-100 border-t-blue-600 rounded-full"
+                                    />
+                                    <div className="absolute inset-0 flex items-center justify-center">
+                                        <Radar size={64} className="text-blue-600 animate-pulse" />
+                                    </div>
+                                </div>
+                                <h3 className="text-4xl font-black text-slate-900 mb-6">Scanning Global Trade Data...</h3>
+                                <p className="text-xl text-slate-400 max-w-lg mx-auto font-medium leading-relaxed">
+                                    Our AI is cross-referencing import records, company registries, and web signals in <strong>{selectedMarkets.join(', ')}</strong>.
+                                </p>
+                            </div>
+                        )}
+
+                        {step === 'results' && (
+                            <div className="h-full flex flex-col animate-in fade-in slide-in-from-right-8 duration-500">
+                                <div className="mb-8 flex items-center justify-between">
+                                    <h3 className="text-2xl font-black text-slate-900">Market Potential Matches</h3>
+                                    <div className="flex items-center gap-4 bg-slate-50 px-5 py-3 rounded-2xl border border-slate-100">
+                                        <div className="flex items-center gap-2">
+                                            <div className="w-3 h-3 bg-blue-600 rounded-full"></div>
+                                            <span className="text-sm font-bold text-slate-600">{selectedResults.size} selected</span>
+                                        </div>
+                                        <div className="h-4 w-[1px] bg-slate-200"></div>
+                                        <div className="flex items-center gap-2">
+                                            <Lock className="w-4 h-4 text-amber-500" />
+                                            <span className="text-sm font-bold text-slate-600">Locked Data</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="overflow-x-auto mb-8">
+                                    <table className="w-full border-separate border-spacing-y-3">
+                                        <thead>
+                                            <tr className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] text-left">
+                                                <th className="px-6 py-2 w-16">
+                                                    <input
+                                                        type="checkbox"
+                                                        onChange={(e) => setSelectedResults(e.target.checked ? new Set(results.map((_, i) => i)) : new Set())}
+                                                        checked={selectedResults.size === results.length}
+                                                        className="w-5 h-5 rounded-lg border-2 border-slate-200 text-blue-600 focus:ring-blue-500"
+                                                    />
+                                                </th>
+                                                <th className="px-6 py-2">Company</th>
+                                                <th className="px-6 py-2">Location</th>
+                                                <th className="px-6 py-2">Contact Intelligence</th>
+                                                <th className="px-6 py-2">Match Logic</th>
+                                                <th className="px-6 py-2 text-right">Match</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {results.map((lead, idx) => (
+                                                <motion.tr
+                                                    key={idx}
+                                                    initial={{ opacity: 0, x: -20 }}
+                                                    animate={{ opacity: 1, x: 0 }}
+                                                    transition={{ delay: idx * 0.05 }}
+                                                    className={`group transition-all ${selectedResults.has(idx) ? 'bg-blue-50/50' : 'hover:bg-slate-50/80 bg-slate-50/20'}`}
+                                                >
+                                                    <td className="px-6 py-5 rounded-l-[1.5rem] border-y border-l border-slate-100">
+                                                        <input
+                                                            type="checkbox"
+                                                            checked={selectedResults.has(idx)}
+                                                            onChange={() => {
+                                                                const next = new Set(selectedResults);
+                                                                next.has(idx) ? next.delete(idx) : next.add(idx);
+                                                                setSelectedResults(next);
+                                                            }}
+                                                            className="w-5 h-5 rounded-lg border-2 border-slate-200 text-blue-600 focus:ring-blue-500"
+                                                        />
+                                                    </td>
+                                                    <td className="px-6 py-5 border-y border-slate-100">
+                                                        <div className="flex items-center gap-4">
+                                                            <div className="w-12 h-12 bg-white rounded-xl shadow-sm border border-slate-100 flex items-center justify-center font-black text-blue-600 text-xl">
+                                                                {lead.companyName?.[0] || '?'}
                                                             </div>
-
-                                                            {/* Strategic Value Prop */}
-                                                            <div className="space-y-6">
-                                                                <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] flex items-center gap-2">
-                                                                    <Target className="w-4 h-4" /> Targeting Intelligence
-                                                                </h4>
-                                                                <div className="bg-navy p-8 rounded-[2rem] shadow-xl text-white relative overflow-hidden h-full">
-                                                                    <div className="absolute top-0 right-0 p-8 opacity-10">
-                                                                        <Ship className="w-32 h-32" />
-                                                                    </div>
-                                                                    <div className="relative z-10 space-y-6">
-                                                                        <div>
-                                                                            <p className="text-[10px] font-black text-blue-400 uppercase tracking-widest mb-2">Likely Pain Point</p>
-                                                                            <p className="text-lg font-bold text-white leading-relaxed italic">"{item.intelligence?.topPainPoint}"</p>
-                                                                        </div>
-                                                                        <div className="h-px bg-white/10 w-full" />
-                                                                        <div>
-                                                                            <p className="text-[10px] font-black text-emerald-400 uppercase tracking-widest mb-2">AI-Generated Strategy</p>
-                                                                            <p className="text-sm font-medium text-slate-300 leading-relaxed">
-                                                                                {item.intelligence?.valueProposition} Direct-to-truck access from LOX Hub ensures quality control.
-                                                                            </p>
-                                                                        </div>
-
-                                                                        <div className="pt-4 flex flex-wrap gap-4">
-                                                                            <button
-                                                                                onClick={() => handleSaveToCRM(item)}
-                                                                                className="bg-white text-navy px-6 py-4 rounded-2xl font-black text-xs uppercase tracking-widest flex items-center gap-3 hover:bg-blue-50 transition-all shadow-xl active:scale-95"
-                                                                            >
-                                                                                <Plus size={18} /> Add to CRM
-                                                                            </button>
-                                                                            <button
-                                                                                onClick={() => navigate(`/predict-system?origin=Turkey&destination=${item.country}`)}
-                                                                                className="bg-white/10 text-white border border-white/20 px-6 py-4 rounded-2xl font-black text-xs uppercase tracking-widest flex items-center gap-3 hover:bg-white/20 transition-all"
-                                                                            >
-                                                                                <Ship size={18} /> Route Rate
-                                                                            </button>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
+                                                            <div>
+                                                                <div className="font-black text-slate-800 text-lg">{lead.companyName}</div>
+                                                                <div className="text-xs font-bold text-blue-500 uppercase">{lead.website || 'example.com'}</div>
                                                             </div>
                                                         </div>
-                                                    </motion.div>
-                                                )}
-                                            </AnimatePresence>
-                                        </motion.div>
+                                                    </td>
+                                                    <td className="px-6 py-5 border-y border-slate-100">
+                                                        <div className="flex items-center gap-2">
+                                                            <span className="text-xl">🌍</span>
+                                                            <span className="text-sm font-bold text-slate-600">{lead.city && `${lead.city}, `}{lead.country}</span>
+                                                        </div>
+                                                    </td>
+                                                    <td className="px-6 py-5 border-y border-slate-100">
+                                                        <div className="flex items-center gap-3">
+                                                            <div className="filter blur-[6px] grayscale select-none text-sm font-bold bg-slate-200 px-3 py-1 rounded-lg">
+                                                                {lead.email || 'purchasing@company.com'}
+                                                            </div>
+                                                            <span className="text-[10px] font-black text-amber-600 bg-amber-50 px-2 py-1 rounded-lg border border-amber-100">LOCKED</span>
+                                                        </div>
+                                                    </td>
+                                                    <td className="px-6 py-5 border-y border-slate-100 max-w-sm">
+                                                        <p className="text-sm font-medium text-slate-500 leading-snug">{lead.logic || lead.reason || `Matched based on ${industry} keywords.`}</p>
+                                                    </td>
+                                                    <td className="px-6 py-5 rounded-r-[1.5rem] border-y border-r border-slate-100 text-right">
+                                                        <div className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-50 text-emerald-700 rounded-xl font-black text-sm border border-emerald-100 shadow-sm">
+                                                            {lead.aiScore || 95}%
+                                                        </div>
+                                                    </td>
+                                                </motion.tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <div className="flex items-center justify-between p-8 bg-slate-900 rounded-[2rem] text-white shadow-2xl mt-auto">
+                                    <div className="flex items-center gap-8">
+                                        <div className="flex flex-col">
+                                            <span className="text-slate-400 text-xs font-black uppercase tracking-widest">Total Price</span>
+                                            <span className="text-3xl font-black">{selectedResults.size} <span className="text-sm text-slate-400 font-bold uppercase">Leads Quota</span></span>
+                                        </div>
+                                        <div className="h-12 w-[1px] bg-white/10"></div>
+                                        {/* Optional: Add Available Credits if user context has it */}
                                     </div>
-                                ))}
+                                    <button
+                                        onClick={handleUnlockLeads}
+                                        disabled={loading || selectedResults.size === 0}
+                                        className="px-12 py-5 bg-white text-blue-600 rounded-2xl font-black text-xl hover:bg-blue-50 transition-all flex items-center gap-4 shadow-lg shadow-white/5 disabled:opacity-50"
+                                    >
+                                        {loading ? <Loader2 size={24} className="animate-spin" /> : <>
+                                            <Unlock size={24} />
+                                            Unlock Leads
+                                        </>}
+                                    </button>
+                                </div>
                             </div>
-                        </motion.div>
-                    ) : (
-                        <motion.div
-                            key="empty"
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            className="text-center py-24 bg-white rounded-[3rem] border border-slate-100 shadow-sm"
-                        >
-                            <div className="w-24 h-24 bg-slate-50 rounded-[2rem] flex items-center justify-center mx-auto mb-8 shadow-inner">
-                                <Building2 className="text-slate-300 w-10 h-10" />
-                            </div>
-                            <h3 className="text-2xl font-black text-navy uppercase tracking-tighter">No Active Leads Discovered</h3>
-                            <p className="text-slate-500 mt-2 max-w-sm mx-auto font-medium">
-                                Define your market above to trigger the <span className="text-blue-600 font-black">AI Lead Interceptor</span>.
-                            </p>
-                        </motion.div>
-                    )}
-                </AnimatePresence>
+                        )}
+                    </div>
+                </motion.div>
             </main>
         </div>
     );
-}
-
-// Ensure Importer type matches upgraded service
-interface Importer {
-    id: string;
-    companyName: string;
-    country: string;
-    lastShipmentDate: string;
-    hscode: string;
-    confidenceScore: number;
-    type: 'Direct Importer' | 'Broker' | 'Freight Forwarder';
-    intelligence?: {
-        competitorCountry: string;
-        transitTimeAsia: number;
-        transitTimeTurkey: number;
-        marketShareTurkey: number;
-        topPainPoint: string;
-        valueProposition: string;
-        growthSignal: string;
-    }
 }
