@@ -1,5 +1,5 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { Bot, Mail, LogOut, ChevronLeft, ChevronRight, FileText, Radar, Brain } from 'lucide-react'
+import { Bot, Mail, LogOut, ChevronLeft, ChevronRight, FileText, Radar, Brain, Users } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Logo from '../Logo'
 import { useSidebar } from '../../contexts/crm/SidebarContext'
@@ -13,7 +13,8 @@ export default function Sidebar() {
 
     const menuItems = [
         { icon: Bot, label: 'Daily Brief', path: '/dashboard' },
-        { icon: Radar, label: 'Lead Radar', path: '/leads' },
+        { icon: Radar, label: 'AI Radar', path: '/radar-system' },
+        { icon: Users, label: 'My Leads', path: '/leads' },
         { icon: Mail, label: 'Outreach Ops', path: '/campaigns' },
         { icon: FileText, label: 'Smart Assets', path: '/assets' },
         { icon: Brain, label: 'System Brain', path: '/settings' },
