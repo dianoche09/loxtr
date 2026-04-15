@@ -9,6 +9,16 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         return res.status(200).end();
     }
 
+    // Vercel cron keepalive - ping Supabase to prevent free tier pause
+    if (req.method === 'GET' && req.query.keepalive === 'true') {
+        try {
+            await supabase.from('users').select('id').limit(1);
+            return res.status(200).json({ status: 'alive', timestamp: new Date().toISOString() });
+        } catch {
+            return res.status(200).json({ status: 'ping-sent' });
+        }
+    }
+
     if (req.method !== 'POST') {
         return res.status(405).json({ error: 'Method not allowed' });
     }
