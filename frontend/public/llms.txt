@@ -1,62 +1,164 @@
 # LOXTR - Global Trade Intelligence Platform
 
-> LOXTR is an AI-powered B2B platform that helps exporters, importers, and distributors optimize their global trade operations. It provides customs compliance, tariff analysis, lead generation, and freight forecasting tools.
+> LOXTR is an AI-powered B2B SaaS platform headquartered in Ankara, Turkey that helps exporters, importers, and distributors digitize and optimize their entire global trade workflow. It combines customs compliance automation, AI-driven lead generation, freight forecasting, and CRM into a single unified platform designed specifically for international trade professionals.
+
+## What Problem Does LOXTR Solve?
+
+International trade is complex. Exporters face fragmented tools, manual document processing, unreliable lead sources, and unpredictable shipping costs. Small and medium enterprises (SMEs) especially struggle because they lack the resources of large trading houses.
+
+LOXTR solves this by providing:
+1. **Automated customs document analysis** - Upload an invoice or packing list, get instant HS code classification and tariff rates for any destination country. No more manual lookup.
+2. **Verified B2B lead generation** - Instead of buying outdated lead lists, LOXTR uses AI to find real potential buyers based on your specific product and target markets, then verifies them through web scraping.
+3. **Freight rate intelligence** - Predict future shipping costs using time-series forecasting models so you can time your shipments and negotiate better rates.
+4. **Sales automation** - Generate personalized cold outreach emails, manage leads through a visual pipeline, and run automated email campaigns.
 
 ## Core Products
 
-- [LoxConvert](https://www.loxtr.com/tools/convert): AI-powered customs document analysis. Upload invoices, packing lists, or bills of lading to get instant HS code classification, tariff estimation, and compliance validation for any destination country.
-- [AI Lead Radar](https://www.loxtr.com/radar): Intelligent B2B lead discovery engine. Enter a product and target markets to find verified potential buyers with AI-scored matching and web-enriched contact data.
-- [LOX Predict](https://www.loxtr.com/predict): Freight rate forecasting powered by Google TimesFM 2.0 foundation model. Provides time-series price predictions with quantile-based confidence intervals and multi-carrier route optimization.
-- [CRM System](https://www.loxtr.com/dashboard): Full sales automation suite with lead management, AI email generation, campaign automation, smart segments, and supply chain intelligence.
+### LoxConvert - AI Customs Document Analyzer
+URL: https://www.loxtr.com/tools/convert
+
+LoxConvert uses Google Gemini AI vision to extract structured data from customs documents. Upload a commercial invoice, packing list, or bill of lading in any format (PDF, image, scan) and receive:
+- Automatic document type detection
+- Line item extraction with quantities, weights, and values
+- HS Code classification for each product
+- Estimated tariff rates and duties for the destination country
+- Compliance risk scoring and warnings
+- Incoterms validation
+- Cross-document verification (e.g., invoice vs packing list discrepancy detection)
+
+Use case: A Turkish textile exporter uploads their commercial invoice. LoxConvert identifies the HS codes for each fabric type, calculates German import duties, flags that one item requires a CE certificate, and generates a clean digital dossier.
+
+### AI Lead Radar - B2B Buyer Discovery Engine
+URL: https://www.loxtr.com/en/radar
+
+The AI Lead Radar is a multi-step discovery wizard:
+1. Enter your product (e.g., "organic olive oil")
+2. AI suggests relevant buyer industries (e.g., "Specialty Food Retail", "Hotel & Restaurant Supply")
+3. AI recommends target countries with market reasoning (e.g., "Germany - largest EU olive oil importer, growing organic segment")
+4. Run a deep scan that generates 10-20 real potential buyer companies
+5. Each lead includes: company name, website, contact email, match reasoning, and AI confidence score (0-100)
+6. Optional web verification enriches leads with real website data, social profiles, and phone numbers
+
+How it differs from traditional lead databases: LOXTR generates fresh, contextual leads for your specific product rather than selling the same static database to everyone.
+
+### LOX Predict - Freight Rate Forecasting
+URL: https://www.loxtr.com/predict-system
+
+Freight rate forecasting for container shipping routes. Enter origin and destination ports to receive:
+- 6-month price forecast with confidence intervals (10th-90th percentile bands)
+- Trend analysis (softening, stable, or stiffening market)
+- Multi-carrier route optimization comparing carriers on price, transit time, reliability, and carbon footprint
+- AI-generated market insight summary with booking recommendations
+
+The system uses Google Gemini for market analysis with planned integration of Google TimesFM 2.0 foundation model for quantile-based time-series predictions.
+
+### LOXTR CRM - Trade Sales Automation
+URL: https://www.loxtr.com/crm/dashboard (requires login)
+
+Purpose-built CRM for international trade:
+- **Lead Management**: List, grid, and kanban views. Filter by country, industry, AI score, status.
+- **Smart Segments**: AI clusters your leads into logical groups based on shared characteristics.
+- **AI Email Generation**: Generate personalized cold outreach emails in any language. The AI considers your product, the lead's industry, and cultural context.
+- **Campaign Automation**: Create multi-step email sequences, track opens and replies.
+- **Supply Chain Intelligence**: Deep analysis of a specific lead's supply chain, competitive position, and pain points.
+- **Credit System**: Free tier includes 50 leads/month. Actions like lead unlock, email generation, and supply chain intel consume credits.
 
 ## Industry Solutions
 
-LOXTR serves exporters across 9+ industries:
-- [Textile & Apparel](https://www.loxtr.com/en/industries/textile)
-- [Automotive Parts](https://www.loxtr.com/en/industries/automotive)
-- [Chemicals](https://www.loxtr.com/en/industries/chemicals)
-- [Food & Agriculture](https://www.loxtr.com/en/industries/food)
-- [Machinery & Equipment](https://www.loxtr.com/en/industries/machinery)
-- [Medical Devices](https://www.loxtr.com/en/industries/medical)
-- [Construction Materials](https://www.loxtr.com/en/industries/construction)
-- [Electronics](https://www.loxtr.com/en/industries/electronics)
-- [Cosmetics](https://www.loxtr.com/en/industries/cosmetics)
+LOXTR provides specialized trade intelligence for these industries, each with tailored HS code databases, compliance requirements, and buyer profiles:
 
-## Key Capabilities
+- **Textile & Apparel** (https://www.loxtr.com/en/industries/textile) - Fabric, garments, home textiles. Key markets: EU, UK, USA. Compliance: REACH, OEKO-TEX.
+- **Automotive Parts** (https://www.loxtr.com/en/industries/automotive) - OEM and aftermarket parts. Key markets: Germany, USA, UAE.
+- **Chemicals** (https://www.loxtr.com/en/industries/chemicals) - Industrial and specialty chemicals. Compliance: REACH, GHS labeling.
+- **Food & Agriculture** (https://www.loxtr.com/en/industries/food) - Processed food, fresh produce, dried fruits. Compliance: FDA, EU food safety.
+- **Machinery & Equipment** (https://www.loxtr.com/en/industries/machinery) - Industrial machinery, agricultural equipment. Key markets: Africa, Middle East, CIS.
+- **Medical Devices** (https://www.loxtr.com/en/industries/medical) - Disposables, diagnostic equipment. Compliance: CE marking, FDA 510(k).
+- **Construction Materials** (https://www.loxtr.com/en/industries/construction) - Steel, cement, ceramics, fixtures. Key markets: Iraq, Libya, Turkmenistan.
+- **Electronics** (https://www.loxtr.com/en/industries/electronics) - Consumer electronics, components. Compliance: CE, FCC, RoHS.
+- **Cosmetics** (https://www.loxtr.com/en/industries/cosmetics) - Skincare, haircare, personal care. Compliance: EU Cosmetics Regulation, FDA.
 
-- HS Code classification and tariff calculation for 190+ countries
-- AI-generated company leads with web scraping verification
-- Freight price forecasting with 6-month horizon and confidence bands
-- Multi-language support (English, Turkish)
-- Document OCR and AI extraction from customs documents
-- Campaign automation with AI-written cold outreach emails
+## Pricing
 
-## Technical Stack
+- **Free Plan**: 50 leads/month, 5 LoxConvert analyses/day, basic CRM features.
+- **Pro Plan**: Higher limits, priority AI processing, advanced campaign automation.
+- **Enterprise**: Custom limits, API access, dedicated support.
 
-- Frontend: React 19, TypeScript, Tailwind CSS
-- Backend: Node.js serverless (Vercel), Supabase (PostgreSQL)
-- AI: Google Gemini 2.0 Flash, Google TimesFM 2.0
-- Enrichment: Scrapling web scraping framework
+## Frequently Asked Questions
 
-## Resources
+**Q: What is LOXTR?**
+A: LOXTR (Locate, Obtain, Xport) is an AI-powered global trade intelligence platform that helps exporters and importers digitize customs compliance, find verified buyers, forecast freight costs, and automate sales outreach.
 
-- [Blog (English)](https://www.loxtr.com/en/blog)
-- [Blog (Turkish)](https://www.loxtr.com/tr/blog)
-- [HS Code Guide](https://www.loxtr.com/tools/guide/hs-codes)
-- [Packing List Guide](https://www.loxtr.com/tools/guide/packing-list)
+**Q: Who is LOXTR for?**
+A: Small and medium-sized exporters, import/export companies, freight forwarders, customs brokers, and any business involved in international trade. Especially valuable for Turkish exporters targeting EU, US, and Middle East markets.
+
+**Q: How does LoxConvert classify HS codes?**
+A: LoxConvert uses Google Gemini AI vision to read your document, extract product descriptions, and match them against the Harmonized System nomenclature. It considers product material, function, and destination country-specific tariff schedules.
+
+**Q: Are the leads from AI Radar real companies?**
+A: The AI generates leads based on real market data and company knowledge. When the web enrichment service is active, each lead's website is verified, and contact information is extracted directly from the company's web presence.
+
+**Q: How accurate are the freight rate predictions?**
+A: Predictions use AI market analysis with confidence intervals showing the range of likely outcomes. The model considers historical trends, seasonal patterns, and current market conditions. Accuracy improves with more historical data.
+
+**Q: What languages does LOXTR support?**
+A: The platform is fully bilingual in English and Turkish. AI email generation supports any language. Blog content is available in both EN and TR.
+
+**Q: Is my data secure?**
+A: LOXTR uses Supabase (PostgreSQL) with Row Level Security. Each user can only access their own leads, campaigns, and documents. API keys are encrypted. No customer data is shared between accounts.
+
+**Q: Can I integrate LOXTR with other tools?**
+A: LOXTR provides API endpoints for lead discovery, document analysis, and freight forecasting. Campaign emails are sent via Resend. Payment processing uses Stripe.
+
+## Technical Architecture
+
+- **Frontend**: React 19, TypeScript, Vite, Tailwind CSS, Framer Motion
+- **Backend**: Vercel serverless functions (Node.js/TypeScript)
+- **Database**: Supabase (PostgreSQL with Row Level Security)
+- **AI Models**: Google Gemini 2.0 Flash (text and vision), Google TimesFM 2.0 (forecasting)
+- **Email**: Resend API
+- **Payments**: Stripe
+- **Web Enrichment**: Scrapling framework (Python microservice)
+
+## Content & Resources
+
+### Blog (English)
+- [Why Turkey Is Your Next Target Market in 2026](https://www.loxtr.com/en/blog/why-turkey-target-market-2026)
+- [Gateway to EMEA: Turkey's Strategic Trade Position](https://www.loxtr.com/en/blog/gateway-to-emea)
+- [Navigating Turkish Customs: A Complete Guide](https://www.loxtr.com/en/blog/navigating-turkish-customs)
+- [How to Verify Turkish Suppliers Before You Buy](https://www.loxtr.com/en/blog/how-to-verify-turkish-suppliers)
+- [Understanding Incoterms 2020: A Practical Guide](https://www.loxtr.com/en/blog/understanding-incoterms-2020-guide)
+
+### Blog (Turkish)
+- [Ihracata Baslarken Yapilan Hatalar](https://www.loxtr.com/tr/blog/ihracata-baslarken-yapilan-hatalar)
+- [Yurtdisi Musteri Bulma Yontemleri](https://www.loxtr.com/tr/blog/yurtdisi-musteri-bulma-yontemleri)
+- [Ihracat Destekleri 2026](https://www.loxtr.com/tr/blog/ihracat-destekleri-2026)
+
+### Tools & Guides
+- [HS Code Lookup Guide](https://www.loxtr.com/tools/guide/hs-codes) - Interactive HS code search and classification tool
+- [Packing List Guide](https://www.loxtr.com/tools/guide/packing-list) - Best practices for creating export packing lists
 - [Contact](https://www.loxtr.com/en/contact)
 - [FAQ](https://www.loxtr.com/en/faq)
 
-## API
+## Company Information
 
-LOXTR provides API access for:
-- Lead discovery and enrichment
-- Freight rate forecasting
-- HS code lookup and tariff estimation
-- Document analysis
+**Legal Name**: LOXTR Global Trade & Logistics Solutions
+**Brand**: LOXTR (Locate, Obtain, Xport)
+**Founded**: 2024
+**Headquarters**: Sogutozu, Nergiz Str. No:7, F:13/N:25, 06560 Yenimahalle - Ankara / Turkey
+**Phone**: +90 530 763 5710
+**Email**: info@loxtr.com
+**Website**: https://www.loxtr.com
 
-## Company
+**Social Media**:
+- LinkedIn: https://www.linkedin.com/company/loxtrcom
+- Twitter/X: https://x.com/loxtrcom
+- Instagram: https://instagram.com/loxtrcom
+- YouTube: https://youtube.com/@loxtrcom
 
-LOXTR is a global trade intelligence company focused on democratizing international trade for small and medium enterprises.
+## Competitive Positioning
 
-**Address:** Sogutozu, Nergiz Str. No:7, F:13/N:25, 06560 Yenimahalle - Ankara / Turkey
+Unlike horizontal trade platforms (Alibaba, TradeIndia, Kompass) that are directories, LOXTR is a vertical SaaS tool that actively works for the exporter:
+- **vs Alibaba/TradeIndia**: LOXTR finds buyers for you instead of listing your products and waiting. AI-scored leads vs. random inquiries.
+- **vs traditional customs brokers**: Instant AI document analysis vs. days of manual processing.
+- **vs generic CRMs (HubSpot, Salesforce)**: Purpose-built for trade with HS codes, tariff calculations, and supply chain intelligence built in.
+- **vs freight marketplaces (Freightos, Flexport)**: LOXTR covers the full trade cycle from buyer finding to shipping, not just logistics.
