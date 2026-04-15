@@ -1,39 +1,60 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { supabase } from '../../_utils/supabase';
-import { gemini } from '../../_utils/gemini';
-import { scraper } from '../../_utils/scraper';
+import { gemini } from '../_utils/gemini';
+import { scraper } from '../_utils/scraper';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
     if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
     try {
-        const { product, targetMarkets, industry, count = 10 } = req.body;
+        const { product, targetMarkets, industry, count = 15 } = req.body;
 
         if (!product || !targetMarkets || !industry) {
-            return res.status(400).json({ error: 'Missing required discovery parameters' });
+            return res.status(400).json({ error: 'product, targetMarkets, and industry are required' });
         }
 
-        const prompt = `You are a Global Lead Generation Expert. Find ${count} real companies that would buy "${product}".
-        Target Markets: ${targetMarkets.join(', ')}
-        Industry: ${industry}
-        Return ONLY a JSON array with: {companyName, country, website, email, logic, aiScore}.`;
+        const prompt = `You are a Global B2B Lead Generation Expert specializing in international trade.
+
+Find ${count} REAL companies that would be potential buyers of "${product}".
+
+Target Markets: ${targetMarkets.join(', ')}
+Industry: ${industry}
+
+Requirements:
+- Companies must be REAL and currently active
+- Include their actual website URL if known
+- Include a realistic contact email pattern (e.g. info@company.com)
+- Provide specific reasoning for why they would buy this product
+- AI confidence score based on relevance (70-98 range, be honest)
+
+Return ONLY a JSON array:
+[{
+  "companyName": "Real Company Name",
+  "country": "Country",
+  "city": "City if known",
+  "website": "https://www.company.com",
+  "email": "info@company.com",
+  "logic": "Specific reason why this company needs this product",
+  "aiScore": 85
+}]`;
 
         const aiResponse = await gemini.generateText(prompt);
         const leads = gemini.extractJSON(aiResponse);
 
-        if (!leads) throw new Error('Failed to parse AI response');
+        if (!leads || !Array.isArray(leads)) {
+            return res.status(500).json({ error: 'Failed to generate leads' });
+        }
 
-        // Enrich leads with Scrapling scraper service
+        // Enrich with Scrapling if available
         const scraperAvailable = await scraper.isHealthy();
 
         if (scraperAvailable) {
-            const enrichRequests = leads.map((lead: any) => ({
-                company_name: lead.companyName,
-                website: lead.website || null,
-                country: lead.country || null,
-            }));
-
             try {
+                const enrichRequests = leads.map((lead: any) => ({
+                    company_name: lead.companyName,
+                    website: lead.website || null,
+                    country: lead.country || null,
+                }));
+
                 const enriched = await scraper.enrichBatch(enrichRequests);
 
                 const enrichedLeads = leads.map((lead: any, i: number) => {
@@ -58,23 +79,24 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
                 return res.status(200).json({
                     success: true,
-                    data: enrichedLeads,
+                    leads: enrichedLeads,
                     enriched: true,
+                    total: enrichedLeads.length,
                 });
             } catch (enrichError: any) {
                 console.error('Enrichment failed, returning raw leads:', enrichError.message);
-                return res.status(200).json({
-                    success: true,
-                    data: leads,
-                    enriched: false,
-                });
             }
         }
 
-        return res.status(200).json({ success: true, data: leads, enriched: false });
+        return res.status(200).json({
+            success: true,
+            leads,
+            enriched: false,
+            total: leads.length,
+        });
 
     } catch (error: any) {
-        console.error('Discovery Error:', error);
-        return res.status(500).json({ error: 'Internal Server Error' });
+        console.error('Discovery Run Error:', error);
+        return res.status(500).json({ error: 'Discovery failed' });
     }
 }

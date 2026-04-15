@@ -1,7 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { supabase } from '../../_utils/supabase';
-import { gemini } from '../../_utils/gemini';
-import { scraper } from '../../_utils/scraper';
+import { supabase } from '../_utils/supabase';
+import { gemini } from '../_utils/gemini';
+import { scraper } from '../_utils/scraper';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
     if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
