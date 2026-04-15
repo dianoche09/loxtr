@@ -1,17 +1,33 @@
-// services/PredictService.ts
+import axios from 'axios';
+
+const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
+
+const api = axios.create({
+    baseURL: API_BASE_URL,
+    timeout: 120_000,
+    headers: { 'Content-Type': 'application/json' },
+});
+
+api.interceptors.request.use((config) => {
+    const token = localStorage.getItem('token');
+    if (token) config.headers.Authorization = `Bearer ${token}`;
+    return config;
+});
 
 export interface PricePoint {
     date: string;
     price: number;
+    lower?: number;
+    upper?: number;
 }
 
 export interface RouteOption {
     id: string;
     carrier: string;
-    transitTime: number; // in days
+    transitTime: number;
     price: number;
-    carbonFootprint: number; // in kg CO2
-    reliability: number; // 0-100
+    carbonFootprint: number;
+    reliability: number;
     tags: string[];
 }
 
@@ -21,65 +37,59 @@ export interface PredictionResult {
     historicalData: PricePoint[];
     forecastData: PricePoint[];
     optimizedRoutes: RouteOption[];
+    modelUsed?: string;
+    insight?: string;
 }
 
 export const fetchPredictionData = async (origin: string, destination: string): Promise<PredictionResult> => {
-    // Simulate heavy computation (STUMPY + OR-Tools logic)
-    await new Promise(resolve => setTimeout(resolve, 2500));
+    try {
+        const response = await api.post('/predict/freight', {
+            origin,
+            destination,
+            horizon: 6,
+        });
 
-    // Simulated Historical Data (Last 6 months)
-    const historicalData: PricePoint[] = [
-        { date: '2025-09', price: 1200 },
-        { date: '2025-10', price: 1350 },
-        { date: '2025-11', price: 1100 },
-        { date: '2025-12', price: 1450 },
-        { date: '2026-01', price: 1600 },
-        { date: '2026-02', price: 1550 },
-    ];
+        const result = response.data;
 
-    // Simulated Forecast (Next 3 months)
-    const forecastData: PricePoint[] = [
-        { date: '2026-03', price: 1480 },
-        { date: '2026-04', price: 1420 },
-        { date: '2026-05', price: 1380 },
-    ];
-
-    // Optimized Routes using "OR-Tools" logic (Optimization for Time/Cost)
-    const optimizedRoutes: RouteOption[] = [
-        {
-            id: 'r1',
-            carrier: 'Maersk Line',
-            transitTime: 18,
-            price: 1550,
-            carbonFootprint: 450,
-            reliability: 96,
-            tags: ['Best Value', 'Sustainable']
-        },
-        {
-            id: 'r2',
-            carrier: 'MSC',
-            transitTime: 16,
-            price: 1720,
-            carbonFootprint: 520,
-            reliability: 92,
-            tags: ['Fastest']
-        },
-        {
-            id: 'r3',
-            carrier: 'CMA CGM',
-            transitTime: 22,
-            price: 1380,
-            carbonFootprint: 480,
-            reliability: 88,
-            tags: ['Cheapest']
+        if (result.success && result.data) {
+            return result.data as PredictionResult;
         }
-    ];
 
-    return {
-        trend: 'down',
-        confidence: 89,
-        historicalData,
-        forecastData,
-        optimizedRoutes
-    };
+        throw new Error('Invalid response');
+    } catch (error: any) {
+        // If API unavailable, log and throw so the dashboard shows error state
+        console.error('Predict API error:', error?.response?.data || error.message);
+        throw error;
+    }
+};
+
+export interface TariffForecastResult {
+    hsCode: string;
+    trend: string;
+    confidence: number;
+    currentRate: number;
+    forecastData: PricePoint[];
+    modelUsed?: string;
+    insight?: string;
+}
+
+export const fetchTariffForecast = async (
+    hsCode: string,
+    originCountry: string,
+    destinationCountry: string,
+    horizon = 12
+): Promise<TariffForecastResult> => {
+    const response = await api.post('/predict/tariff', {
+        hsCode,
+        originCountry,
+        destinationCountry,
+        horizon,
+    });
+
+    const result = response.data;
+    if (result.success && result.data) {
+        return result.data as TariffForecastResult;
+    }
+
+    throw new Error('Tariff forecast failed');
 };

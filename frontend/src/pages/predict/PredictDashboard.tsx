@@ -3,7 +3,7 @@ import {
     LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area
 } from 'recharts';
 import {
-    TrendingDown, TrendingUp, Ship, Clock, DollarSign, Leaf, Zap, Globe, Search, ArrowRight, Loader2, Info, Navigation
+    TrendingDown, TrendingUp, Ship, Clock, DollarSign, Leaf, Zap, Globe, Search, ArrowRight, Loader2, Info, Navigation, AlertTriangle
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { fetchPredictionData } from '../../services/PredictService';
@@ -42,10 +42,13 @@ export default function PredictDashboard() {
             setData(result);
         } catch (error) {
             console.error('Prediction error:', error);
+            setData(null);
         } finally {
             setIsPredicting(false);
         }
     };
+
+    const hasConfidenceBands = data?.forecastData?.some(p => p.lower !== undefined && p.upper !== undefined);
 
     if (authLoading) return <div className="min-h-screen flex items-center justify-center bg-[#0a0a0c]"><Loader2 className="animate-spin text-blue-500" /></div>;
 
@@ -63,7 +66,7 @@ export default function PredictDashboard() {
                             Smarter Freight <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-cyan-300">Forecasting.</span>
                         </h1>
                         <p className="text-slate-400 mt-4 max-w-lg text-lg leading-relaxed">
-                            Analyze time series trends with STUMPY and optimize multi-modal routes using Google OR-Tools.
+                            Powered by Google TimesFM 2.0 foundation model. Accurate time-series forecasting with quantile-based confidence intervals.
                         </p>
                     </div>
                     <div className="flex gap-4">
@@ -122,8 +125,8 @@ export default function PredictDashboard() {
                                 <div className="absolute inset-0 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
                                 <Zap className="absolute inset-0 m-auto w-12 h-12 text-blue-500 animate-pulse" />
                             </div>
-                            <h3 className="text-3xl font-black text-white">Running STUMPY Protocols</h3>
-                            <p className="text-slate-500 mt-2 max-w-sm">Processing 10 years of historical freight data and running Google OR-Tools optimization models...</p>
+                            <h3 className="text-3xl font-black text-white">Running TimesFM Forecast</h3>
+                            <p className="text-slate-500 mt-2 max-w-sm">Processing historical freight data with Google TimesFM 2.0 foundation model and generating optimized routes...</p>
                         </motion.div>
                     )}
                 </AnimatePresence>
@@ -140,7 +143,7 @@ export default function PredictDashboard() {
                                 <div className="flex items-center justify-between mb-8">
                                     <div>
                                         <h3 className="text-xl font-black text-white uppercase tracking-tight">Price Trend Forecasting</h3>
-                                        <p className="text-xs text-slate-500 font-bold mt-1">TIME SERIES ANALYSIS // STUMPY V2</p>
+                                        <p className="text-xs text-slate-500 font-bold mt-1">TIME SERIES ANALYSIS // TIMESFM 2.0</p>
                                     </div>
                                     <div className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-black ${data.trend === 'down' ? 'bg-green-500/10 text-green-400' : 'bg-red-500/10 text-red-400'}`}>
                                         {data.trend === 'down' ? <TrendingDown size={18} /> : <TrendingUp size={18} />}
@@ -156,6 +159,10 @@ export default function PredictDashboard() {
                                                     <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3} />
                                                     <stop offset="95%" stopColor="#3b82f6" stopOpacity={0} />
                                                 </linearGradient>
+                                                <linearGradient id="colorBand" x1="0" y1="0" x2="0" y2="1">
+                                                    <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.08} />
+                                                    <stop offset="95%" stopColor="#3b82f6" stopOpacity={0.02} />
+                                                </linearGradient>
                                             </defs>
                                             <CartesianGrid strokeDasharray="3 3" stroke="#ffffff05" vertical={false} />
                                             <XAxis dataKey="date" stroke="#475569" fontSize={10} axisLine={false} tickLine={false} />
@@ -164,6 +171,12 @@ export default function PredictDashboard() {
                                                 contentStyle={{ backgroundColor: '#111116', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '12px' }}
                                                 itemStyle={{ color: '#fff', fontSize: '12px', fontWeight: 'bold' }}
                                             />
+                                            {hasConfidenceBands && (
+                                                <>
+                                                    <Area type="monotone" dataKey="upper" stroke="none" fillOpacity={1} fill="url(#colorBand)" />
+                                                    <Area type="monotone" dataKey="lower" stroke="none" fillOpacity={0} fill="transparent" />
+                                                </>
+                                            )}
                                             <Area
                                                 type="monotone"
                                                 dataKey="price"
@@ -184,8 +197,16 @@ export default function PredictDashboard() {
                                     </div>
                                     <div className="flex items-center gap-2">
                                         <div className="w-3 h-3 bg-blue-500/30 rounded-sm"></div>
-                                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Model: Matrix Profile</span>
+                                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                                            Model: {data.modelUsed || 'TimesFM 2.0'}
+                                        </span>
                                     </div>
+                                    {hasConfidenceBands && (
+                                        <div className="flex items-center gap-2">
+                                            <div className="w-3 h-3 bg-blue-500/10 rounded-sm border border-blue-500/20"></div>
+                                            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">10-90% Quantile Band</span>
+                                        </div>
+                                    )}
                                 </div>
                             </div>
 
@@ -248,7 +269,7 @@ export default function PredictDashboard() {
                                     </div>
                                     <h4 className="text-2xl font-black uppercase tracking-tight mb-4">LOX Predict <br />Insight Summary</h4>
                                     <p className="text-white/70 text-sm leading-relaxed mb-8">
-                                        Historical matching suggests market cooling. Predict model recommends <strong>deferred booking</strong> if delivery deadline allows for +7 days. Best reliability-to-cost ratio found with Maersk Line.
+                                        {data.insight || 'Historical matching suggests market cooling. Predict model recommends deferred booking if delivery deadline allows for +7 days.'}
                                     </p>
                                     <div className="space-y-4">
                                         <div className="flex justify-between items-center bg-black/20 p-4 rounded-xl">
@@ -286,7 +307,7 @@ export default function PredictDashboard() {
                             <div className="bg-blue-600/5 border border-blue-600/20 rounded-[2rem] p-8 flex items-center gap-4">
                                 <Info className="text-blue-500 shrink-0" size={20} />
                                 <p className="text-[10px] font-bold text-blue-400/80 leading-relaxed italic">
-                                    All predictions are generated using L.O.X V4 Neural Engine. Accuracy rates may vary based on geopolitical shifts.
+                                    Predictions powered by Google TimesFM 2.0 (200M params). Quantile forecasts provide 10-90% confidence bands. Accuracy may vary based on geopolitical shifts and market conditions.
                                 </p>
                             </div>
                         </div>
