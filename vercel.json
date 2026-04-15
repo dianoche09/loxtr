@@ -2,10 +2,22 @@
     "version": 2,
     "buildCommand": "npm run build --prefix frontend",
     "outputDirectory": "frontend/dist",
-    "installCommand": "npm install --prefix frontend --legacy-peer-deps",
+    "installCommand": "npm install && npm install --prefix frontend --legacy-peer-deps",
     "framework": "vite",
     "devCommand": "npm run dev --prefix frontend",
     "rewrites": [
+        {
+            "source": "/api/ai/discover-suggestions",
+            "destination": "/api/ai?action=discover-suggestions"
+        },
+        {
+            "source": "/api/ai/suggest",
+            "destination": "/api/ai?action=suggest"
+        },
+        {
+            "source": "/api/ai/generate-email",
+            "destination": "/api/ai?action=generate-email"
+        },
         {
             "source": "/api/:path*",
             "destination": "/api/:path*"

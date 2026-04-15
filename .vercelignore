@@ -2,7 +2,7 @@ GK Proje admin/
 scraper/
 forecast/
 backups/
+scripts/
 *.zip
 *.sql
-loxtr.zip
-loxtr 2.zip
+api/crm/
