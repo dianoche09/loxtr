@@ -81,6 +81,14 @@
             "destination": "/api/loxconvert/extra?action=insights"
         },
         {
+            "source": "/api/predict/tariff",
+            "destination": "/api/predict/freight?action=tariff"
+        },
+        {
+            "source": "/api/predict/market-pulse",
+            "destination": "/api/predict/freight?action=market-pulse"
+        },
+        {
             "source": "/api/:path*",
             "destination": "/api/:path*"
         },
