@@ -114,6 +114,9 @@ export const leadsAPI = {
   getSupplyChainIntel: (id: string) => api.get(`/leads/${id}/supply-chain-intel`),
   enrichLead: (id: string) => api.post(`/leads/${id}/enrich`),
   unlockLead: (id: string) => api.post(`/leads/${id}/unlock`),
+
+  enrichLeadWithScraper: (data: { leadId?: string; companyName: string; website?: string; country?: string }) =>
+    api.post('/crm/leads/enrich', data),
 }
 
 // Discovery API

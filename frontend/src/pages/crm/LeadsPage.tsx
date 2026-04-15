@@ -221,6 +221,27 @@ export default function LeadsPage() {
     setActiveActionId(null);
   }
 
+  const handleEnrichLead = async (lead: any) => {
+    const enrichToast = toast.loading(`Enriching ${lead.companyName}...`);
+    try {
+      const result = await leadsAPI.enrichLeadWithScraper({
+        leadId: lead.id,
+        companyName: lead.companyName || lead.company_name,
+        website: lead.website,
+        country: lead.country,
+      }) as any;
+
+      if (result?.success) {
+        toast.success(`${lead.companyName} enriched (score: ${result.data?.enrichment_score || 0})`, { id: enrichToast });
+        queryClient.invalidateQueries({ queryKey: ['leads'] });
+      } else {
+        toast.error('Enrichment service unavailable', { id: enrichToast });
+      }
+    } catch {
+      toast.error('Enrichment failed', { id: enrichToast });
+    }
+  }
+
   const handleImport = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
@@ -794,6 +815,16 @@ export default function LeadsPage() {
                                   title="Edit Lead"
                                 >
                                   <MoreHorizontal className="w-4 h-4" />
+                                </button>
+                                <button
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleEnrichLead(lead);
+                                  }}
+                                  className="p-2 text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-xl transition-colors"
+                                  title="Enrich with Web Data"
+                                >
+                                  <RefreshCw className="w-4 h-4" />
                                 </button>
                               </div>
                             </td>

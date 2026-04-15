@@ -6,7 +6,8 @@ import toast from 'react-hot-toast';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
     Radar, Sparkles, Check, ShoppingBag, Globe, Building2,
-    Lock, Unlock, Loader2, ArrowRight
+    Lock, Unlock, Loader2, ArrowRight, ShieldCheck, ShieldAlert,
+    Mail, Phone, ExternalLink
 } from 'lucide-react';
 
 type Step = 'search' | 'refine' | 'loading' | 'results';
@@ -81,10 +82,12 @@ export default function RadarDashboard() {
                 count: 15
             }) as any;
 
-            const leads = res.data?.leads || res.leads || [];
+            const responseData = res.data || res;
+            const leads = responseData?.leads || responseData?.data || [];
+            const isEnriched = responseData?.enriched || false;
 
             if (leads.length > 0) {
-                setResults(leads);
+                setResults(leads.map((l: any) => ({ ...l, _enriched: isEnriched })));
                 const allIndexes = new Set<number>(leads.map((_: any, i: number) => i));
                 setSelectedResults(allIndexes);
                 setStep('results');
@@ -306,6 +309,10 @@ export default function RadarDashboard() {
                                 <p className="text-xl text-slate-400 max-w-lg mx-auto font-medium leading-relaxed">
                                     Our AI is cross-referencing import records, company registries, and web signals in <strong>{selectedMarkets.join(', ')}</strong>.
                                 </p>
+                                <div className="mt-6 flex items-center gap-2 text-sm font-bold text-blue-500">
+                                    <ShieldCheck size={16} />
+                                    <span>Verifying company websites and enriching contact data...</span>
+                                </div>
                             </div>
                         )}
 
@@ -313,15 +320,23 @@ export default function RadarDashboard() {
                             <div className="h-full flex flex-col animate-in fade-in slide-in-from-right-8 duration-500">
                                 <div className="mb-8 flex items-center justify-between">
                                     <h3 className="text-2xl font-black text-slate-900">Market Potential Matches</h3>
-                                    <div className="flex items-center gap-4 bg-slate-50 px-5 py-3 rounded-2xl border border-slate-100">
-                                        <div className="flex items-center gap-2">
-                                            <div className="w-3 h-3 bg-blue-600 rounded-full"></div>
-                                            <span className="text-sm font-bold text-slate-600">{selectedResults.size} selected</span>
-                                        </div>
-                                        <div className="h-4 w-[1px] bg-slate-200"></div>
-                                        <div className="flex items-center gap-2">
-                                            <Lock className="w-4 h-4 text-amber-500" />
-                                            <span className="text-sm font-bold text-slate-600">Locked Data</span>
+                                    <div className="flex items-center gap-3">
+                                        {results[0]?._enriched && (
+                                            <div className="flex items-center gap-2 bg-emerald-50 px-4 py-2.5 rounded-2xl border border-emerald-100">
+                                                <ShieldCheck className="w-4 h-4 text-emerald-600" />
+                                                <span className="text-sm font-bold text-emerald-700">Web Verified</span>
+                                            </div>
+                                        )}
+                                        <div className="flex items-center gap-4 bg-slate-50 px-5 py-3 rounded-2xl border border-slate-100">
+                                            <div className="flex items-center gap-2">
+                                                <div className="w-3 h-3 bg-blue-600 rounded-full"></div>
+                                                <span className="text-sm font-bold text-slate-600">{selectedResults.size} selected</span>
+                                            </div>
+                                            <div className="h-4 w-[1px] bg-slate-200"></div>
+                                            <div className="flex items-center gap-2">
+                                                <Lock className="w-4 h-4 text-amber-500" />
+                                                <span className="text-sm font-bold text-slate-600">Locked Data</span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -368,12 +383,29 @@ export default function RadarDashboard() {
                                                     </td>
                                                     <td className="px-6 py-5 border-y border-slate-100">
                                                         <div className="flex items-center gap-4">
-                                                            <div className="w-12 h-12 bg-white rounded-xl shadow-sm border border-slate-100 flex items-center justify-center font-black text-blue-600 text-xl">
-                                                                {lead.companyName?.[0] || '?'}
+                                                            <div className="relative">
+                                                                <div className="w-12 h-12 bg-white rounded-xl shadow-sm border border-slate-100 flex items-center justify-center font-black text-blue-600 text-xl">
+                                                                    {lead.companyName?.[0] || '?'}
+                                                                </div>
+                                                                {lead.verified && (
+                                                                    <div className="absolute -top-1 -right-1 w-5 h-5 bg-emerald-500 rounded-full flex items-center justify-center border-2 border-white">
+                                                                        <Check size={10} className="text-white" />
+                                                                    </div>
+                                                                )}
                                                             </div>
                                                             <div>
-                                                                <div className="font-black text-slate-800 text-lg">{lead.companyName}</div>
-                                                                <div className="text-xs font-bold text-blue-500 uppercase">{lead.website || 'example.com'}</div>
+                                                                <div className="flex items-center gap-2">
+                                                                    <span className="font-black text-slate-800 text-lg">{lead.companyName}</span>
+                                                                    {lead.verified && (
+                                                                        <span className="text-[9px] font-black text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-100">VERIFIED</span>
+                                                                    )}
+                                                                </div>
+                                                                <div className="flex items-center gap-2">
+                                                                    <span className="text-xs font-bold text-blue-500 uppercase">{lead.website || 'example.com'}</span>
+                                                                    {lead.enrichmentScore > 0 && (
+                                                                        <span className="text-[9px] font-bold text-slate-400">ES:{lead.enrichmentScore}</span>
+                                                                    )}
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </td>
@@ -384,11 +416,31 @@ export default function RadarDashboard() {
                                                         </div>
                                                     </td>
                                                     <td className="px-6 py-5 border-y border-slate-100">
-                                                        <div className="flex items-center gap-3">
-                                                            <div className="filter blur-[6px] grayscale select-none text-sm font-bold bg-slate-200 px-3 py-1 rounded-lg">
-                                                                {lead.email || 'purchasing@company.com'}
+                                                        <div className="space-y-1.5">
+                                                            <div className="flex items-center gap-2">
+                                                                <Mail size={12} className="text-slate-400" />
+                                                                <div className="filter blur-[6px] grayscale select-none text-sm font-bold bg-slate-200 px-3 py-1 rounded-lg">
+                                                                    {lead.email || 'purchasing@company.com'}
+                                                                </div>
+                                                                <span className="text-[10px] font-black text-amber-600 bg-amber-50 px-2 py-1 rounded-lg border border-amber-100">LOCKED</span>
                                                             </div>
-                                                            <span className="text-[10px] font-black text-amber-600 bg-amber-50 px-2 py-1 rounded-lg border border-amber-100">LOCKED</span>
+                                                            {lead.phone && (
+                                                                <div className="flex items-center gap-2">
+                                                                    <Phone size={12} className="text-slate-400" />
+                                                                    <div className="filter blur-[6px] grayscale select-none text-xs font-bold bg-slate-200 px-2 py-0.5 rounded-lg">
+                                                                        {lead.phone}
+                                                                    </div>
+                                                                </div>
+                                                            )}
+                                                            {lead.socialLinks && Object.keys(lead.socialLinks).length > 0 && (
+                                                                <div className="flex items-center gap-1.5 mt-1">
+                                                                    {Object.keys(lead.socialLinks).map((platform) => (
+                                                                        <span key={platform} className="text-[9px] font-bold text-slate-400 bg-slate-50 px-1.5 py-0.5 rounded border border-slate-100">
+                                                                            {platform}
+                                                                        </span>
+                                                                    ))}
+                                                                </div>
+                                                            )}
                                                         </div>
                                                     </td>
                                                     <td className="px-6 py-5 border-y border-slate-100 max-w-sm">
