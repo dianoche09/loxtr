@@ -29,6 +29,18 @@
             "destination": "/api/discovery/run"
         },
         {
+            "source": "/api/leads/batch",
+            "destination": "/api/leads?action=batch"
+        },
+        {
+            "source": "/api/leads/stats",
+            "destination": "/api/leads?action=stats"
+        },
+        {
+            "source": "/api/leads/:id",
+            "destination": "/api/leads?id=:id"
+        },
+        {
             "source": "/api/loxconvert/generate-comment",
             "destination": "/api/loxconvert/extra?action=generate-comment"
         },
