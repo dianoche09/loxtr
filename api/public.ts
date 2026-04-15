@@ -23,6 +23,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         }
     }
 
+    // Admin GET endpoints
+    if (req.method === 'GET') {
+        if (action === 'admin-stats') return handleAdminStats(req, res);
+        if (action === 'admin-submissions') return handleAdminSubmissions(req, res);
+        return res.status(405).json({ error: 'Method not allowed' });
+    }
+
     if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
     if (action === 'contact') return handleContact(req, res);
@@ -123,5 +130,111 @@ async function handleApplication(req: VercelRequest, res: VercelResponse) {
     } catch (error: any) {
         console.error('Application error:', error);
         return res.status(500).json({ error: 'Internal server error' });
+    }
+}
+
+async function handleAdminStats(_req: VercelRequest, res: VercelResponse) {
+    try {
+        const now = new Date();
+        const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000).toISOString();
+        const sixtyDaysAgo = new Date(now.getTime() - 60 * 24 * 60 * 60 * 1000).toISOString();
+
+        const [contacts, newsletters, applications, users,
+               contactsPrev, newslettersPrev, applicationsPrev, usersPrev] = await Promise.all([
+            supabase.from('contact_submissions').select('id', { count: 'exact', head: true }).gte('created_at', thirtyDaysAgo),
+            supabase.from('newsletter_subscriptions').select('id', { count: 'exact', head: true }).gte('created_at', thirtyDaysAgo),
+            supabase.from('applications').select('id', { count: 'exact', head: true }).gte('created_at', thirtyDaysAgo),
+            supabase.from('users').select('id', { count: 'exact', head: true }).gte('created_at', thirtyDaysAgo),
+            supabase.from('contact_submissions').select('id', { count: 'exact', head: true }).gte('created_at', sixtyDaysAgo).lt('created_at', thirtyDaysAgo),
+            supabase.from('newsletter_subscriptions').select('id', { count: 'exact', head: true }).gte('created_at', sixtyDaysAgo).lt('created_at', thirtyDaysAgo),
+            supabase.from('applications').select('id', { count: 'exact', head: true }).gte('created_at', sixtyDaysAgo).lt('created_at', thirtyDaysAgo),
+            supabase.from('users').select('id', { count: 'exact', head: true }).gte('created_at', sixtyDaysAgo).lt('created_at', thirtyDaysAgo),
+        ]);
+
+        // Total counts (all time)
+        const [contactsTotal, newslettersTotal, applicationsTotal, usersTotal] = await Promise.all([
+            supabase.from('contact_submissions').select('id', { count: 'exact', head: true }),
+            supabase.from('newsletter_subscriptions').select('id', { count: 'exact', head: true }),
+            supabase.from('applications').select('id', { count: 'exact', head: true }),
+            supabase.from('users').select('id', { count: 'exact', head: true }),
+        ]);
+
+        const calcChange = (current: number, previous: number) => {
+            if (previous === 0) return current > 0 ? 100 : 0;
+            return Math.round(((current - previous) / previous) * 100);
+        };
+
+        return res.status(200).json({
+            contacts: {
+                total: contactsTotal.count || 0,
+                last30: contacts.count || 0,
+                change: calcChange(contacts.count || 0, contactsPrev.count || 0),
+            },
+            newsletters: {
+                total: newslettersTotal.count || 0,
+                last30: newsletters.count || 0,
+                change: calcChange(newsletters.count || 0, newslettersPrev.count || 0),
+            },
+            applications: {
+                total: applicationsTotal.count || 0,
+                last30: applications.count || 0,
+                change: calcChange(applications.count || 0, applicationsPrev.count || 0),
+            },
+            users: {
+                total: usersTotal.count || 0,
+                last30: users.count || 0,
+                change: calcChange(users.count || 0, usersPrev.count || 0),
+            },
+        });
+    } catch (error: any) {
+        console.error('Admin stats error:', error);
+        return res.status(500).json({ error: 'Failed to fetch stats' });
+    }
+}
+
+async function handleAdminSubmissions(req: VercelRequest, res: VercelResponse) {
+    try {
+        const type = (req.query.type as string) || 'contact';
+        const page = parseInt(req.query.page as string) || 1;
+        const limit = parseInt(req.query.limit as string) || 20;
+        const offset = (page - 1) * limit;
+
+        let tableName: string;
+        let selectFields: string;
+
+        switch (type) {
+            case 'newsletter':
+                tableName = 'newsletter_subscriptions';
+                selectFields = 'id, email, page, created_at';
+                break;
+            case 'application':
+                tableName = 'applications';
+                selectFields = 'id, name, email, company, phone, country, industry, application_type, message, page, created_at';
+                break;
+            default:
+                tableName = 'contact_submissions';
+                selectFields = 'id, name, email, company, phone, message, page, created_at';
+        }
+
+        const { data, count, error } = await supabase
+            .from(tableName)
+            .select(selectFields, { count: 'exact' })
+            .order('created_at', { ascending: false })
+            .range(offset, offset + limit - 1);
+
+        if (error) {
+            console.error('Submissions query error:', error);
+            return res.status(500).json({ error: 'Failed to fetch submissions' });
+        }
+
+        return res.status(200).json({
+            data: data || [],
+            total: count || 0,
+            page,
+            totalPages: Math.ceil((count || 0) / limit),
+        });
+    } catch (error: any) {
+        console.error('Admin submissions error:', error);
+        return res.status(500).json({ error: 'Failed to fetch submissions' });
     }
 }

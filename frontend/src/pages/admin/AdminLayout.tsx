@@ -43,7 +43,7 @@ export default function AdminLayout() {
     const menuItems = [
         { icon: LayoutDashboard, label: 'Dashboard', path: '/admin/dashboard' },
         { icon: Users, label: 'Users', path: '/admin/users' },
-        { icon: FileText, label: 'Applications', path: '/admin/applications' },
+        { icon: FileText, label: 'Submissions', path: '/admin/submissions' },
         { icon: Target, label: 'LinkedIn Bot', path: '/admin/outreach' },
         { icon: Settings, label: 'Settings', path: '/admin/settings' },
     ];

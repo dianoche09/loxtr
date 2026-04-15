@@ -54,6 +54,7 @@ import AdminLayout from './pages/admin/AdminLayout';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import UsersPage from './pages/admin/UsersPage';
 import OutreachManager from './pages/admin/OutreachManager';
+import SubmissionsPage from './pages/admin/SubmissionsPage';
 
 // Tools Imports
 import LoxConvert from './pages/tools/LoxConvert';
@@ -459,8 +460,8 @@ function App() {
               <Route index element={<Navigate to="dashboard" replace />} />
               <Route path="dashboard" element={<AdminDashboard />} />
               <Route path="users" element={<UsersPage />} />
+              <Route path="submissions" element={<SubmissionsPage />} />
               <Route path="outreach" element={<OutreachManager />} />
-              {/* Add more admin routes here later */}
             </Route>
 
             <Route element={<Layout />}>

@@ -1,57 +1,66 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Users, TrendingUp, DollarSign, Activity, Globe, Package } from 'lucide-react';
-import api from '../../services/crm/api'; // Assuming a generic API service exists or reusing existing one
+import { Users, Mail, FileText, MessageSquare, TrendingUp, TrendingDown } from 'lucide-react';
 
-const StatCard = ({ title, value, change, icon: Icon, color }: any) => (
+interface StatData {
+    total: number;
+    last30: number;
+    change: number;
+}
+
+interface AdminStats {
+    contacts: StatData;
+    newsletters: StatData;
+    applications: StatData;
+    users: StatData;
+}
+
+const StatCard = ({ title, value, subtitle, change, icon: Icon, color }: {
+    title: string;
+    value: string | number;
+    subtitle: string;
+    change: number;
+    icon: React.ElementType;
+    color: string;
+}) => (
     <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-shadow"
     >
         <div className="flex items-start justify-between mb-4">
-            <div className={`p-3 rounded-xl ${color} bg-opacity-10 text-opacity-100`}>
+            <div className={`p-3 rounded-xl ${color} bg-opacity-10`}>
                 <Icon size={24} className={color.replace('bg-', 'text-')} />
             </div>
-            {change && (
-                <span className={`text-xs font-bold px-2 py-1 rounded-full ${change >= 0 ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'}`}>
+            {change !== 0 && (
+                <span className={`text-xs font-bold px-2 py-1 rounded-full flex items-center gap-1 ${change >= 0 ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'}`}>
+                    {change >= 0 ? <TrendingUp size={12} /> : <TrendingDown size={12} />}
                     {change > 0 ? '+' : ''}{change}%
                 </span>
             )}
         </div>
         <h3 className="text-slate-500 text-sm font-semibold uppercase tracking-wider mb-1">{title}</h3>
         <p className="text-3xl font-black text-navy">{value}</p>
+        <p className="text-xs text-slate-400 mt-1">{subtitle}</p>
     </motion.div>
 );
 
 export default function AdminDashboard() {
-    const [stats, setStats] = useState({
-        totalUsers: 0,
-        activeUsers: 0,
-        leadsGenerated: 0,
-        revenue: 0
-    });
+    const [stats, setStats] = useState<AdminStats | null>(null);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState('');
 
     useEffect(() => {
-        // Mock data fetching or real API call
         const fetchStats = async () => {
             try {
-                // const res = await api.get('/admin/stats');
-                // setStats(res.data);
-
-                // MOCK DATA for Visuals
-                setTimeout(() => {
-                    setStats({
-                        totalUsers: 1248,
-                        activeUsers: 856,
-                        leadsGenerated: 14205,
-                        revenue: 45200
-                    });
-                    setLoading(false);
-                }, 1000);
-            } catch (error) {
-                console.error('Failed to fetch admin stats', error);
+                const response = await fetch('/api/admin/stats');
+                if (!response.ok) throw new Error('Failed to fetch stats');
+                const data = await response.json();
+                setStats(data);
+            } catch (err: any) {
+                console.error('Failed to fetch admin stats:', err);
+                setError('Failed to load stats. Supabase may be paused.');
+            } finally {
                 setLoading(false);
             }
         };
@@ -59,91 +68,82 @@ export default function AdminDashboard() {
         fetchStats();
     }, []);
 
+    if (error) {
+        return (
+            <div className="flex items-center justify-center h-64">
+                <div className="text-center">
+                    <div className="text-red-500 text-lg font-bold mb-2">Connection Error</div>
+                    <p className="text-slate-500">{error}</p>
+                    <button
+                        onClick={() => { setError(''); setLoading(true); window.location.reload(); }}
+                        className="mt-4 px-4 py-2 bg-navy text-white rounded-lg hover:bg-navy/90 transition-colors"
+                    >
+                        Retry
+                    </button>
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div className="space-y-8">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <StatCard
-                    title="Total Users"
-                    value={loading ? '...' : stats.totalUsers}
-                    change={12}
-                    icon={Users}
+                    title="Contact Forms"
+                    value={loading ? '...' : stats?.contacts.total ?? 0}
+                    subtitle={loading ? '' : `${stats?.contacts.last30 ?? 0} in last 30 days`}
+                    change={stats?.contacts.change ?? 0}
+                    icon={MessageSquare}
                     color="bg-blue-500"
                 />
                 <StatCard
-                    title="Active Subscriptions"
-                    value={loading ? '...' : stats.activeUsers}
-                    change={5}
-                    icon={Activity}
+                    title="Newsletter Subs"
+                    value={loading ? '...' : stats?.newsletters.total ?? 0}
+                    subtitle={loading ? '' : `${stats?.newsletters.last30 ?? 0} in last 30 days`}
+                    change={stats?.newsletters.change ?? 0}
+                    icon={Mail}
                     color="bg-emerald-500"
                 />
                 <StatCard
-                    title="Leads Generated"
-                    value={loading ? '...' : stats.leadsGenerated.toLocaleString()}
-                    change={24}
-                    icon={Globe}
+                    title="Applications"
+                    value={loading ? '...' : stats?.applications.total ?? 0}
+                    subtitle={loading ? '' : `${stats?.applications.last30 ?? 0} in last 30 days`}
+                    change={stats?.applications.change ?? 0}
+                    icon={FileText}
                     color="bg-purple-500"
                 />
                 <StatCard
-                    title="Monthly Revenue"
-                    value={loading ? '...' : `$${stats.revenue.toLocaleString()}`}
-                    change={8}
-                    icon={DollarSign}
-                    color="bg-yellow"
+                    title="CRM Users"
+                    value={loading ? '...' : stats?.users.total ?? 0}
+                    subtitle={loading ? '' : `${stats?.users.last30 ?? 0} in last 30 days`}
+                    change={stats?.users.change ?? 0}
+                    icon={Users}
+                    color="bg-amber-500"
                 />
             </div>
 
-            {/* Recent Activity Section (Example) */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <div className="lg:col-span-2 bg-white rounded-2xl border border-slate-100 shadow-sm p-6">
-                    <h2 className="text-lg font-bold text-navy mb-6">Recent Registrations</h2>
-                    <div className="space-y-4">
-                        {[1, 2, 3, 4, 5].map((i) => (
-                            <div key={i} className="flex items-center justify-between p-4 hover:bg-slate-50 rounded-xl transition-colors border border-slate-50">
-                                <div className="flex items-center gap-4">
-                                    <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center font-bold text-slate-500">
-                                        U{i}
-                                    </div>
-                                    <div>
-                                        <p className="font-bold text-navy text-sm">New User {i}</p>
-                                        <p className="text-slate-400 text-xs">user{i}@example.com</p>
-                                    </div>
-                                </div>
-                                <span className="text-xs font-medium text-slate-400">2 mins ago</span>
-                            </div>
-                        ))}
+            <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-6">
+                <h2 className="text-lg font-bold text-navy mb-4">System Status</h2>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div className="flex items-center gap-3 p-4 bg-green-50 rounded-xl">
+                        <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse" />
+                        <div>
+                            <p className="font-bold text-sm text-navy">Supabase</p>
+                            <p className="text-xs text-slate-500">{error ? 'Disconnected' : 'Connected'}</p>
+                        </div>
                     </div>
-                </div>
-
-                <div className="bg-navy rounded-2xl shadow-xl p-6 text-white relative overflow-hidden">
-                    <div className="absolute top-0 right-0 w-32 h-32 bg-yellow rounded-full blur-[50px] opacity-20 -mr-10 -mt-10"></div>
-                    <h2 className="text-lg font-bold mb-6 relative z-10">System Status</h2>
-                    <div className="space-y-6 relative z-10">
+                    <div className="flex items-center gap-3 p-4 bg-green-50 rounded-xl">
+                        <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse" />
                         <div>
-                            <div className="flex justify-between text-sm mb-2 opacity-80">
-                                <span>API Latency</span>
-                                <span className="text-green-400">24ms</span>
-                            </div>
-                            <div className="w-full bg-white/10 h-2 rounded-full overflow-hidden">
-                                <div className="bg-green-400 h-full w-[20%]"></div>
-                            </div>
+                            <p className="font-bold text-sm text-navy">Resend Email</p>
+                            <p className="text-xs text-slate-500">Configured</p>
                         </div>
+                    </div>
+                    <div className="flex items-center gap-3 p-4 bg-green-50 rounded-xl">
+                        <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse" />
                         <div>
-                            <div className="flex justify-between text-sm mb-2 opacity-80">
-                                <span>Token Usage (Gemini)</span>
-                                <span className="text-yellow">85%</span>
-                            </div>
-                            <div className="w-full bg-white/10 h-2 rounded-full overflow-hidden">
-                                <div className="bg-yellow h-full w-[85%]"></div>
-                            </div>
-                        </div>
-                        <div>
-                            <div className="flex justify-between text-sm mb-2 opacity-80">
-                                <span>Database Load</span>
-                                <span className="text-blue-400">42%</span>
-                            </div>
-                            <div className="w-full bg-white/10 h-2 rounded-full overflow-hidden">
-                                <div className="bg-blue-400 h-full w-[42%]"></div>
-                            </div>
+                            <p className="font-bold text-sm text-navy">Vercel Functions</p>
+                            <p className="text-xs text-slate-500">Active</p>
                         </div>
                     </div>
                 </div>

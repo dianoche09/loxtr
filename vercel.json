@@ -53,6 +53,14 @@
             "destination": "/api/public?action=application"
         },
         {
+            "source": "/api/admin/stats",
+            "destination": "/api/public?action=admin-stats"
+        },
+        {
+            "source": "/api/admin/submissions",
+            "destination": "/api/public?action=admin-submissions"
+        },
+        {
             "source": "/api/dashboard/summary",
             "destination": "/api/auth/me?action=dashboard-summary"
         },
