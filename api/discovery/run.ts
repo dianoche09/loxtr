@@ -37,7 +37,23 @@ Return ONLY a JSON array:
   "aiScore": 85
 }]`;
 
-        const aiResponse = await gemini.generateText(prompt);
+        let aiResponse: string;
+        try {
+            aiResponse = await gemini.generateText(prompt);
+        } catch (aiError: any) {
+            return res.status(500).json({
+                error: 'Gemini API failed',
+                message: aiError.message || 'Unknown AI error',
+            });
+        }
+
+        if (!aiResponse || aiResponse.length < 10) {
+            return res.status(500).json({
+                error: 'Empty AI response',
+                length: aiResponse?.length || 0,
+            });
+        }
+
         const parsed = gemini.extractJSON(aiResponse);
 
         // Handle both array and object-with-array responses
@@ -48,10 +64,12 @@ Return ONLY a JSON array:
             leads = parsed.leads;
         } else if (parsed && Array.isArray(parsed.companies)) {
             leads = parsed.companies;
+        } else if (parsed && Array.isArray(parsed.results)) {
+            leads = parsed.results;
         } else {
             return res.status(500).json({
-                error: 'Failed to generate leads',
-                debug: parsed ? 'Unexpected format' : 'No JSON parsed',
+                error: 'Failed to parse leads',
+                rawPreview: aiResponse.substring(0, 500),
             });
         }
 
