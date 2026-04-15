@@ -19,6 +19,22 @@
             "destination": "/api/ai?action=generate-email"
         },
         {
+            "source": "/api/leads/discover-batch",
+            "destination": "/api/discovery/run"
+        },
+        {
+            "source": "/api/loxconvert/generate-comment",
+            "destination": "/api/loxconvert/extra?action=generate-comment"
+        },
+        {
+            "source": "/api/loxconvert/generate-invoice",
+            "destination": "/api/loxconvert/extra?action=generate-invoice"
+        },
+        {
+            "source": "/api/loxconvert/insights",
+            "destination": "/api/loxconvert/extra?action=insights"
+        },
+        {
             "source": "/api/:path*",
             "destination": "/api/:path*"
         },

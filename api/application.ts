@@ -129,7 +129,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
                         </tr>
                         <tr style="background-color: #f8f9fa;">
                             <td style="padding: 15px; text-align: center; color: #999; font-size: 11px;">
-                                Submitted on: ${submission.createdAt}
+                                Submitted on: ${createdAt}
                             </td>
                         </tr>
                     </table>
@@ -148,14 +148,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             return res.status(200).json({
                 success: true,
                 message: 'Application submitted but email notification failed',
-                id: submission.id
+                id: createdAt
             });
         }
 
         return res.status(200).json({
             success: true,
             message: 'Application submitted successfully',
-            id: submission.id
+            id: createdAt
         });
 
     } catch (error) {
