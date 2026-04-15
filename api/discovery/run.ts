@@ -12,30 +12,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             return res.status(400).json({ error: 'product, targetMarkets, and industry are required' });
         }
 
-        const prompt = `You are a Global B2B Lead Generation Expert specializing in international trade.
+        const safeCount = Math.min(count, 10);
+        const prompt = `Find ${safeCount} REAL companies that buy "${product}" in ${targetMarkets.join(', ')} (${industry}).
 
-Find ${count} REAL companies that would be potential buyers of "${product}".
+Return ONLY a JSON array, no markdown:
+[{"companyName":"Name","country":"Country","city":"City","website":"https://example.com","email":"info@example.com","logic":"Short reason (max 15 words)","aiScore":85}]
 
-Target Markets: ${targetMarkets.join(', ')}
-Industry: ${industry}
-
-Requirements:
-- Companies must be REAL and currently active
-- Include their actual website URL if known
-- Include a realistic contact email pattern (e.g. info@company.com)
-- Provide specific reasoning for why they would buy this product
-- AI confidence score based on relevance (70-98 range, be honest)
-
-Return ONLY a JSON array:
-[{
-  "companyName": "Real Company Name",
-  "country": "Country",
-  "city": "City if known",
-  "website": "https://www.company.com",
-  "email": "info@company.com",
-  "logic": "Specific reason why this company needs this product",
-  "aiScore": 85
-}]`;
+Rules: Real companies only. Keep logic field under 15 words. Score 70-98.`;
 
         let aiResponse: string;
         try {

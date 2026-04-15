@@ -5,8 +5,13 @@ const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
 
 export const gemini = {
     generateText: async (prompt: string, userKey?: string) => {
-        const activeModel = userKey ? new GoogleGenerativeAI(userKey).getGenerativeModel({ model: 'gemini-2.0-flash' }) : model;
-        const result = await activeModel.generateContent(prompt);
+        const activeModel = userKey
+            ? new GoogleGenerativeAI(userKey).getGenerativeModel({ model: 'gemini-2.0-flash' })
+            : model;
+        const result = await activeModel.generateContent({
+            contents: [{ role: 'user', parts: [{ text: prompt }] }],
+            generationConfig: { maxOutputTokens: 8192 },
+        });
         return result.response.text();
     },
 
