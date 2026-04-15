@@ -925,24 +925,36 @@ export default function OnboardingPage() {
                 }
             };
 
-            const updateRes = await authAPI.updateProfile(finalProfile);
-            console.log('✅ Profile update response:', updateRes);
+            try {
+                const updateRes = await authAPI.updateProfile(finalProfile);
+                console.log('Profile update response:', updateRes);
+            } catch (profileError: any) {
+                console.error('Profile save failed (non-blocking):', profileError.message);
+                // Still mark onboarding as completed even if full profile save fails
+                try {
+                    await authAPI.updateProfile({
+                        onboarding_completed: true,
+                        onboardingCompleted: true,
+                    });
+                } catch {
+                    console.error('Fallback onboarding flag update also failed');
+                }
+            }
 
-            await refreshProfile(); // Force context update
+            await refreshProfile();
 
             toast.success('Setup complete! Welcome to LOXTR.');
             sessionStorage.setItem('onboarding_just_finished', 'true');
 
-            // Forces a hard navigation to avoid state race conditions in Layout
             setTimeout(() => {
                 window.location.href = '/crm/dashboard';
             }, 300);
 
         } catch (error: any) {
             console.error('Final onboarding error:', error);
-            toast.error(`Could not complete setup: ${error.message || 'Network error'}`);
-            // Backup redirect 
-            setTimeout(() => { window.location.href = '/crm/dashboard'; }, 3000);
+            toast.error('Redirecting to dashboard...');
+            sessionStorage.setItem('onboarding_just_finished', 'true');
+            setTimeout(() => { window.location.href = '/crm/dashboard'; }, 1000);
         } finally {
             setLoading(false);
         }
