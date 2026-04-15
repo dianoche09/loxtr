@@ -2290,24 +2290,36 @@ export default function OnboardingPage() {
                         </AnimatePresence>
                     </div>
 
-                    {/* Navigation Buttons - Hidden on Step 4 (Pricing) */}
-                    {currentStep !== 4 && (
-                        <div className="mt-12 flex items-center justify-between pt-8 border-t border-slate-100">
+                    {/* Navigation Buttons */}
+                    <div className="mt-12 flex items-center justify-between pt-8 border-t border-slate-100">
+                        <button
+                            onClick={() => setCurrentStep(prev => Math.max(0, prev - 1))}
+                            className={`flex items-center gap-2 px-8 py-4 text-slate-500 font-bold hover:text-slate-900 transition-colors ${currentStep === 0 ? 'invisible' : ''}`}
+                        >
+                            Back
+                        </button>
+
+                        <div className="flex items-center gap-4">
                             <button
-                                onClick={() => setCurrentStep(prev => Math.max(0, prev - 1))}
-                                className={`flex items-center gap-2 px-8 py-4 text-slate-500 font-bold hover:text-slate-900 transition-colors ${currentStep === 0 ? 'invisible' : ''}`}
+                                onClick={() => {
+                                    if (currentStep < steps.length - 1) {
+                                        setCurrentStep(prev => prev + 1);
+                                    } else {
+                                        navigate('/crm/dashboard');
+                                    }
+                                }}
+                                className="px-6 py-4 text-slate-400 font-bold hover:text-slate-600 transition-colors"
                             >
-                                Back
+                                Skip
                             </button>
 
                             <button
                                 onClick={handleNext}
                                 disabled={
                                     loading ||
-                                    (currentStep === 2 && analyzing) ||
-                                    (currentStep === 3 && (formData.targetIndustries.length < 3 || formData.targetJobTitles.length < 3))
+                                    (currentStep === 2 && analyzing)
                                 }
-                                className="group flex items-center gap-3 px-10 py-5 bg-navy text-white rounded-[1.5rem] font-black tracking-tight hover:bg-blue-700 transition-all shadow-2xl shadow-navy/30 active:scale-95 disabled:opacity-50 disabled:grayscale transition-all"
+                                className="group flex items-center gap-3 px-10 py-5 bg-navy text-white rounded-[1.5rem] font-black tracking-tight hover:bg-blue-700 transition-all shadow-2xl shadow-navy/30 active:scale-95 disabled:opacity-50 disabled:grayscale"
                             >
                                 {(loading || (currentStep === 2 && analyzing)) ? <LoadingSpinner size="sm" className="text-white" /> : (
                                     <>
@@ -2317,7 +2329,7 @@ export default function OnboardingPage() {
                                 )}
                             </button>
                         </div>
-                    )}
+                    </div>
                 </div>
             </motion.div >
 
