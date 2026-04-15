@@ -113,7 +113,7 @@ export default function RadarDashboard() {
             const res = await leadsAPI.createLeadsBulk(leadsToSave) as any;
             if (res.success || res.data) {
                 toast.success(`Successfully unlocked ${leadsToSave.length} leads!`);
-                navigate('/leads');
+                navigate('/crm/leads');
             }
         } catch (err: any) {
             toast.error(err.response?.data?.error || 'Failed to unlock leads');
