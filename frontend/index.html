@@ -5,6 +5,7 @@
   <meta charset="UTF-8" />
   <link rel="icon" type="image/png" href="/favicon.png" />
   <link rel="manifest" href="/manifest.json" />
+  <link rel="alternate" type="text/plain" href="/llms.txt" title="LLM-readable site description" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <!-- Primary Meta Tags -->
@@ -45,34 +46,114 @@
 
 
 
-  <!-- Schema.org Organization Markup -->
+  <!-- Schema.org Organization Markup (GEO Optimized) -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "Organization",
-    "name": "LOX Global Trade",
+    "name": "LOXTR",
+    "alternateName": "LOX Global Trade",
     "url": "https://www.loxtr.com",
-    "logo": "https://www.loxtr.com/logo.png",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://www.loxtr.com/images/logo-full.png",
+      "width": 512,
+      "height": 512
+    },
+    "description": "AI-powered global trade intelligence platform. Customs compliance, HS code classification, B2B lead generation, and freight forecasting for exporters and importers.",
+    "foundingDate": "2024",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "Sogutozu, Nergiz Str. No:7, F:13/N:25",
+      "addressLocality": "Yenimahalle",
+      "addressRegion": "Ankara",
+      "postalCode": "06560",
+      "addressCountry": "TR"
+    },
     "contactPoint": {
       "@type": "ContactPoint",
       "telephone": "+905307635710",
       "contactType": "customer service",
-      "areaServed": ["TR", "US", "EU"],
+      "areaServed": ["TR", "US", "DE", "GB", "NL", "FR", "IT", "ES", "CN", "JP"],
       "availableLanguage": ["English", "Turkish"]
     },
     "sameAs": [
       "https://www.linkedin.com/company/loxtrcom",
       "https://twitter.com/loxtrcom"
+    ],
+    "knowsAbout": [
+      "International Trade",
+      "Customs Compliance",
+      "HS Code Classification",
+      "Export Documentation",
+      "Freight Forwarding",
+      "B2B Lead Generation",
+      "Trade Intelligence",
+      "Tariff Analysis"
     ]
   }
   </script>
 
+  <!-- Schema.org SoftwareApplication Markup -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "LOXTR",
+    "applicationCategory": "BusinessApplication",
+    "applicationSubCategory": "Trade Intelligence",
+    "operatingSystem": "Web",
+    "url": "https://www.loxtr.com",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD",
+      "description": "Free tier with 50 leads/month"
+    },
+    "featureList": [
+      "AI-powered HS Code classification",
+      "Customs document analysis (invoice, packing list, bill of lading)",
+      "B2B lead discovery with web verification",
+      "Freight rate forecasting with TimesFM 2.0",
+      "Campaign automation with AI email generation",
+      "Multi-language support (EN/TR)"
+    ],
+    "screenshot": "https://www.loxtr.com/images/products/radar_mockup.png"
+  }
+  </script>
+
+  <!-- Schema.org WebSite with SearchAction (Speakable) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "LOXTR",
+    "url": "https://www.loxtr.com",
+    "inLanguage": ["en", "tr"],
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://www.loxtr.com/en/blog?q={search_term_string}",
+      "query-input": "required name=search_term_string"
+    }
+  }
+  </script>
+
   <!-- Global Open Graph Tags -->
-  <meta property="og:title" content="LOX - Locate, Obtain, Xport" />
-  <meta property="og:description" content="Turkey's premier gateway for global trade. Export & Import solutions." />
-  <meta property="og:image" content="https://www.loxtr.com/social-share.jpg" />
+  <meta property="og:title" content="LOXTR - AI-Powered Global Trade Intelligence" />
+  <meta property="og:description" content="Customs compliance, HS code classification, B2B lead generation, and freight forecasting for exporters and importers worldwide." />
+  <meta property="og:image" content="https://www.loxtr.com/images/products/radar_mockup.png" />
   <meta property="og:url" content="https://www.loxtr.com" />
   <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="LOXTR" />
+  <meta property="og:locale" content="en_US" />
+  <meta property="og:locale:alternate" content="tr_TR" />
+
+  <!-- Twitter Card Tags -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:site" content="@loxtrcom" />
+  <meta name="twitter:title" content="LOXTR - AI-Powered Global Trade Intelligence" />
+  <meta name="twitter:description" content="Customs compliance, B2B lead generation, and freight forecasting for global traders." />
+  <meta name="twitter:image" content="https://www.loxtr.com/images/products/radar_mockup.png" />
 </head>
 
 <body>

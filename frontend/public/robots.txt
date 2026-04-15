@@ -2,27 +2,85 @@ User-agent: *
 Allow: /
 
 # --- Yönetim ve Üyelik Sayfalarını Engelle ---
-# Müşterilerin girdiği panellerin Google'da çıkmasını istemeyiz.
 Disallow: /admin/
 Disallow: /login/
 Disallow: /register/
 Disallow: /dashboard/
+Disallow: /leads/
+Disallow: /campaigns/
+Disallow: /settings/
+Disallow: /onboarding/
+Disallow: /smart-assets/
 Disallow: /cart/
 Disallow: /checkout/
 Disallow: /account/
 
 # --- Teknik ve Gereksiz Dosyaları Engelle ---
-# API yanıtlarının veya sistem dosyalarının indekslenmesi SEO puanını düşürür.
 Disallow: /api/
 Disallow: /tmp/
 Disallow: /cgi-bin/
 
 # --- Site İçi Arama Sonuçlarını Engelle ---
-# Google'ın "arama içinde arama" yapmasını engellemek SEO bütçesini korur.
 Disallow: /search
 Disallow: /?q=
 Disallow: /query=
 
-# --- Sitemap (Site Haritası) ---
-# En önemli satır budur. Google botuna haritanın yerini gösterir.
+# --- AI Crawler Access ---
+# Allow AI crawlers to index public content for AI search engines
+# ChatGPT (OpenAI)
+User-agent: ChatGPT-User
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+Disallow: /dashboard/
+Disallow: /leads/
+Disallow: /campaigns/
+Disallow: /settings/
+
+User-agent: GPTBot
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+Disallow: /dashboard/
+Disallow: /leads/
+Disallow: /campaigns/
+Disallow: /settings/
+
+# Google AI (Gemini)
+User-agent: Google-Extended
+Allow: /
+
+# Anthropic (Claude)
+User-agent: ClaudeBot
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+Disallow: /dashboard/
+
+User-agent: anthropic-ai
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+Disallow: /dashboard/
+
+# Perplexity
+User-agent: PerplexityBot
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+Disallow: /dashboard/
+
+# Cohere
+User-agent: cohere-ai
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+
+# Common Crawl (used by many AI models)
+User-agent: CCBot
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+
+# --- Sitemap & LLMs.txt ---
 Sitemap: https://www.loxtr.com/sitemap.xml

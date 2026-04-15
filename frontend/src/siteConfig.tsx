@@ -31,8 +31,8 @@ export const CONFIG = {
             tr: "LOXTR Dış Ticaret ve Lojistik Çözümleri Ltd. Şti."
         },
         address: {
-            en: "Next Level Loft Office, No:3, Cankaya, Ankara, Turkey",
-            tr: "Next Level Loft Ofis, No:3, Çankaya, Ankara, Türkiye"
+            en: "Sogutozu, Nergiz Str. No:7, F:13/N:25, 06560 Yenimahalle, Ankara, Turkey",
+            tr: "Sogutozu, Nergiz Sok. No:7, K:13/D:25, 06560 Yenimahalle, Ankara, Turkiye"
         }
     },
     socials: {
