@@ -2,7 +2,7 @@
     "version": 2,
     "crons": [
         {
-            "path": "/api/contact?keepalive=true",
+            "path": "/api/public?keepalive=true",
             "schedule": "0 6 */3 * *"
         }
     ],
@@ -39,6 +39,26 @@
         {
             "source": "/api/leads/:id",
             "destination": "/api/leads?id=:id"
+        },
+        {
+            "source": "/api/contact",
+            "destination": "/api/public?action=contact"
+        },
+        {
+            "source": "/api/newsletter",
+            "destination": "/api/public?action=newsletter"
+        },
+        {
+            "source": "/api/application",
+            "destination": "/api/public?action=application"
+        },
+        {
+            "source": "/api/dashboard/summary",
+            "destination": "/api/auth/me?action=dashboard-summary"
+        },
+        {
+            "source": "/api/dashboard/briefing",
+            "destination": "/api/auth/me?action=dashboard-summary"
         },
         {
             "source": "/api/loxconvert/generate-comment",
