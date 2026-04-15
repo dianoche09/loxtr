@@ -2,7 +2,6 @@ GK Proje admin/
 scraper/
 forecast/
 backups/
-scripts/
 *.zip
 *.sql
 api/crm/
