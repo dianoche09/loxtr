@@ -38,51 +38,63 @@ Return ONLY a JSON array:
 }]`;
 
         const aiResponse = await gemini.generateText(prompt);
-        const leads = gemini.extractJSON(aiResponse);
+        const parsed = gemini.extractJSON(aiResponse);
 
-        if (!leads || !Array.isArray(leads)) {
-            return res.status(500).json({ error: 'Failed to generate leads' });
+        // Handle both array and object-with-array responses
+        let leads: any[];
+        if (Array.isArray(parsed)) {
+            leads = parsed;
+        } else if (parsed && Array.isArray(parsed.leads)) {
+            leads = parsed.leads;
+        } else if (parsed && Array.isArray(parsed.companies)) {
+            leads = parsed.companies;
+        } else {
+            return res.status(500).json({
+                error: 'Failed to generate leads',
+                debug: parsed ? 'Unexpected format' : 'No JSON parsed',
+            });
         }
 
-        // Enrich with Scrapling if available
-        const scraperAvailable = await scraper.isHealthy();
-
-        if (scraperAvailable) {
+        // Enrich with Scrapling only if service URL is explicitly configured
+        if (process.env.SCRAPER_SERVICE_URL) {
             try {
-                const enrichRequests = leads.map((lead: any) => ({
-                    company_name: lead.companyName,
-                    website: lead.website || null,
-                    country: lead.country || null,
-                }));
+                const scraperAvailable = await scraper.isHealthy();
+                if (scraperAvailable) {
+                    const enrichRequests = leads.map((lead: any) => ({
+                        company_name: lead.companyName,
+                        website: lead.website || null,
+                        country: lead.country || null,
+                    }));
 
-                const enriched = await scraper.enrichBatch(enrichRequests);
+                    const enriched = await scraper.enrichBatch(enrichRequests);
 
-                const enrichedLeads = leads.map((lead: any, i: number) => {
-                    const enrichData = enriched[i];
-                    if (!enrichData) return { ...lead, verified: false };
+                    const enrichedLeads = leads.map((lead: any, i: number) => {
+                        const enrichData = enriched[i];
+                        if (!enrichData) return { ...lead, verified: false };
 
-                    return {
-                        ...lead,
-                        verified: enrichData.website_alive,
-                        website: enrichData.website || lead.website,
-                        email: enrichData.emails?.[0] || lead.email,
-                        phone: enrichData.phones?.[0] || null,
-                        description: enrichData.description || null,
-                        socialLinks: enrichData.social_links || {},
-                        industryKeywords: enrichData.industry_keywords || [],
-                        enrichmentScore: enrichData.enrichment_score || 0,
-                        aiScore: Math.round(
-                            (lead.aiScore || 85) * 0.6 + (enrichData.enrichment_score || 0) * 0.4
-                        ),
-                    };
-                });
+                        return {
+                            ...lead,
+                            verified: enrichData.website_alive,
+                            website: enrichData.website || lead.website,
+                            email: enrichData.emails?.[0] || lead.email,
+                            phone: enrichData.phones?.[0] || null,
+                            description: enrichData.description || null,
+                            socialLinks: enrichData.social_links || {},
+                            industryKeywords: enrichData.industry_keywords || [],
+                            enrichmentScore: enrichData.enrichment_score || 0,
+                            aiScore: Math.round(
+                                (lead.aiScore || 85) * 0.6 + (enrichData.enrichment_score || 0) * 0.4
+                            ),
+                        };
+                    });
 
-                return res.status(200).json({
-                    success: true,
-                    leads: enrichedLeads,
-                    enriched: true,
-                    total: enrichedLeads.length,
-                });
+                    return res.status(200).json({
+                        success: true,
+                        leads: enrichedLeads,
+                        enriched: true,
+                        total: enrichedLeads.length,
+                    });
+                }
             } catch (enrichError: any) {
                 console.error('Enrichment failed, returning raw leads:', enrichError.message);
             }
@@ -97,6 +109,9 @@ Return ONLY a JSON array:
 
     } catch (error: any) {
         console.error('Discovery Run Error:', error);
-        return res.status(500).json({ error: 'Discovery failed' });
+        return res.status(500).json({
+            error: 'Discovery failed',
+            message: error.message || 'Unknown error',
+        });
     }
 }
