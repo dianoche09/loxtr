@@ -210,7 +210,9 @@ export default function RadarDashboard() {
 
         setLoading(true);
         setIsPreview(false);
-        const leadsToSave = results.filter((_, i) => selectedResults.has(i));
+        const leadsToSave = results
+            .filter((_, i) => selectedResults.has(i))
+            .map(lead => ({ ...lead, industry: lead.industry || industry }));
 
         try {
             const res = await leadsAPI.createLeadsBulk(leadsToSave) as any;
