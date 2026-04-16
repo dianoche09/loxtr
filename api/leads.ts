@@ -88,12 +88,14 @@ async function handleList(req: VercelRequest, res: VercelResponse, user: any) {
 
         return res.status(200).json({
             success: true,
-            data: leads,
-            pagination: {
-                page: pageNum,
-                limit: limitNum,
-                total: count || 0,
-                totalPages: Math.ceil((count || 0) / limitNum),
+            data: {
+                leads,
+                pagination: {
+                    page: pageNum,
+                    limit: limitNum,
+                    total: count || 0,
+                    totalPages: Math.ceil((count || 0) / limitNum),
+                },
             },
         });
     } catch (error: any) {
