@@ -4,7 +4,7 @@ import {
 } from 'recharts';
 import {
     TrendingDown, TrendingUp, Ship, Clock, Leaf, Zap, Globe, Navigation,
-    ArrowRight, Loader2, Info, Download, GitCompare, Minus
+    ArrowRight, Loader2, Download, GitCompare, Minus, AlertTriangle
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -539,12 +539,17 @@ export default function FreightForecastTab({ onPredictionComplete, historyEntry 
                             </div>
                         </div>
 
-                        {/* Info Banner */}
-                        <div className="bg-blue-600/5 border border-blue-600/20 rounded-[2rem] p-8 flex items-center gap-4">
-                            <Info className="text-blue-500 shrink-0" size={20} />
-                            <p className="text-[10px] font-bold text-blue-400/80 leading-relaxed italic">
-                                Predictions powered by AI analysis of historical freight data. Quantile forecasts provide confidence bands. Accuracy may vary based on geopolitical shifts.
-                            </p>
+                        {/* AI Estimate Disclaimer */}
+                        <div className="bg-yellow-600/5 border border-yellow-600/20 rounded-[2rem] p-6">
+                            <div className="flex items-start gap-3">
+                                <AlertTriangle className="text-yellow-500 shrink-0 mt-0.5" size={16} />
+                                <div>
+                                    <p className="text-[10px] font-black text-yellow-400 uppercase tracking-widest mb-2">AI Estimate — Not a Quote</p>
+                                    <p className="text-[10px] font-bold text-yellow-400/60 leading-relaxed">
+                                        Prices are AI-generated estimates based on real-time oil prices, market indices, and historical patterns. They are not live freight rates or binding quotes. Use as directional guidance — contact carriers or your freight forwarder for actual booking rates.
+                                    </p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </motion.div>
