@@ -1,6 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { forecast } from '../_utils/forecast';
 import { gemini } from '../_utils/gemini';
+import { getMarketSnapshot } from '../_utils/marketdata';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
     if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
@@ -152,7 +153,11 @@ async function handleMarketPulse(req: VercelRequest, res: VercelResponse) {
     const { region } = req.body || {};
     const regionCtx = region && region !== 'Global' ? ` Focus on the ${region} region.` : '';
 
-    const prompt = `You are a global freight market analyst. Provide a comprehensive market pulse overview for the current period (April 2026).${regionCtx}
+    // Fetch real market data in parallel with Gemini analysis
+    const [snapshot, geminiResult] = await Promise.all([
+        getMarketSnapshot(),
+        (async () => {
+            const prompt = `You are a global freight market analyst. Provide a comprehensive market pulse overview for the current period (April 2026).${regionCtx}
 Return ONLY valid JSON with this exact structure:
 {
   "topRoutes": [{"origin":"port/country","destination":"port/country","avgPrice":number,"trend":"up"|"down"|"stable","changePercent":number}] (top 6 busiest routes),
@@ -164,16 +169,27 @@ Return ONLY valid JSON with this exact structure:
 }
 Use realistic 2026 market data reflecting current geopolitical and economic conditions.`;
 
-    const aiResponse = await gemini.generateText(prompt);
-    const parsed = gemini.extractJSON(aiResponse);
+            const aiResponse = await gemini.generateText(prompt);
+            return gemini.extractJSON(aiResponse);
+        })(),
+    ]);
 
-    if (!parsed) {
+    if (!geminiResult) {
         return res.status(500).json({ error: 'Failed to generate market pulse' });
     }
 
     return res.status(200).json({
         success: true,
-        data: parsed,
-        source: 'gemini',
+        data: {
+            ...geminiResult,
+            // Inject real data alongside Gemini analysis
+            realTimeData: {
+                brentCrude: snapshot.brentCrude,
+                supplyChainPressure: snapshot.supplyChainPressure,
+                dollarIndex: snapshot.dollarIndex,
+                exchangeRates: snapshot.exchangeRates,
+            },
+        },
+        source: 'gemini+live',
     });
 }

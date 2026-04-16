@@ -155,6 +155,13 @@ export interface CommodityTrend {
     priceChange: number;
 }
 
+export interface RealTimeData {
+    brentCrude: { current: number; change: number; data: { date: string; price: number }[] } | null;
+    supplyChainPressure: { current: number; data: { date: string; value: number }[] } | null;
+    dollarIndex: { current: number; change: number } | null;
+    exchangeRates: { base: string; date: string; rates: Record<string, number> } | null;
+}
+
 export interface MarketPulseResult {
     topRoutes: MarketRoute[];
     volatilityIndex: {
@@ -170,6 +177,7 @@ export interface MarketPulseResult {
         unit: string;
     };
     summary: string;
+    realTimeData?: RealTimeData;
 }
 
 export type MarketRegion = 'Global' | 'Asia-Pacific' | 'Europe' | 'Americas' | 'Middle East & Africa';
