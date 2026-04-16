@@ -12,6 +12,8 @@ import {
     COMMODITY_TYPES, type PredictionResult, type ContainerSize, type CommodityType,
     type PredictionHistoryEntry
 } from '../../../services/PredictService';
+import PortAutocomplete from './PortAutocomplete';
+import type { Port } from '../../../data/ports';
 
 interface Props {
     onPredictionComplete: () => void;
@@ -149,27 +151,21 @@ export default function FreightForecastTab({ onPredictionComplete, historyEntry 
             <div className="bg-[#0f0f13] rounded-[2rem] p-4 border border-white/5 shadow-2xl mb-8">
                 {/* Row 1: Origin → Destination + Button */}
                 <div className="flex flex-col md:flex-row gap-4 mb-4">
-                    <div className="flex-1 flex items-center gap-3 bg-black/40 px-6 py-4 rounded-2xl border border-white/5 group focus-within:border-blue-500/50 transition-all">
-                        <Navigation className="text-slate-500 group-focus-within:text-blue-400" size={20} />
-                        <input
-                            placeholder="Origin Port (e.g. Istanbul)"
-                            className="bg-transparent border-none outline-none w-full text-white placeholder:text-slate-600 font-medium"
-                            value={origin}
-                            onChange={(e) => setOrigin(e.target.value)}
-                        />
-                    </div>
+                    <PortAutocomplete
+                        value={origin}
+                        onChange={(_port, display) => setOrigin(display)}
+                        placeholder="Origin Port (e.g. Istanbul)"
+                        icon={<Navigation size={20} />}
+                    />
                     <div className="hidden md:flex items-center justify-center text-slate-700">
                         <ArrowRight size={20} />
                     </div>
-                    <div className="flex-1 flex items-center gap-3 bg-black/40 px-6 py-4 rounded-2xl border border-white/5 group focus-within:border-blue-500/50 transition-all">
-                        <Globe className="text-slate-500 group-focus-within:text-blue-400" size={20} />
-                        <input
-                            placeholder="Destination Port (e.g. Hamburg)"
-                            className="bg-transparent border-none outline-none w-full text-white placeholder:text-slate-600 font-medium"
-                            value={destination}
-                            onChange={(e) => setDestination(e.target.value)}
-                        />
-                    </div>
+                    <PortAutocomplete
+                        value={destination}
+                        onChange={(_port, display) => setDestination(display)}
+                        placeholder="Destination Port (e.g. Hamburg)"
+                        icon={<Globe size={20} />}
+                    />
                     <button
                         onClick={handlePredict}
                         disabled={isPredicting || !origin || !destination}
@@ -241,32 +237,28 @@ export default function FreightForecastTab({ onPredictionComplete, historyEntry 
                             exit={{ height: 0, opacity: 0 }}
                             className="overflow-hidden"
                         >
-                            <div className="flex flex-col md:flex-row gap-4 mt-4 pt-4 border-t border-white/5">
-                                <div className="flex items-center gap-2 text-cyan-400 text-xs font-bold">
+                            <div className="flex flex-col md:flex-row gap-4 mt-4 pt-4 border-t border-white/5 items-center">
+                                <div className="flex items-center gap-2 text-cyan-400 text-xs font-bold shrink-0">
                                     <div className="w-3 h-3 bg-cyan-400 rounded-sm" />
                                     ROUTE B
                                 </div>
-                                <div className="flex-1 flex items-center gap-3 bg-black/40 px-6 py-3 rounded-2xl border border-cyan-500/20 group focus-within:border-cyan-500/50 transition-all">
-                                    <Navigation className="text-cyan-500/50 group-focus-within:text-cyan-400" size={18} />
-                                    <input
-                                        placeholder="Origin Port B"
-                                        className="bg-transparent border-none outline-none w-full text-white placeholder:text-slate-600 font-medium text-sm"
-                                        value={origin2}
-                                        onChange={(e) => setOrigin2(e.target.value)}
-                                    />
-                                </div>
+                                <PortAutocomplete
+                                    value={origin2}
+                                    onChange={(_port, display) => setOrigin2(display)}
+                                    placeholder="Origin Port B"
+                                    icon={<Navigation size={18} />}
+                                    accentColor="cyan"
+                                />
                                 <div className="hidden md:flex items-center justify-center text-slate-700">
                                     <Minus size={16} />
                                 </div>
-                                <div className="flex-1 flex items-center gap-3 bg-black/40 px-6 py-3 rounded-2xl border border-cyan-500/20 group focus-within:border-cyan-500/50 transition-all">
-                                    <Globe className="text-cyan-500/50 group-focus-within:text-cyan-400" size={18} />
-                                    <input
-                                        placeholder="Destination Port B"
-                                        className="bg-transparent border-none outline-none w-full text-white placeholder:text-slate-600 font-medium text-sm"
-                                        value={destination2}
-                                        onChange={(e) => setDestination2(e.target.value)}
-                                    />
-                                </div>
+                                <PortAutocomplete
+                                    value={destination2}
+                                    onChange={(_port, display) => setDestination2(display)}
+                                    placeholder="Destination Port B"
+                                    icon={<Globe size={18} />}
+                                    accentColor="cyan"
+                                />
                             </div>
                         </motion.div>
                     )}
