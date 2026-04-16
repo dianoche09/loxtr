@@ -19,7 +19,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 }
 
 async function handleFreightForecast(req: VercelRequest, res: VercelResponse) {
-    const { origin, destination, horizon = 6, commodityType, containerSize } = req.body;
+    const { origin, destination, horizon = 6, commodityType, containerSize, departureDate } = req.body;
 
     if (!origin || !destination) {
         return res.status(400).json({ error: 'origin and destination are required' });
@@ -60,6 +60,8 @@ async function handleFreightForecast(req: VercelRequest, res: VercelResponse) {
 
     const commodityCtx = commodityType ? ` for ${commodityType} cargo` : '';
     const containerCtx = containerSize || '20ft';
+    const departureDateStr = departureDate || new Date().toISOString().slice(0, 10);
+    const departureMonth = new Date(departureDateStr).toLocaleString('en-US', { month: 'long', year: 'numeric' });
 
     // Fetch real market context to ground Gemini's estimates
     const [brentData, dollarData, fxData] = await Promise.all([
@@ -106,14 +108,20 @@ Transit times (approximate days):
 - Turkey to Europe: 5-12 days
 - Turkey to US: 18-28 days`;
 
-    const prompt = `You are a freight logistics pricing expert. Estimate container shipping costs${commodityCtx} in a ${containerCtx} container from ${origin} to ${destination} for the next ${horizon} months.
+    const prompt = `You are a freight logistics pricing expert. Estimate container shipping costs${commodityCtx} in a ${containerCtx} container from ${origin} to ${destination}.
+
+SHIPMENT DETAILS:
+- Planned departure: ${departureMonth} (${departureDateStr})
+- Forecast period: ${horizon} months starting from departure date
+- Container: ${containerCtx}${commodityCtx ? `\n- Cargo: ${commodityType}` : ''}
 
 REAL MARKET CONDITIONS (use these to calibrate your estimates):
 ${realDataCtx}
 ${carrierContext}
 
 IMPORTANT RULES:
-- Prices MUST be realistic for this specific route and container size
+- Prices MUST be realistic for this specific route, container size, AND departure season
+- ${departureMonth} seasonality: adjust prices based on whether this is peak season (Aug-Oct), shoulder season (Mar-May, Nov), or low season (Jan-Feb, Jun-Jul)
 - Use ONLY real carrier names that actually operate on this route
 - Transit times must match real vessel schedules
 - Carbon footprint: roughly 0.5-1.2 kg CO2 per TEU-km (calculate based on distance)
@@ -124,10 +132,10 @@ Return ONLY valid JSON:
 {
   "trend": "up"|"down"|"stable",
   "confidence": number (60-85, be honest about uncertainty),
-  "historicalData": [{"date":"YYYY-MM","price":number}] (last 6 months),
-  "forecastData": [{"date":"YYYY-MM","price":number,"lower":number,"upper":number}] (next ${horizon} months),
-  "optimizedRoutes": [{"id":"r1","carrier":"real carrier name","transitTime":realistic_days,"price":number,"carbonFootprint":realistic_kgCO2,"reliability":0-100,"tags":["direct"|"transship"|"fastest"|"cheapest"|"eco"]}] (top 3 real carriers for this route),
-  "insight": "2-3 sentence analysis referencing actual market conditions (oil price, demand patterns, seasonal trends)",
+  "historicalData": [{"date":"YYYY-MM","price":number}] (6 months before ${departureDateStr}),
+  "forecastData": [{"date":"YYYY-MM","price":number,"lower":number,"upper":number}] (${horizon} months starting from ${departureDateStr}),
+  "optimizedRoutes": [{"id":"r1","carrier":"real carrier name","transitTime":realistic_days,"price":number,"carbonFootprint":realistic_kgCO2,"reliability":0-100,"tags":["direct"|"transship"|"fastest"|"cheapest"|"eco"]}] (top 3 real carriers for this route, prices for ${departureMonth} departure),
+  "insight": "2-3 sentence analysis referencing departure timing (${departureMonth}), seasonal pricing, oil price impact, and route-specific conditions",
   "priceRisk": "LOW"|"MODERATE"|"HIGH",
   "spaceAvailability": "LOW"|"MODERATE"|"HIGH",
   "portIntel": [{"port":"${origin}","status":"congested"|"normal"|"optimal","detail":"specific port condition"},{"port":"${destination}","status":"congested"|"normal"|"optimal","detail":"specific port condition"}]

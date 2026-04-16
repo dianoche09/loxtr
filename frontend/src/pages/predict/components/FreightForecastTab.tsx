@@ -4,7 +4,7 @@ import {
 } from 'recharts';
 import {
     TrendingDown, TrendingUp, Ship, Clock, Leaf, Zap, Globe, Navigation,
-    ArrowRight, Loader2, Download, GitCompare, Minus, AlertTriangle
+    ArrowRight, Loader2, Download, GitCompare, Minus, AlertTriangle, Calendar
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -30,6 +30,7 @@ const FORECAST_PERIODS = [
 export default function FreightForecastTab({ onPredictionComplete, historyEntry }: Props) {
     const [origin, setOrigin] = useState('');
     const [destination, setDestination] = useState('');
+    const [departureDate, setDepartureDate] = useState('');
     const [commodityType, setCommodityType] = useState<CommodityType | ''>('');
     const [containerSize, setContainerSize] = useState<ContainerSize>('20ft');
     const [horizon, setHorizon] = useState(6);
@@ -63,13 +64,15 @@ export default function FreightForecastTab({ onPredictionComplete, historyEntry 
                 origin, destination, horizon,
                 commodityType: commodityType || undefined,
                 containerSize,
+                departureDate: departureDate || undefined,
             });
             setData(result);
 
+            const dateSuffix = departureDate ? `, ${departureDate}` : '';
             savePredictionHistory({
                 type: 'freight',
-                query: { origin, destination, commodity: commodityType || 'General', container: containerSize },
-                summary: `${origin} → ${destination}, ${containerSize}`,
+                query: { origin, destination, commodity: commodityType || 'General', container: containerSize, date: departureDate },
+                summary: `${origin} → ${destination}, ${containerSize}${dateSuffix}`,
             });
 
             if (compareMode && origin2 && destination2) {
@@ -77,6 +80,7 @@ export default function FreightForecastTab({ onPredictionComplete, historyEntry 
                     origin: origin2, destination: destination2, horizon,
                     commodityType: commodityType || undefined,
                     containerSize,
+                    departureDate: departureDate || undefined,
                 });
                 setData2(result2);
             }
@@ -176,8 +180,19 @@ export default function FreightForecastTab({ onPredictionComplete, historyEntry 
                     </button>
                 </div>
 
-                {/* Row 2: Commodity + Container + Period + Compare */}
+                {/* Row 2: Date + Commodity + Container + Period + Compare */}
                 <div className="flex flex-col md:flex-row gap-3 items-center">
+                    <div className="flex items-center gap-2 bg-black/40 border border-white/5 rounded-xl px-4 py-2.5 focus-within:border-blue-500/50 transition-all">
+                        <Calendar size={14} className="text-slate-500 shrink-0" />
+                        <input
+                            type="date"
+                            value={departureDate}
+                            onChange={(e) => setDepartureDate(e.target.value)}
+                            min={new Date().toISOString().slice(0, 10)}
+                            className="bg-transparent border-none outline-none text-white text-sm font-medium w-36 [color-scheme:dark]"
+                        />
+                    </div>
+
                     <select
                         value={commodityType}
                         onChange={(e) => setCommodityType(e.target.value as CommodityType)}

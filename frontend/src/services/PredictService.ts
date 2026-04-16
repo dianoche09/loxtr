@@ -78,6 +78,7 @@ export interface FreightQueryParams {
     horizon?: number;
     commodityType?: CommodityType;
     containerSize?: ContainerSize;
+    departureDate?: string;
 }
 
 export const fetchPredictionData = async (params: FreightQueryParams): Promise<PredictionResult> => {
@@ -87,6 +88,7 @@ export const fetchPredictionData = async (params: FreightQueryParams): Promise<P
         horizon: params.horizon || 6,
         commodityType: params.commodityType,
         containerSize: params.containerSize,
+        departureDate: params.departureDate,
     });
 
     const result = response.data;
