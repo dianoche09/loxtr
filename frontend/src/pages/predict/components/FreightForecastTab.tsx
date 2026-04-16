@@ -318,6 +318,7 @@ export default function FreightForecastTab({ onPredictionComplete, historyEntry 
                                     <h3 className="text-xl font-black text-white uppercase tracking-tight">Price Trend Forecasting</h3>
                                     <p className="text-xs text-slate-500 font-bold mt-1">
                                         {origin.toUpperCase()} → {destination.toUpperCase()}
+                                        {departureDate && ` // Departure: ${new Date(departureDate).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}`}
                                         {compareMode && data2 && ` vs ${origin2.toUpperCase()} → ${destination2.toUpperCase()}`}
                                     </p>
                                 </div>
@@ -413,7 +414,20 @@ export default function FreightForecastTab({ onPredictionComplete, historyEntry 
                         {/* Optimized Routes */}
                         <div className="bg-[#0f0f13] rounded-[2rem] border border-white/5 p-8">
                             <div className="flex items-center justify-between mb-8">
-                                <h3 className="text-xl font-black text-white uppercase tracking-tight">Optimized Routes</h3>
+                                <div>
+                                    <h3 className="text-xl font-black text-white uppercase tracking-tight">Optimized Routes</h3>
+                                    {departureDate && (
+                                        <p className="text-xs text-slate-500 font-bold mt-1">
+                                            Prices for {new Date(departureDate).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })} departure
+                                            {(() => {
+                                                const m = new Date(departureDate).getMonth();
+                                                if (m >= 7 && m <= 9) return ' — Peak Season';
+                                                if ((m >= 2 && m <= 4) || m === 10) return ' — Shoulder Season';
+                                                return ' — Low Season';
+                                            })()}
+                                        </p>
+                                    )}
+                                </div>
                                 <div className="bg-blue-600/10 text-blue-400 px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest border border-blue-600/20">
                                     {data.optimizedRoutes.length} Options
                                 </div>
