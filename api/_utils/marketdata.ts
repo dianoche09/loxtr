@@ -189,16 +189,111 @@ export const frankfurter = {
     },
 };
 
-// --- Aggregated Market Snapshot ---
-// Combines all sources into a single market overview
-export interface MarketSnapshot {
-    brentCrude: { current: number; change: number; data: OilPrice[] } | null;
-    supplyChainPressure: { current: number; data: FredObservation[] } | null;
-    dollarIndex: { current: number; change: number } | null;
-    exchangeRates: ExchangeRates | null;
+// --- Interpreted Market Insights ---
+// Converts raw data into user-friendly insights
+
+export interface MarketInsight {
+    id: string;
+    label: string;
+    level: 'low' | 'moderate' | 'high';
+    impact: string;
+    detail: string;
 }
 
-export async function getMarketSnapshot(): Promise<MarketSnapshot> {
+export interface CurrencyConversion {
+    base: string;
+    date: string;
+    rates: { currency: string; rate: number; label: string }[];
+}
+
+export interface InterpretedMarketData {
+    insights: MarketInsight[];
+    currencyConversion: CurrencyConversion | null;
+}
+
+function interpretBrentCrude(data: OilPrice[]): MarketInsight | null {
+    if (data.length < 2) return null;
+    const current = data[0].price;
+    const prev = data[1].price;
+    const changePct = ((current - prev) / prev) * 100;
+
+    let level: 'low' | 'moderate' | 'high';
+    let impact: string;
+    let detail: string;
+
+    if (changePct > 3) {
+        level = 'high';
+        impact = `Fuel surcharges likely to increase by ${(changePct * 0.4).toFixed(1)}%`;
+        detail = `Oil price jumped ${changePct.toFixed(1)}% to $${current.toFixed(0)}/barrel. Expect higher bunker fuel costs reflected in freight rates within 2-4 weeks.`;
+    } else if (changePct > 0.5) {
+        level = 'moderate';
+        impact = `Minor fuel surcharge pressure (+${(changePct * 0.4).toFixed(1)}%)`;
+        detail = `Oil at $${current.toFixed(0)}/barrel, up ${changePct.toFixed(1)}%. Fuel costs trending slightly higher but within normal range.`;
+    } else if (changePct < -3) {
+        level = 'low';
+        impact = `Fuel surcharges may decrease by ${(Math.abs(changePct) * 0.4).toFixed(1)}%`;
+        detail = `Oil dropped ${Math.abs(changePct).toFixed(1)}% to $${current.toFixed(0)}/barrel. Potential freight cost savings ahead.`;
+    } else {
+        level = 'low';
+        impact = 'Fuel costs stable — no surcharge impact expected';
+        detail = `Oil steady at $${current.toFixed(0)}/barrel (${changePct >= 0 ? '+' : ''}${changePct.toFixed(1)}%). No significant fuel surcharge changes expected.`;
+    }
+
+    return { id: 'fuel-surcharge', label: 'Fuel Surcharge Risk', level, impact, detail };
+}
+
+function interpretSupplyChain(data: FredObservation[]): MarketInsight | null {
+    if (data.length === 0) return null;
+    const current = data[0].value;
+
+    let level: 'low' | 'moderate' | 'high';
+    let impact: string;
+    let detail: string;
+
+    if (current > 1.5) {
+        level = 'high';
+        impact = 'Significant delays and capacity constraints expected';
+        detail = `Supply chain pressure index at ${current.toFixed(2)} — well above normal. Expect congestion, longer transit times, and premium pricing on major routes.`;
+    } else if (current > 0.5) {
+        level = 'moderate';
+        impact = 'Some routes may experience minor delays';
+        detail = `Supply chain pressure at ${current.toFixed(2)} — slightly elevated. Localized congestion possible on high-demand corridors.`;
+    } else if (current < -0.5) {
+        level = 'low';
+        impact = 'Excess capacity — favorable conditions for shippers';
+        detail = `Supply chain pressure at ${current.toFixed(2)} — below average. Carriers have excess capacity, good time to negotiate rates.`;
+    } else {
+        level = 'low';
+        impact = 'Supply chain operating normally';
+        detail = `Supply chain pressure index at ${current.toFixed(2)} — within normal range. No significant disruptions detected.`;
+    }
+
+    return { id: 'supply-chain', label: 'Supply Chain Status', level, impact, detail };
+}
+
+function interpretDollarIndex(current: number, changePct: number): MarketInsight | null {
+    let level: 'low' | 'moderate' | 'high';
+    let impact: string;
+    let detail: string;
+
+    if (changePct > 1) {
+        level = 'moderate';
+        impact = `Stronger USD makes imports cheaper for US buyers, costlier for others`;
+        detail = `Dollar index up ${changePct.toFixed(1)}% to ${current.toFixed(1)}. EUR and TRY-denominated freight becomes relatively cheaper in USD terms.`;
+    } else if (changePct < -1) {
+        level = 'moderate';
+        impact = `Weaker USD benefits non-US exporters`;
+        detail = `Dollar index down ${Math.abs(changePct).toFixed(1)}% to ${current.toFixed(1)}. Good for Turkey/EU exporters — your goods become more competitive in USD markets.`;
+    } else {
+        level = 'low';
+        impact = 'Currency markets stable — no significant freight cost impact';
+        detail = `Dollar index at ${current.toFixed(1)} (${changePct >= 0 ? '+' : ''}${changePct.toFixed(1)}%). Exchange rate impact on freight costs is minimal.`;
+    }
+
+    return { id: 'currency-impact', label: 'Currency Impact', level, impact, detail };
+}
+
+export async function getInterpretedMarketData(): Promise<InterpretedMarketData> {
     const [brentData, scpData, dollarData, fxData] = await Promise.all([
         eia.getBrentCrudePrice(),
         fred.getSupplyChainPressure(),
@@ -206,25 +301,37 @@ export async function getMarketSnapshot(): Promise<MarketSnapshot> {
         frankfurter.getLatestRates(),
     ]);
 
-    return {
-        brentCrude: brentData.length > 0
-            ? {
-                current: brentData[0].price,
-                change: brentData.length > 1
-                    ? Number(((brentData[0].price - brentData[1].price) / brentData[1].price * 100).toFixed(2))
-                    : 0,
-                data: brentData.slice(0, 14),
-            }
-            : null,
-        supplyChainPressure: scpData.length > 0
-            ? { current: scpData[0].value, data: scpData }
-            : null,
-        dollarIndex: dollarData.length > 1
-            ? {
-                current: dollarData[0].value,
-                change: Number(((dollarData[0].value - dollarData[1].value) / dollarData[1].value * 100).toFixed(2)),
-            }
-            : null,
-        exchangeRates: Object.keys(fxData.rates).length > 0 ? fxData : null,
-    };
+    const insights: MarketInsight[] = [];
+
+    // Fuel surcharge insight
+    const fuelInsight = interpretBrentCrude(brentData);
+    if (fuelInsight) insights.push(fuelInsight);
+
+    // Supply chain status
+    const scInsight = interpretSupplyChain(scpData);
+    if (scInsight) insights.push(scInsight);
+
+    // Currency impact
+    if (dollarData.length > 1) {
+        const changePct = ((dollarData[0].value - dollarData[1].value) / dollarData[1].value) * 100;
+        const currencyInsight = interpretDollarIndex(dollarData[0].value, changePct);
+        if (currencyInsight) insights.push(currencyInsight);
+    }
+
+    // Currency conversion
+    let currencyConversion: CurrencyConversion | null = null;
+    if (Object.keys(fxData.rates).length > 0) {
+        currencyConversion = {
+            base: fxData.base,
+            date: fxData.date,
+            rates: [
+                { currency: 'EUR', rate: fxData.rates.EUR, label: 'Euro' },
+                { currency: 'TRY', rate: fxData.rates.TRY, label: 'Turkish Lira' },
+                { currency: 'CNY', rate: fxData.rates.CNY, label: 'Chinese Yuan' },
+                { currency: 'GBP', rate: fxData.rates.GBP, label: 'British Pound' },
+            ].filter(r => r.rate),
+        };
+    }
+
+    return { insights, currencyConversion };
 }

@@ -1,7 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { forecast } from '../_utils/forecast';
 import { gemini } from '../_utils/gemini';
-import { getMarketSnapshot } from '../_utils/marketdata';
+import { getInterpretedMarketData, frankfurter } from '../_utils/marketdata';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
     if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
@@ -83,9 +83,15 @@ Use realistic 2026 market data. Include both origin and destination ports in por
         return res.status(500).json({ error: 'Failed to generate forecast' });
     }
 
+    // Fetch live exchange rates for currency conversion on route prices
+    const fxData = await frankfurter.getLatestRates('USD');
+    const currencyRates = Object.keys(fxData.rates).length > 0
+        ? { date: fxData.date, EUR: fxData.rates.EUR, TRY: fxData.rates.TRY, CNY: fxData.rates.CNY, GBP: fxData.rates.GBP }
+        : null;
+
     return res.status(200).json({
         success: true,
-        data: parsed,
+        data: { ...parsed, currencyRates },
         source: 'gemini-fallback',
     });
 }
@@ -153,9 +159,9 @@ async function handleMarketPulse(req: VercelRequest, res: VercelResponse) {
     const { region } = req.body || {};
     const regionCtx = region && region !== 'Global' ? ` Focus on the ${region} region.` : '';
 
-    // Fetch real market data in parallel with Gemini analysis
-    const [snapshot, geminiResult] = await Promise.all([
-        getMarketSnapshot(),
+    // Fetch interpreted market data in parallel with Gemini analysis
+    const [marketData, geminiResult] = await Promise.all([
+        getInterpretedMarketData(),
         (async () => {
             const prompt = `You are a global freight market analyst. Provide a comprehensive market pulse overview for the current period (April 2026).${regionCtx}
 Return ONLY valid JSON with this exact structure:
@@ -182,13 +188,8 @@ Use realistic 2026 market data reflecting current geopolitical and economic cond
         success: true,
         data: {
             ...geminiResult,
-            // Inject real data alongside Gemini analysis
-            realTimeData: {
-                brentCrude: snapshot.brentCrude,
-                supplyChainPressure: snapshot.supplyChainPressure,
-                dollarIndex: snapshot.dollarIndex,
-                exchangeRates: snapshot.exchangeRates,
-            },
+            marketInsights: marketData.insights,
+            currencyConversion: marketData.currencyConversion,
         },
         source: 'gemini+live',
     });

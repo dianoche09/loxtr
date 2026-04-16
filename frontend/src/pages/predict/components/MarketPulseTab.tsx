@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {
     TrendingDown, TrendingUp, Minus, Activity, Globe, AlertTriangle,
-    RefreshCw, Loader2, DollarSign, BarChart3, Ship, Package, Fuel, Banknote
+    RefreshCw, Loader2, DollarSign, BarChart3, Ship, Package, Banknote
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import {
@@ -195,110 +195,66 @@ export default function MarketPulseTab({ onDataLoaded }: Props) {
                 </div>
             </div>
 
-            {/* Live Market Data (from EIA, FRED, ECB) */}
-            {data.realTimeData && (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-                    {/* Brent Crude */}
-                    {data.realTimeData.brentCrude && (
-                        <div className="bg-[#0f0f13] rounded-[2rem] border border-white/5 p-6">
-                            <div className="flex items-center justify-between mb-4">
-                                <div className="w-10 h-10 bg-orange-600/10 rounded-xl flex items-center justify-center">
-                                    <Fuel size={18} className="text-orange-400" />
-                                </div>
-                                <span className="text-[8px] font-black text-emerald-500 bg-emerald-500/10 px-2 py-1 rounded-full uppercase tracking-widest">
-                                    Live
-                                </span>
-                            </div>
-                            <div className="text-2xl font-black text-white tracking-tighter">
-                                ${data.realTimeData.brentCrude.current.toFixed(2)}
-                            </div>
-                            <div className="flex items-center gap-2 mt-1">
-                                <span className={`text-xs font-black ${
-                                    data.realTimeData.brentCrude.change >= 0 ? 'text-red-400' : 'text-green-400'
-                                }`}>
-                                    {data.realTimeData.brentCrude.change >= 0 ? '+' : ''}{data.realTimeData.brentCrude.change}%
-                                </span>
-                                <span className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">
-                                    Brent Crude (EIA)
-                                </span>
-                            </div>
-                        </div>
-                    )}
+            {/* Market Insights (interpreted from EIA, FRED, ECB) */}
+            {data.marketInsights && data.marketInsights.length > 0 && (
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                    {data.marketInsights.map((insight) => {
+                        const levelStyles = {
+                            low: { border: 'border-green-500/20', bg: 'bg-green-500/5', badge: 'bg-green-500/10 text-green-400', icon: 'text-green-400' },
+                            moderate: { border: 'border-yellow-500/20', bg: 'bg-yellow-500/5', badge: 'bg-yellow-500/10 text-yellow-400', icon: 'text-yellow-400' },
+                            high: { border: 'border-red-500/20', bg: 'bg-red-500/5', badge: 'bg-red-500/10 text-red-400', icon: 'text-red-400' },
+                        }[insight.level];
 
-                    {/* Supply Chain Pressure */}
-                    {data.realTimeData.supplyChainPressure && (
-                        <div className="bg-[#0f0f13] rounded-[2rem] border border-white/5 p-6">
-                            <div className="flex items-center justify-between mb-4">
-                                <div className="w-10 h-10 bg-indigo-600/10 rounded-xl flex items-center justify-center">
-                                    <Activity size={18} className="text-indigo-400" />
+                        return (
+                            <div key={insight.id} className={`bg-[#0f0f13] rounded-[2rem] border ${levelStyles.border} p-6`}>
+                                <div className="flex items-center justify-between mb-4">
+                                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                                        {insight.label}
+                                    </span>
+                                    <div className="flex items-center gap-2">
+                                        <span className={`text-[8px] font-black px-2 py-1 rounded-full uppercase tracking-widest ${levelStyles.badge}`}>
+                                            {insight.level}
+                                        </span>
+                                        <span className="text-[8px] font-black text-emerald-500 bg-emerald-500/10 px-2 py-1 rounded-full uppercase tracking-widest">
+                                            Live
+                                        </span>
+                                    </div>
                                 </div>
-                                <span className="text-[8px] font-black text-emerald-500 bg-emerald-500/10 px-2 py-1 rounded-full uppercase tracking-widest">
-                                    Live
-                                </span>
+                                <p className="text-sm font-bold text-white mb-2">{insight.impact}</p>
+                                <p className="text-xs text-slate-500 leading-relaxed">{insight.detail}</p>
                             </div>
-                            <div className="text-2xl font-black text-white tracking-tighter">
-                                {data.realTimeData.supplyChainPressure.current.toFixed(2)}
-                            </div>
-                            <div className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mt-1">
-                                Supply Chain Pressure (FRED)
-                            </div>
-                        </div>
-                    )}
+                        );
+                    })}
+                </div>
+            )}
 
-                    {/* Dollar Index */}
-                    {data.realTimeData.dollarIndex && (
-                        <div className="bg-[#0f0f13] rounded-[2rem] border border-white/5 p-6">
-                            <div className="flex items-center justify-between mb-4">
-                                <div className="w-10 h-10 bg-green-600/10 rounded-xl flex items-center justify-center">
-                                    <DollarSign size={18} className="text-green-400" />
-                                </div>
-                                <span className="text-[8px] font-black text-emerald-500 bg-emerald-500/10 px-2 py-1 rounded-full uppercase tracking-widest">
-                                    Live
-                                </span>
-                            </div>
-                            <div className="text-2xl font-black text-white tracking-tighter">
-                                {data.realTimeData.dollarIndex.current.toFixed(2)}
-                            </div>
-                            <div className="flex items-center gap-2 mt-1">
-                                <span className={`text-xs font-black ${
-                                    data.realTimeData.dollarIndex.change >= 0 ? 'text-green-400' : 'text-red-400'
-                                }`}>
-                                    {data.realTimeData.dollarIndex.change >= 0 ? '+' : ''}{data.realTimeData.dollarIndex.change}%
-                                </span>
-                                <span className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">
-                                    Dollar Index (FRED)
-                                </span>
-                            </div>
+            {/* Currency Converter */}
+            {data.currencyConversion && data.currencyConversion.rates.length > 0 && data.freightIndex && (
+                <div className="bg-[#0f0f13] rounded-[2rem] border border-white/5 p-6 mb-8">
+                    <div className="flex items-center justify-between mb-4">
+                        <h3 className="text-sm font-black text-white uppercase tracking-widest flex items-center gap-2">
+                            <Banknote size={14} className="text-cyan-400" />
+                            Freight Index in Local Currencies
+                        </h3>
+                        <span className="text-[8px] font-black text-emerald-500 bg-emerald-500/10 px-2 py-1 rounded-full uppercase tracking-widest">
+                            ECB {data.currencyConversion.date}
+                        </span>
+                    </div>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                        <div className="bg-black/20 rounded-xl p-4 text-center">
+                            <div className="text-lg font-black text-white">${data.freightIndex.value.toLocaleString()}</div>
+                            <div className="text-[10px] text-slate-500 font-bold">USD (base)</div>
                         </div>
-                    )}
-
-                    {/* Exchange Rates */}
-                    {data.realTimeData.exchangeRates && Object.keys(data.realTimeData.exchangeRates.rates).length > 0 && (
-                        <div className="bg-[#0f0f13] rounded-[2rem] border border-white/5 p-6">
-                            <div className="flex items-center justify-between mb-4">
-                                <div className="w-10 h-10 bg-cyan-600/10 rounded-xl flex items-center justify-center">
-                                    <Banknote size={18} className="text-cyan-400" />
+                        {data.currencyConversion.rates.map(r => (
+                            <div key={r.currency} className="bg-black/20 rounded-xl p-4 text-center">
+                                <div className="text-lg font-black text-white">
+                                    {r.currency === 'TRY' ? '₺' : r.currency === 'EUR' ? '€' : r.currency === 'GBP' ? '£' : '¥'}
+                                    {Math.round(data.freightIndex.value * r.rate).toLocaleString()}
                                 </div>
-                                <span className="text-[8px] font-black text-emerald-500 bg-emerald-500/10 px-2 py-1 rounded-full uppercase tracking-widest">
-                                    Live
-                                </span>
+                                <div className="text-[10px] text-slate-500 font-bold">{r.label}</div>
                             </div>
-                            <div className="space-y-1.5">
-                                {['EUR', 'TRY', 'CNY'].map(cur => {
-                                    const rate = data.realTimeData?.exchangeRates?.rates[cur];
-                                    return rate ? (
-                                        <div key={cur} className="flex items-center justify-between">
-                                            <span className="text-[10px] font-bold text-slate-500">{cur}/USD</span>
-                                            <span className="text-sm font-black text-white">{rate.toFixed(cur === 'TRY' ? 2 : 4)}</span>
-                                        </div>
-                                    ) : null;
-                                })}
-                            </div>
-                            <div className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mt-2">
-                                ECB Rates ({data.realTimeData.exchangeRates.date})
-                            </div>
-                        </div>
-                    )}
+                        ))}
+                    </div>
                 </div>
             )}
 

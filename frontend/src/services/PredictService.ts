@@ -69,6 +69,7 @@ export interface PredictionResult {
     priceRisk?: 'LOW' | 'MODERATE' | 'HIGH';
     spaceAvailability?: 'LOW' | 'MODERATE' | 'HIGH';
     portIntel?: PortIntel[];
+    currencyRates?: { date: string; EUR?: number; TRY?: number; CNY?: number; GBP?: number };
 }
 
 export interface FreightQueryParams {
@@ -155,11 +156,18 @@ export interface CommodityTrend {
     priceChange: number;
 }
 
-export interface RealTimeData {
-    brentCrude: { current: number; change: number; data: { date: string; price: number }[] } | null;
-    supplyChainPressure: { current: number; data: { date: string; value: number }[] } | null;
-    dollarIndex: { current: number; change: number } | null;
-    exchangeRates: { base: string; date: string; rates: Record<string, number> } | null;
+export interface MarketInsight {
+    id: string;
+    label: string;
+    level: 'low' | 'moderate' | 'high';
+    impact: string;
+    detail: string;
+}
+
+export interface CurrencyConversion {
+    base: string;
+    date: string;
+    rates: { currency: string; rate: number; label: string }[];
 }
 
 export interface MarketPulseResult {
@@ -177,7 +185,8 @@ export interface MarketPulseResult {
         unit: string;
     };
     summary: string;
-    realTimeData?: RealTimeData;
+    marketInsights?: MarketInsight[];
+    currencyConversion?: CurrencyConversion;
 }
 
 export type MarketRegion = 'Global' | 'Asia-Pacific' | 'Europe' | 'Americas' | 'Middle East & Africa';

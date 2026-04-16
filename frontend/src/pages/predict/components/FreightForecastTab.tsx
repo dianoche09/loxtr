@@ -438,7 +438,17 @@ export default function FreightForecastTab({ onPredictionComplete, historyEntry 
                                             <div className="flex items-center gap-8">
                                                 <div className="text-right">
                                                     <div className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Opt. Price</div>
-                                                    <div className="text-2xl font-black text-white tracking-tighter">${route.price}</div>
+                                                    <div className="text-2xl font-black text-white tracking-tighter">${route.price.toLocaleString()}</div>
+                                                    {data.currencyRates && (
+                                                        <div className="flex items-center gap-2 mt-1 justify-end">
+                                                            {data.currencyRates.EUR && (
+                                                                <span className="text-[10px] text-slate-500">€{Math.round(route.price * data.currencyRates.EUR).toLocaleString()}</span>
+                                                            )}
+                                                            {data.currencyRates.TRY && (
+                                                                <span className="text-[10px] text-slate-500">₺{Math.round(route.price * data.currencyRates.TRY).toLocaleString()}</span>
+                                                            )}
+                                                        </div>
+                                                    )}
                                                 </div>
                                                 <button
                                                     onClick={() => {
