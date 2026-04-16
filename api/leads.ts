@@ -210,10 +210,18 @@ async function handleBatchCreate(req: VercelRequest, res: VercelResponse, user: 
             notes: lead.logic || lead.reason || null,
             metadata: {
                 verified: lead.verified || false,
+                serp_verified: lead.serpVerified || false,
+                serp_source: lead.serpSource || null,
+                email_source: lead.emailSource || 'predicted',
                 enrichment_score: lead.enrichmentScore || 0,
                 social_links: lead.socialLinks || {},
                 industry_keywords: lead.industryKeywords || [],
                 description: lead.description || null,
+                potential_products: lead.potentialProducts || [],
+                supply_chain_intel: lead.supplyChainIntel || null,
+                rating: lead.rating || null,
+                reviews: lead.reviews || null,
+                address: lead.address || null,
                 discovered_at: new Date().toISOString(),
             },
         }));
