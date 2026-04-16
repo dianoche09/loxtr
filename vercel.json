@@ -25,6 +25,10 @@
             "destination": "/api/ai?action=generate-email"
         },
         {
+            "source": "/api/discovery/market",
+            "destination": "/api/discovery/market"
+        },
+        {
             "source": "/api/leads/discover-batch",
             "destination": "/api/discovery/run"
         },

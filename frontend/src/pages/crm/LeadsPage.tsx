@@ -53,12 +53,15 @@ export default function LeadsPage() {
   }, [searchParams])
 
   // Split initialization logic to avoid loops
+  // Skip auto-filter if URL explicitly says "all" (e.g. coming from Radar unlock)
   useEffect(() => {
     if (user) {
-      if (countryFilter === 'all' && user.strategy?.targetCountries?.length && user.strategy.targetCountries.length > 0) {
+      const urlCountry = searchParams.get('country');
+      const urlIndustry = searchParams.get('industry');
+      if (!urlCountry && countryFilter === 'all' && user.strategy?.targetCountries?.length && user.strategy.targetCountries.length > 0) {
         setCountryFilter(user.strategy.targetCountries[0].country)
       }
-      if (industryFilter === 'all' && user.icp?.targetIndustries?.length && user.icp.targetIndustries.length > 0) {
+      if (!urlIndustry && industryFilter === 'all' && user.icp?.targetIndustries?.length && user.icp.targetIndustries.length > 0) {
         setIndustryFilter(user.icp.targetIndustries[0].name)
       }
     }

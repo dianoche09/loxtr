@@ -121,8 +121,11 @@ export const leadsAPI = {
 
 // Discovery API
 export const discoveryAPI = {
-  runDiscovery: (data: { product: string; targetMarkets: string[]; industry: string; count?: number }) =>
+  runDiscovery: (data: { product: string; targetMarkets: string[]; industry: string; count?: number; hsCode?: string; preview?: boolean }) =>
     api.post('/discovery/run', data),
+
+  getMarketOverview: (data: { product: string; targetMarkets: string[]; hsCode?: string }) =>
+    api.post('/discovery/market', data),
 }
 
 // Campaigns API
