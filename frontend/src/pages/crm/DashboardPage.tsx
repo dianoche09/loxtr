@@ -191,7 +191,7 @@ export default function DashboardPage() {
                       {/* Action Buttons (Replaces Input) */}
                       <div className="flex flex-wrap gap-3 mt-6 relative z-20">
                         <button
-                          onClick={() => navigate('/leads?open_wizard=true')}
+                          onClick={() => navigate('/crm/leads?open_wizard=true')}
                           className="flex items-center gap-2 px-6 py-3 bg-white text-navy rounded-xl font-black hover:bg-navy/5 shadow-lg transition-transform hover:scale-105"
                         >
                           <Sparkles className="w-5 h-5" />
@@ -199,7 +199,7 @@ export default function DashboardPage() {
                         </button>
 
                         <button
-                          onClick={() => navigate('/leads?filter=new_opportunities')}
+                          onClick={() => navigate('/crm/leads?filter=new_opportunities')}
                           className="flex items-center gap-2 px-6 py-3 bg-white/10 text-white hover:bg-white/20 border border-white/20 rounded-xl font-bold transition-all hover:scale-105"
                         >
                           <Rocket className="w-5 h-5" />
@@ -210,7 +210,7 @@ export default function DashboardPage() {
 
                     {/* Highlight Metric Card */}
                     <button
-                      onClick={() => navigate('/leads?filter=new_opportunities')}
+                      onClick={() => navigate('/crm/leads?filter=new_opportunities')}
                       className="flex-shrink-0 text-left hover:scale-105 transition-transform"
                     >
                       <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20 text-center min-w-[200px] cursor-pointer hover:bg-white/15">
@@ -246,7 +246,7 @@ export default function DashboardPage() {
             changeType="positive"
             color="blue"
             forecast={stats?.forecasts?.leads}
-            onClick={() => navigate('/leads')}
+            onClick={() => navigate('/crm/leads')}
           />
           <StatCard
             icon={TrendingUp}
@@ -268,7 +268,7 @@ export default function DashboardPage() {
             onClick={() => navigate('/campaigns?filter=status_running')}
             emptyAction={stats?.overview?.totalCampaigns === 0 && user?.portfolio?.products?.[0]?.name ? {
               label: `Start campaign for ${user.portfolio.products[0].name}`,
-              onClick: () => navigate('/leads?open_wizard=true')
+              onClick: () => navigate('/crm/leads?open_wizard=true')
             } : null}
           />
           <StatCard
@@ -361,7 +361,7 @@ export default function DashboardPage() {
               </div>
               <div className="flex gap-3">
                 <button
-                  onClick={() => navigate('/leads')}
+                  onClick={() => navigate('/crm/leads')}
                   className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-50 text-slate-600 rounded-lg text-xs font-bold hover:bg-slate-100 transition-colors"
                 >
                   Details <ArrowRight className="w-3 h-3" />
@@ -448,7 +448,7 @@ export default function DashboardPage() {
                       description: `Looking for ${user?.icp?.targetIndustries?.[0]?.name || 'new leads'} matching your ICP...`,
                       color: 'blue',
                       icon: Target,
-                      action: { label: 'Find Leads', endpoint: `/leads?country=${user?.strategy?.targetCountries?.[0]?.country || ''}&industry=${user?.icp?.targetIndustries?.[0]?.name || ''}` }
+                      action: { label: 'Find Leads', endpoint: `/crm/leads?country=${user?.strategy?.targetCountries?.[0]?.country || ''}&industry=${user?.icp?.targetIndustries?.[0]?.name || ''}` }
                     }}
                   />
                   <div className="text-center py-8 px-4 opacity-50">
@@ -462,7 +462,7 @@ export default function DashboardPage() {
             </div>
 
             <button
-              onClick={() => navigate('/leads')}
+              onClick={() => navigate('/crm/leads')}
               className="mt-4 w-full py-3 bg-slate-50 text-slate-700 rounded-xl font-bold hover:bg-slate-100 transition-colors flex items-center justify-center gap-2 border border-slate-100"
             >
               View All Opportunities
@@ -517,7 +517,7 @@ export default function DashboardPage() {
       <LeadSearchModal
         isOpen={showAIModal}
         onClose={() => setShowAIModal(false)}
-        onLeadsUnlocked={() => navigate('/leads')}
+        onLeadsUnlocked={() => navigate('/crm/leads')}
       />
     </div >
   )
