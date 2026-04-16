@@ -97,17 +97,21 @@ Return ONLY a JSON object: {"title": "Buyer Title", "description": "Profile desc
 async function handleGenerateEmail(req: VercelRequest, res: VercelResponse) {
     const { companyName, product, tone, language, sender } = req.body;
 
-    if (!product || !sender) {
-        return res.status(400).json({ error: 'Missing product or sender info' });
+    if (!product) {
+        return res.status(400).json({ error: 'Missing product info' });
     }
+
+    const senderLine = sender?.name
+        ? `Sender: ${sender.name} from ${sender.company}`
+        : 'Sender: A Turkish export company';
 
     const prompt = `Write a professional B2B cold email.
 Target: ${companyName || 'Potential Client'}
 Product: ${product}
 Tone: ${tone || 'professional'}
 Language: ${language || 'English'}
-Sender: ${sender.name} from ${sender.company}
-Return JSON with {subject, body}.`;
+${senderLine}
+Return ONLY JSON with {subject, body}. No markdown.`;
 
     const aiResponse = await gemini.generateText(prompt);
     const email = gemini.extractJSON(aiResponse);

@@ -67,15 +67,50 @@ Purpose-built CRM for international trade:
 
 LOXTR provides specialized trade intelligence for these industries, each with tailored HS code databases, compliance requirements, and buyer profiles:
 
-- **Textile & Apparel** (https://www.loxtr.com/en/industries/textile) - Fabric, garments, home textiles. Key markets: EU, UK, USA. Compliance: REACH, OEKO-TEX.
-- **Automotive Parts** (https://www.loxtr.com/en/industries/automotive) - OEM and aftermarket parts. Key markets: Germany, USA, UAE.
-- **Chemicals** (https://www.loxtr.com/en/industries/chemicals) - Industrial and specialty chemicals. Compliance: REACH, GHS labeling.
-- **Food & Agriculture** (https://www.loxtr.com/en/industries/food) - Processed food, fresh produce, dried fruits. Compliance: FDA, EU food safety.
-- **Machinery & Equipment** (https://www.loxtr.com/en/industries/machinery) - Industrial machinery, agricultural equipment. Key markets: Africa, Middle East, CIS.
-- **Medical Devices** (https://www.loxtr.com/en/industries/medical) - Disposables, diagnostic equipment. Compliance: CE marking, FDA 510(k).
-- **Construction Materials** (https://www.loxtr.com/en/industries/construction) - Steel, cement, ceramics, fixtures. Key markets: Iraq, Libya, Turkmenistan.
-- **Electronics** (https://www.loxtr.com/en/industries/electronics) - Consumer electronics, components. Compliance: CE, FCC, RoHS.
-- **Cosmetics** (https://www.loxtr.com/en/industries/cosmetics) - Skincare, haircare, personal care. Compliance: EU Cosmetics Regulation, FDA.
+### Textile & Apparel
+URL: https://www.loxtr.com/en/industries/textile-apparel
+
+Turkey is the world's 5th largest textile exporter with $12.5 billion in annual textile exports. The Turkish textile industry employs over 1 million workers and produces everything from raw cotton yarn to finished fashion garments. Key export categories include woven fabrics (HS 52-55), knitted garments (HS 61), non-knitted garments (HS 62), and home textiles like bed linen and towels (HS 63). Major destination markets include the European Union (especially Germany, Spain, and the UK), the United States, and Middle Eastern countries. Compliance requirements for textile exports include REACH regulation for chemicals used in manufacturing, OEKO-TEX Standard 100 certification for consumer safety, and specific labeling requirements varying by destination country. Turkish textiles are known for their quality cotton (especially Aegean cotton), competitive pricing compared to European manufacturers, and geographic proximity enabling fast delivery to EU markets with 3-5 day transit times.
+
+### Automotive Parts
+URL: https://www.loxtr.com/en/industries/automotive-parts
+
+Turkey's automotive sector is the largest in the Middle East and among the top 15 globally, producing over 1.3 million vehicles annually. The country exports automotive parts worth $11 billion per year, including engine components, braking systems, electrical parts, rubber and plastic components, and body panels. Major OEM manufacturers with Turkish production facilities include Ford, Toyota, Hyundai, Fiat, and Renault. Key export markets for Turkish automotive parts are Germany, France, Italy, the United Kingdom, and the United States. HS codes span chapters 84 (engines and parts), 85 (electrical equipment), 87 (vehicles and parts), and 40 (rubber components). Compliance requirements include ISO/TS 16949 quality management, ECE type approvals for European markets, FMVSS standards for US markets, and specific OEM qualification processes. Turkey benefits from the EU Customs Union agreement, allowing tariff-free trade of automotive parts with EU member states.
+
+### Chemicals
+URL: https://www.loxtr.com/en/industries/chemicals
+
+Turkey's chemical industry ranks among the top 10 in Europe with annual production exceeding $25 billion. Key export categories include industrial chemicals, petrochemicals, plastics in primary forms (HS 39), organic chemicals (HS 29), inorganic chemicals (HS 28), fertilizers (HS 31), and specialty chemicals including cleaning products and paint. Major export destinations are the EU, Middle East, North Africa, and CIS countries. Compliance requirements are particularly stringent: REACH registration is mandatory for EU market access (requiring substance registration with ECHA for volumes above 1 tonne/year), GHS labeling for hazardous chemicals, CLP classification, and Safety Data Sheets in destination country languages. Additional requirements may include ADR certification for dangerous goods transport and specific country import permits.
+
+### Food & Agriculture
+URL: https://www.loxtr.com/en/industries/food-beverage
+
+Turkey is the world's largest producer of hazelnuts (70% of global supply), dried figs, dried apricots, and cherries. Agricultural exports exceed $25 billion annually, covering fresh fruits and vegetables, processed foods, dried fruits and nuts (HS 08), cereals and flour (HS 10-11), confectionery (HS 17-18), olive oil (HS 1509), and dairy products. Key markets include the EU (especially Germany, the UK, and Netherlands), the United States, Iraq, Russia, and Japan. Compliance requirements vary significantly by destination: FDA registration and FSMA compliance for US exports, EU food safety regulations including MRL (Maximum Residue Limits) for pesticides, halal certification for Middle Eastern markets, organic certification (EU organic or USDA organic) for premium positioning, and phytosanitary certificates issued by the Turkish Ministry of Agriculture. Turkey's diverse climate zones (Mediterranean, Black Sea, continental) enable year-round production of different crop categories.
+
+### Machinery & Equipment
+URL: https://www.loxtr.com/en/industries/industrial-machinery
+
+Turkey's machinery and equipment sector has grown rapidly, with exports reaching $20 billion annually. Key categories include agricultural machinery (HS 8432-8436), metalworking machinery (HS 8456-8463), textile machinery, food processing equipment, packaging machines, HVAC systems, and construction equipment. Turkish machinery manufacturers are particularly competitive in mid-range industrial equipment, offering 30-50% cost savings compared to European alternatives with comparable quality. Major export markets include Germany, the United States, the UK, Iraq, Iran, and Central Asian countries. Compliance requirements include CE marking for EU markets, UL certification for US markets, ISO 9001 quality management, and machine safety directives (2006/42/EC). Many Turkish machinery manufacturers have invested in Industry 4.0 capabilities including IoT integration, remote monitoring, and predictive maintenance features.
+
+### Medical Devices
+URL: https://www.loxtr.com/en/industries/medical-healthcare
+
+Turkey's medical device industry exports over $2 billion annually, specializing in disposable medical supplies, diagnostic equipment, hospital furniture, dental products, and orthopedic implants. The country has over 2,500 medical device manufacturers, many holding CE marking and ISO 13485 certification. Key HS codes include chapter 90 (optical, medical, surgical instruments), chapter 30 (pharmaceutical preparations), and chapter 94 (hospital furniture). Major export destinations include the EU, Middle East, North Africa, and CIS countries. Regulatory requirements include CE marking under MDR 2017/745 for EU markets, FDA 510(k) or PMA clearance for US markets, and specific registration requirements for each destination country. Turkey's advantage lies in competitive manufacturing costs for high-volume disposable products and proximity to growing healthcare markets in the Middle East and Africa.
+
+### Construction Materials
+URL: https://www.loxtr.com/en/industries/construction-materials
+
+Turkey is a global leader in construction materials, ranking as the world's 3rd largest exporter of cement and a major producer of steel, ceramics, natural stone, and glass. Annual exports exceed $15 billion. Key categories include cement and clinker (HS 2523), iron and steel products (HS 72-73), ceramic tiles (HS 6907-6908), natural stone including marble and travertine (HS 2515-2516, 6802), glass and glassware (HS 70), and sanitary fixtures. Turkey's rich natural stone reserves include world-famous Afyon marble, Denizli travertine, and Muğla marble varieties. Major export markets include Iraq, Libya, Turkmenistan, Saudi Arabia, Israel, and EU countries. Compliance requirements include CE marking for construction products under CPR 305/2011, specific national building codes, and environmental certifications like LEED or BREEAM material compliance.
+
+### Electronics
+URL: https://www.loxtr.com/en/industries/consumer-electronics
+
+Turkey's electronics manufacturing sector has grown significantly, with exports exceeding $8 billion annually. Key categories include consumer electronics (TVs, white goods), electronic components, cables and wiring harnesses (HS 8544), household appliances (HS 8509-8516), and telecommunications equipment. Turkish brands like Vestel (one of Europe's largest TV manufacturers), Arcelik/Beko, and Grundig have established strong positions in European markets. HS codes primarily fall in chapters 84 (electrical machinery) and 85 (electronic equipment). Compliance requirements include CE marking, RoHS directive compliance (restriction of hazardous substances), WEEE directive for end-of-life recycling, ErP directive for energy-related products, and FCC certification for US markets. Turkey's electronics manufacturers benefit from the EU Customs Union for tariff-free access and competitive labor costs compared to European production.
+
+### Cosmetics
+URL: https://www.loxtr.com/en/industries/cosmetics
+
+Turkey's cosmetics and personal care industry exports over $1.5 billion annually, with rapid growth driven by the global demand for natural and organic beauty products. Key categories include skincare products, haircare, oral hygiene, perfumes and fragrances (HS 3303-3307), soap and cleaning preparations, and natural/herbal cosmetics. Turkey has a rich heritage of natural ingredients including rose oil from Isparta (the world's second-largest rose oil producer), laurel oil from Hatay for traditional Aleppo-style soaps, and various botanical extracts from Anatolia's diverse flora. Major export markets include the EU, Russia, Middle East, and North Africa. Regulatory requirements include EU Cosmetics Regulation (EC) 1223/2009 compliance with product safety assessment, CPNP (Cosmetic Products Notification Portal) registration, ingredient listing according to INCI nomenclature, FDA registration for US markets, and GMP (Good Manufacturing Practice) certification according to ISO 22716. Halal cosmetics certification is increasingly important for Middle Eastern markets.
 
 ## Pricing
 
@@ -162,3 +197,184 @@ Unlike horizontal trade platforms (Alibaba, TradeIndia, Kompass) that are direct
 - **vs traditional customs brokers**: Instant AI document analysis vs. days of manual processing.
 - **vs generic CRMs (HubSpot, Salesforce)**: Purpose-built for trade with HS codes, tariff calculations, and supply chain intelligence built in.
 - **vs freight marketplaces (Freightos, Flexport)**: LOXTR covers the full trade cycle from buyer finding to shipping, not just logistics.
+
+## Detailed Use Cases
+
+### Use Case 1: Turkish Textile Exporter Entering German Market
+A mid-sized textile manufacturer in Denizli produces premium cotton towels and bathrobes. They want to find German retail buyers but lack contacts in the market. Using LOXTR's workflow:
+1. They upload their commercial invoice for a recent EU shipment to LoxConvert. The AI identifies HS code 6302.60 (toilet and kitchen linen of terry towelling) and confirms the 12% EU duty rate, noting that Turkey's Customs Union makes this 0% for Turkish-origin goods.
+2. They enter "premium cotton towels" into AI Lead Radar, selecting Germany as the target market. The AI identifies 15 potential buyers including department store chains, hotel supply companies, and specialty bath retailers. Each lead has a confidence score and the reasoning behind the match.
+3. They use the CRM to generate personalized introduction emails in German, highlighting their OEKO-TEX certification and competitive pricing compared to Portuguese and Pakistani alternatives.
+4. They check LOX Predict for current container rates from Mersin to Hamburg, finding that rates are expected to soften by 8% over the next 3 months, suggesting they can negotiate better freight terms.
+
+### Use Case 2: European Importer Sourcing Construction Materials
+A Dutch construction company needs to source ceramic floor tiles for a large residential development. Traditional sourcing through trade shows is slow and expensive. Using LOXTR:
+1. They search for "ceramic floor tile manufacturers" on AI Lead Radar, targeting Turkey. The AI returns 12 verified manufacturers in the Afyon and Kütahya regions (Turkey's ceramic production hubs).
+2. For each potential supplier, they request Supply Chain Intelligence reports, revealing production capacity, export history, quality certifications, and estimated pricing.
+3. They use LoxConvert to analyze sample proforma invoices from three shortlisted suppliers, comparing HS code classifications (6907.21 for porcelain tiles vs 6907.23 for non-porcelain), duty rates, and anti-dumping considerations.
+4. They run freight predictions for 40-foot container loads from Izmir to Rotterdam, with the AI recommending the optimal booking window based on seasonal rate patterns.
+
+### Use Case 3: Food Exporter Expanding to US Market
+An Anatolian dried fruit producer wants to export organic dried apricots to the United States. The compliance requirements are complex. LOXTR helps:
+1. LoxConvert analyzes their existing export documents and identifies HS code 0813.10 (dried apricots), confirming the US duty rate of 1.8 cents/kg under normal trade relations.
+2. The compliance engine flags requirements: FDA registration of their facility, FSMA Preventive Controls compliance, USDA organic certification (if claiming organic), phytosanitary certificate from Turkish Ministry of Agriculture, and fumigation certificate if required.
+3. AI Lead Radar identifies potential US buyers including specialty food distributors, organic grocery chains, snack manufacturers using dried fruit as ingredients, and Amazon marketplace sellers.
+4. Campaign automation generates follow-up sequences for each buyer segment, with different messaging for wholesale distributors vs retail buyers vs ingredient buyers.
+
+## How HS Code Classification Works
+
+The Harmonized System (HS) is an internationally standardized system of names and numbers to classify traded products. Maintained by the World Customs Organization (WCO), it is used by customs authorities in over 200 countries. HS codes typically have 6 digits at the international level, with countries adding 2-4 additional digits for national tariff lines.
+
+LOXTR's LoxConvert tool automates HS code classification by:
+1. Reading the product description from uploaded documents using AI vision
+2. Analyzing material composition, intended use, and manufacturing process
+3. Matching against the HS nomenclature hierarchy (Section > Chapter > Heading > Subheading)
+4. Applying General Rules of Interpretation (GRI) when products could fall under multiple headings
+5. Cross-referencing with destination country-specific tariff schedules for duty rates
+6. Flagging items that require additional certificates, licenses, or inspections
+
+For example, a "cotton t-shirt for men" classifies under HS 6109.10 (T-shirts, singlets and other vests, of cotton, knitted or crocheted). The duty rate varies by destination: EU charges 12%, USA charges 16.5%, and many developing countries have lower rates under preferential trade agreements.
+
+## Understanding Trade Documents
+
+International trade involves several key documents that LOXTR's LoxConvert can analyze:
+
+**Commercial Invoice**: The primary document for customs clearance, containing seller and buyer details, product descriptions, quantities, unit prices, total values, payment terms, and Incoterms. LoxConvert extracts all line items and cross-references them with HS code databases.
+
+**Packing List**: Details the physical packaging of goods including package numbers, dimensions, gross and net weights, and contents of each package. LoxConvert verifies consistency between the packing list and commercial invoice.
+
+**Bill of Lading (B/L)**: A transport document issued by the carrier acknowledging receipt of goods for shipment. It serves as a receipt, evidence of the contract of carriage, and document of title. Ocean bills of lading (HS transport) are the most common in international trade.
+
+**Certificate of Origin**: Declares in which country the goods were manufactured or produced. Required for preferential tariff treatment under free trade agreements. Turkey's certificates of origin include EUR.1 (for EU/EFTA countries), Form A (for GSP beneficiary countries), and standard certificates.
+
+## Freight Rate Factors
+
+LOXTR's LOX Predict system considers multiple factors when forecasting container shipping rates:
+
+- **Seasonal demand patterns**: Q3 peak season (July-September) typically sees 15-25% rate increases on major trade lanes due to pre-holiday inventory building
+- **Fuel costs (bunker prices)**: Marine fuel (VLSFO) represents 30-50% of total shipping costs. LOXTR tracks Brent crude and Singapore bunker prices as leading indicators
+- **Port congestion**: Delays at major ports (Rotterdam, Shanghai, Los Angeles) create cascading effects on vessel availability and rates
+- **Blank sailings**: When carriers cancel scheduled voyages to manage capacity, reduced supply drives rate increases
+- **Geopolitical events**: Trade sanctions, canal disruptions (Suez, Panama), and regional conflicts directly impact routing and costs
+- **Container availability**: Imbalances in empty container positioning between trade surplus and deficit regions affect equipment surcharges
+- **Alliance restructuring**: Changes in carrier alliances (2M, Ocean Alliance, THE Alliance) affect capacity allocation on specific trade lanes
+
+## Turkey's Trade Agreements and Advantages
+
+Turkey occupies a unique position in global trade with several key advantages:
+
+**Customs Union with the EU**: Since 1996, Turkey has been part of a Customs Union with the European Union for industrial goods. This means zero tariffs on industrial products traded between Turkey and EU member states, making Turkey an attractive manufacturing and export base for EU-bound goods.
+
+**Free Trade Agreements**: Turkey has active FTAs with over 20 countries and economic blocs including EFTA, South Korea, Malaysia, Singapore, Bosnia and Herzegovina, Chile, and several African nations. These agreements provide preferential tariff rates that can significantly reduce import duties for Turkish goods.
+
+**Geographic Advantage**: Situated at the crossroads of Europe, Asia, and the Middle East, Turkey offers 4-hour flight access to markets representing 1.5 billion consumers. Maritime shipping from Turkish ports reaches major European ports in 3-7 days and Middle Eastern ports in 2-4 days.
+
+**Young and Skilled Workforce**: With a median age of 32.7 and over 800,000 university graduates annually, Turkey offers a large, educated labor force at competitive costs compared to EU manufacturers.
+
+**Investment Incentives**: The Turkish government offers various incentives for exporters including TURQUALITY brand support program, Eximbank export credits, R&D tax incentives, and free zone benefits.
+
+## Email Campaign Best Practices for International Trade
+
+LOXTR's CRM includes AI-powered email generation specifically designed for B2B trade outreach. Key features and best practices:
+
+**Language and Cultural Adaptation**: The AI generates emails in the recipient's language while considering cultural business norms. For example, German business emails tend to be formal and direct with specific product specifications, while Middle Eastern business culture values relationship-building with longer introductory exchanges before discussing business details.
+
+**Subject Line Optimization**: AI generates multiple subject line variants tested against B2B open rate benchmarks. Trade-specific patterns that perform well include mentioning specific product categories, referencing trade shows or industry events, and including concrete data points like pricing advantages or certifications.
+
+**Follow-up Sequences**: Multi-step campaigns typically follow this pattern for international trade:
+- Day 1: Introduction with product overview and key differentiators
+- Day 4: Case study or reference from a similar buyer in their market
+- Day 8: Specific pricing or MOQ information with sample offer
+- Day 15: Trade show invitation or virtual meeting request
+- Day 25: Final follow-up with limited-time incentive (free samples, trial order discount)
+
+**Compliance**: All emails include proper CAN-SPAM / GDPR unsubscribe mechanisms. The platform tracks engagement metrics including open rates, click rates, and reply rates segmented by country, industry, and campaign type.
+
+## Credit System and Usage
+
+LOXTR operates on a credit-based system to manage AI processing resources:
+
+**Free Tier Allocation**:
+- 50 lead discoveries per month (each AI Lead Radar search consumes 1 credit per result)
+- 5 LoxConvert document analyses per day
+- Basic CRM features including lead management, list views, and manual email composition
+- Access to all industry intelligence pages
+- Freight rate predictions with standard processing
+
+**Credit Consumption**:
+- Lead discovery: 1 credit per lead generated
+- Web verification/enrichment: 2 credits per lead (optional, enhances leads with verified website data)
+- Supply Chain Intelligence report: 5 credits per report
+- AI email generation: 1 credit per personalized email
+- LoxConvert document analysis: 1 credit per document (daily free limit applies first)
+- Campaign creation: No credit cost (sending uses email credits)
+
+**Pro and Enterprise Plans**: Higher monthly credit allocations, priority AI processing queue, advanced analytics dashboards, team collaboration features, and dedicated support channels. Enterprise customers can also access the API for programmatic integration with their existing systems.
+
+## Security and Data Privacy
+
+LOXTR takes data security seriously with multiple layers of protection:
+
+**Database Security**: All data is stored in Supabase (PostgreSQL) with Row Level Security (RLS) policies ensuring strict data isolation between users. Each user can only access their own leads, campaigns, documents, and analytics. No customer data is shared or accessible across accounts.
+
+**API Security**: All API communications use HTTPS encryption. API keys are stored encrypted and are never exposed in client-side code. Rate limiting protects against abuse, and request validation prevents injection attacks.
+
+**Document Handling**: Uploaded customs documents are processed in memory by the AI and are not permanently stored on LOXTR servers. Document analysis results are saved to the user's account, but the original files are deleted after processing.
+
+**Authentication**: User authentication is handled through Supabase Auth with support for email/password and social login providers. Session tokens use JWT with appropriate expiration policies.
+
+**Payment Security**: All payment processing is handled by Stripe, a PCI DSS Level 1 certified payment processor. LOXTR never stores credit card numbers or sensitive payment information directly.
+
+## Optional
+
+### API Reference
+LOXTR provides REST API endpoints for programmatic access to core functionality:
+- POST /api/discovery/run - Run AI lead discovery for a product and target markets
+- POST /api/predict/freight - Get freight rate predictions for a shipping route
+- POST /api/convert/analyze - Analyze a customs document with AI
+- GET /api/leads - List and filter saved leads
+- POST /api/campaigns/create - Create an email campaign
+- GET /api/crm/stats - Get CRM dashboard statistics
+
+### Data Sources and Methodology
+Lead discovery combines multiple data sources:
+- Google Gemini AI for market intelligence and company identification
+- Scrapling web framework for company verification and contact enrichment
+- Public trade databases for market sizing and trade flow analysis
+- Web scraping for real-time company information verification
+
+Freight predictions use:
+- Historical rate data from major shipping indices
+- EIA energy price data for fuel cost modeling
+- FRED economic indicators for demand forecasting
+- ECB exchange rate data for currency-adjusted predictions
+- Port activity data from MarineTraffic AIS feeds
+
+### Glossary of International Trade Terms
+- **HS Code (Harmonized System)**: A standardized numerical method of classifying traded products, used by customs authorities in 200+ countries. Maintained by the World Customs Organization (WCO) in Brussels.
+- **Incoterms**: International Commercial Terms published by the International Chamber of Commerce (ICC) defining responsibilities between buyers and sellers. Current version: Incoterms 2020 with 11 rules (EXW, FCA, FAS, FOB, CFR, CIF, CPT, CIP, DAP, DPU, DDP).
+- **Bill of Lading (B/L)**: A document issued by a carrier to acknowledge receipt of cargo for shipment. Functions as receipt, contract of carriage, and document of title.
+- **Letter of Credit (L/C)**: A payment mechanism issued by a bank guaranteeing the seller will receive payment upon presenting compliant documents. Common in international trade where buyer and seller may not know each other.
+- **FOB (Free on Board)**: An Incoterm where the seller delivers goods on board the vessel at the named port of shipment. Risk transfers from seller to buyer when goods pass the ship's rail.
+- **CIF (Cost, Insurance, and Freight)**: An Incoterm where the seller delivers goods on board, pays freight and insurance to the destination port, but risk transfers at the port of shipment.
+- **EXW (Ex Works)**: An Incoterm representing minimum obligation for the seller, who makes goods available at their premises. The buyer bears all costs and risks from that point.
+- **DDP (Delivered Duty Paid)**: An Incoterm representing maximum obligation for the seller, who delivers goods to the buyer's premises cleared for import with all duties paid.
+- **REACH**: Registration, Evaluation, Authorisation and Restriction of Chemicals. EU regulation requiring manufacturers and importers to register chemical substances with the European Chemicals Agency (ECHA).
+- **CE Marking**: A certification mark indicating conformity with health, safety, and environmental protection standards for products sold within the European Economic Area.
+- **GMP (Good Manufacturing Practice)**: Quality management standards ensuring products are consistently produced and controlled according to established quality standards.
+- **RoHS**: Restriction of Hazardous Substances directive restricting the use of certain hazardous materials (lead, mercury, cadmium, etc.) in electrical and electronic equipment sold in the EU.
+- **Customs Union**: A trade agreement between countries eliminating tariffs on goods traded between members and establishing a common external tariff. Turkey has a Customs Union with the EU for industrial goods since 1996.
+- **Free Trade Agreement (FTA)**: A pact between two or more nations reducing barriers to imports and exports among them, typically through reduced or eliminated tariffs on certain goods.
+- **Phytosanitary Certificate**: An official document issued by the plant protection authority of the exporting country certifying that plants or plant products meet the phytosanitary requirements of the importing country.
+- **MRL (Maximum Residue Limit)**: The highest level of a pesticide residue legally tolerated in or on food or feed when pesticides are applied correctly. Set by regulatory authorities like the EU, FDA, or Codex Alimentarius.
+
+### Changelog
+- 2026-04: Added 3-tab prediction engine with Market Pulse, Freight Forecast, and Route Optimizer
+- 2026-04: Integrated live market data from EIA, FRED, and ECB
+- 2026-03: Launched AI Lead Radar v2 with web verification
+- 2026-02: Added 9 industry-specific intelligence pages
+- 2026-01: Released LoxConvert customs document analyzer
+- 2025-12: Platform launch with basic CRM and lead management
+
+### Supported Countries and Trade Lanes
+LOXTR supports trade intelligence for all countries with particular depth in Turkey's top trading partners. The platform covers major trade lanes including Turkey-Germany (the largest bilateral trade corridor at $40+ billion annually), Turkey-UK, Turkey-USA, Turkey-Iraq, Turkey-UAE, Turkey-Russia, Turkey-Netherlands, Turkey-France, Turkey-Italy, and Turkey-Spain. For each country, the platform provides specific tariff databases, compliance requirement guides, and AI-powered buyer discovery calibrated to that market's business culture and industry structure.
