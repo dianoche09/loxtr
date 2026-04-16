@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>LOXTR - Global Trade Intelligence Blog</title>
+    <link>https://www.loxtr.com/en/blog</link>
+    <description>AI-powered insights for international trade: customs compliance, buyer discovery, freight forecasting, and export strategies.</description>
+    <language>en</language>
+    <lastBuildDate>Wed, 16 Apr 2026 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://www.loxtr.com/feed.xml" rel="self" type="application/rss+xml"/>
+
+    <item>
+      <title>Why Turkey Is Your Next Target Market in 2026</title>
+      <link>https://www.loxtr.com/en/blog/why-turkey-target-market-2026</link>
+      <description>Turkey's strategic position bridging Europe and Asia, combined with competitive manufacturing costs and free trade agreements, makes it an ideal sourcing destination for 2026.</description>
+      <pubDate>Mon, 14 Apr 2026 00:00:00 +0000</pubDate>
+      <guid isPermaLink="true">https://www.loxtr.com/en/blog/why-turkey-target-market-2026</guid>
+    </item>
+
+    <item>
+      <title>Gateway to EMEA: Turkey's Strategic Trade Position</title>
+      <link>https://www.loxtr.com/en/blog/gateway-to-emea</link>
+      <description>How Turkey's geographic advantage and trade agreements position it as the gateway to Europe, Middle East, and Africa for global traders.</description>
+      <pubDate>Sun, 13 Apr 2026 00:00:00 +0000</pubDate>
+      <guid isPermaLink="true">https://www.loxtr.com/en/blog/gateway-to-emea</guid>
+    </item>
+
+    <item>
+      <title>Navigating Turkish Customs: A Complete Guide</title>
+      <link>https://www.loxtr.com/en/blog/navigating-turkish-customs</link>
+      <description>Step-by-step guide to Turkish customs procedures, documentation requirements, HS code classification, and tariff calculations for importers and exporters.</description>
+      <pubDate>Sat, 12 Apr 2026 00:00:00 +0000</pubDate>
+      <guid isPermaLink="true">https://www.loxtr.com/en/blog/navigating-turkish-customs</guid>
+    </item>
+
+    <item>
+      <title>How to Verify Turkish Suppliers Before You Buy</title>
+      <link>https://www.loxtr.com/en/blog/how-to-verify-turkish-suppliers</link>
+      <description>Practical methods to verify Turkish suppliers: trade registry checks, factory audits, reference verification, and AI-powered due diligence tools.</description>
+      <pubDate>Fri, 11 Apr 2026 00:00:00 +0000</pubDate>
+      <guid isPermaLink="true">https://www.loxtr.com/en/blog/how-to-verify-turkish-suppliers</guid>
+    </item>
+
+    <item>
+      <title>Understanding Incoterms 2020: A Practical Guide</title>
+      <link>https://www.loxtr.com/en/blog/understanding-incoterms-2020-guide</link>
+      <description>Clear explanations of all 11 Incoterms 2020 rules with practical examples for exporters and importers. When to use FOB, CIF, EXW, DDP, and more.</description>
+      <pubDate>Thu, 10 Apr 2026 00:00:00 +0000</pubDate>
+      <guid isPermaLink="true">https://www.loxtr.com/en/blog/understanding-incoterms-2020-guide</guid>
+    </item>
+  </channel>
+</rss>

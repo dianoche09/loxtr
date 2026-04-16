@@ -1,0 +1,47 @@
+{
+  "services": [
+    {
+      "name": "LoxConvert - AI Customs Document Analyzer",
+      "category": "Customs Compliance",
+      "description": "Upload commercial invoices, packing lists, or bills of lading in any format. AI extracts structured data, classifies HS codes, calculates tariff rates, and flags compliance risks.",
+      "url": "https://www.loxtr.com/tools/convert",
+      "pricing": "Free: 5 analyses/day, Pro: unlimited"
+    },
+    {
+      "name": "AI Lead Radar - B2B Buyer Discovery",
+      "category": "Lead Generation",
+      "description": "AI-powered multi-step discovery wizard that finds and verifies real potential buyer companies based on your specific product and target markets. Each lead includes company details, contact info, match reasoning, and AI confidence score.",
+      "url": "https://www.loxtr.com/en/radar",
+      "pricing": "Free: 50 leads/month, Pro: higher limits"
+    },
+    {
+      "name": "LOX Predict - Freight Rate Forecasting",
+      "category": "Logistics Intelligence",
+      "description": "6-month container shipping rate forecasts with confidence intervals, trend analysis, multi-carrier route optimization, and AI-generated market insights.",
+      "url": "https://www.loxtr.com/predict-system",
+      "pricing": "Free with rate limits"
+    },
+    {
+      "name": "LOXTR CRM - Trade Sales Automation",
+      "category": "Sales & CRM",
+      "description": "Purpose-built CRM for international trade featuring lead management (list/grid/kanban), AI email generation in any language, campaign automation, smart segments, and supply chain intelligence.",
+      "url": "https://www.loxtr.com/crm/dashboard",
+      "pricing": "Free tier available"
+    },
+    {
+      "name": "Industry Intelligence Pages",
+      "category": "Market Research",
+      "description": "Specialized trade intelligence for 9 industries including Textile, Automotive, Chemicals, Food, Machinery, Medical, Construction, Electronics, and Cosmetics. Each includes HS code databases, compliance requirements, and buyer profiles.",
+      "url": "https://www.loxtr.com/en/industries",
+      "pricing": "Free"
+    }
+  ],
+  "api_available": true,
+  "integrations": ["Google Gemini AI", "Supabase", "Stripe", "Resend", "Scrapling"],
+  "technology_stack": {
+    "frontend": "React 19, TypeScript, Vite, Tailwind CSS",
+    "backend": "Vercel Serverless (Node.js/TypeScript)",
+    "database": "Supabase (PostgreSQL with RLS)",
+    "ai": "Google Gemini 2.0 Flash"
+  }
+}

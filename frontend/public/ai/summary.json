@@ -1,0 +1,52 @@
+{
+  "name": "LOXTR",
+  "tagline": "AI-Powered Global Trade Intelligence Platform",
+  "description": "LOXTR helps exporters, importers, and distributors digitize and optimize their entire global trade workflow. It combines customs compliance automation, AI-driven B2B lead generation, freight rate forecasting, and CRM into a single unified platform.",
+  "url": "https://www.loxtr.com",
+  "founded": "2024",
+  "headquarters": "Ankara, Turkey",
+  "languages": ["en", "tr"],
+  "industries_served": [
+    "Textile & Apparel",
+    "Automotive Parts",
+    "Chemicals",
+    "Food & Agriculture",
+    "Machinery & Equipment",
+    "Medical Devices",
+    "Construction Materials",
+    "Electronics",
+    "Cosmetics"
+  ],
+  "core_products": [
+    {
+      "name": "LoxConvert",
+      "description": "AI customs document analyzer. Upload invoices, packing lists, or bills of lading and get instant HS code classification, tariff rates, and compliance checks.",
+      "url": "https://www.loxtr.com/tools/convert"
+    },
+    {
+      "name": "AI Lead Radar",
+      "description": "B2B buyer discovery engine. AI generates fresh, verified potential buyer companies for your specific product and target markets with confidence scores.",
+      "url": "https://www.loxtr.com/en/radar"
+    },
+    {
+      "name": "LOX Predict",
+      "description": "Freight rate forecasting for container shipping routes with 6-month price predictions, confidence intervals, and AI-generated market insights.",
+      "url": "https://www.loxtr.com/predict-system"
+    },
+    {
+      "name": "LOXTR CRM",
+      "description": "Purpose-built CRM for international trade with lead management, AI email generation, campaign automation, and supply chain intelligence.",
+      "url": "https://www.loxtr.com/crm/dashboard"
+    }
+  ],
+  "contact": {
+    "email": "info@loxtr.com",
+    "phone": "+90 530 763 5710"
+  },
+  "social": {
+    "linkedin": "https://www.linkedin.com/company/loxtrcom",
+    "twitter": "https://x.com/loxtrcom",
+    "instagram": "https://instagram.com/loxtrcom",
+    "youtube": "https://youtube.com/@loxtrcom"
+  }
+}

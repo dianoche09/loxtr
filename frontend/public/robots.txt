@@ -84,3 +84,5 @@ Disallow: /api/
 
 # --- Sitemap & LLMs.txt ---
 Sitemap: https://www.loxtr.com/sitemap.xml
+# LLMs.txt for AI discovery
+# https://www.loxtr.com/llms.txt

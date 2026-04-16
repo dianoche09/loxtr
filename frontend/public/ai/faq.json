@@ -1,0 +1,40 @@
+{
+  "faqs": [
+    {
+      "question": "What is LOXTR?",
+      "answer": "LOXTR (Locate, Obtain, Xport) is an AI-powered global trade intelligence platform that helps exporters and importers digitize customs compliance, find verified buyers, forecast freight costs, and automate sales outreach. It is headquartered in Ankara, Turkey."
+    },
+    {
+      "question": "Who is LOXTR for?",
+      "answer": "Small and medium-sized exporters, import/export companies, freight forwarders, customs brokers, and any business involved in international trade. Especially valuable for Turkish exporters targeting EU, US, and Middle East markets."
+    },
+    {
+      "question": "How does LoxConvert classify HS codes?",
+      "answer": "LoxConvert uses Google Gemini AI vision to read customs documents (invoices, packing lists, bills of lading), extract product descriptions, and match them against the Harmonized System nomenclature considering product material, function, and destination country tariff schedules."
+    },
+    {
+      "question": "Are the leads from AI Lead Radar real companies?",
+      "answer": "Yes. The AI generates leads based on real market data and company knowledge. When web enrichment is active, each lead's website is verified and contact information is extracted directly from the company's web presence."
+    },
+    {
+      "question": "How accurate are the freight rate predictions?",
+      "answer": "Predictions use AI market analysis with confidence intervals showing the range of likely outcomes. The model considers historical trends, seasonal patterns, and current market conditions. Accuracy improves with more historical data."
+    },
+    {
+      "question": "What languages does LOXTR support?",
+      "answer": "The platform is fully bilingual in English and Turkish. AI email generation supports any language. Blog content is available in both English and Turkish."
+    },
+    {
+      "question": "Is my data secure on LOXTR?",
+      "answer": "LOXTR uses Supabase (PostgreSQL) with Row Level Security. Each user can only access their own leads, campaigns, and documents. API keys are encrypted. No customer data is shared between accounts."
+    },
+    {
+      "question": "What is the pricing for LOXTR?",
+      "answer": "LOXTR offers a Free Plan with 50 leads/month and 5 LoxConvert analyses/day. Pro Plan includes higher limits, priority AI processing, and advanced campaign automation. Enterprise plan offers custom limits, API access, and dedicated support."
+    },
+    {
+      "question": "How is LOXTR different from Alibaba or TradeIndia?",
+      "answer": "Unlike horizontal trade directories where you list products and wait, LOXTR actively finds buyers for you using AI. It provides AI-scored leads specific to your product, instant customs document analysis, freight forecasting, and a trade-specific CRM — covering the full export cycle."
+    }
+  ]
+}
