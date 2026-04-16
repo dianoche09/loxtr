@@ -46,12 +46,25 @@ Disallow: /leads/
 Disallow: /campaigns/
 Disallow: /settings/
 
+# OpenAI Search Bot (citation bot)
+User-agent: OAI-SearchBot
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+Disallow: /dashboard/
+
 # Google AI (Gemini)
 User-agent: Google-Extended
 Allow: /
 
 # Anthropic (Claude)
 User-agent: ClaudeBot
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+Disallow: /dashboard/
+
+User-agent: Claude-SearchBot
 Allow: /
 Disallow: /admin/
 Disallow: /api/

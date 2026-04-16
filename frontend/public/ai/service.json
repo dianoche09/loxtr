@@ -1,47 +1,46 @@
 {
+  "name": "LOXTR - AI-Powered Global Trade Intelligence",
+  "description": "LOXTR helps exporters, importers, and distributors digitize and optimize their entire global trade workflow with AI-powered customs compliance, lead generation, freight forecasting, and CRM.",
+  "url": "https://www.loxtr.com",
+  "capabilities": [
+    "AI customs document analysis with HS code classification and tariff calculation",
+    "B2B buyer discovery with AI confidence scoring and web verification",
+    "Container freight rate forecasting with 6-month predictions and confidence intervals",
+    "Trade-specific CRM with AI email generation in any language",
+    "Multi-step campaign automation for export sales outreach",
+    "Supply chain intelligence and competitive analysis per lead",
+    "Industry-specific trade intelligence for 9 sectors",
+    "Bilingual platform support (English and Turkish)"
+  ],
   "services": [
     {
       "name": "LoxConvert - AI Customs Document Analyzer",
       "category": "Customs Compliance",
       "description": "Upload commercial invoices, packing lists, or bills of lading in any format. AI extracts structured data, classifies HS codes, calculates tariff rates, and flags compliance risks.",
-      "url": "https://www.loxtr.com/tools/convert",
-      "pricing": "Free: 5 analyses/day, Pro: unlimited"
+      "url": "https://www.loxtr.com/tools/convert"
     },
     {
       "name": "AI Lead Radar - B2B Buyer Discovery",
       "category": "Lead Generation",
-      "description": "AI-powered multi-step discovery wizard that finds and verifies real potential buyer companies based on your specific product and target markets. Each lead includes company details, contact info, match reasoning, and AI confidence score.",
-      "url": "https://www.loxtr.com/en/radar",
-      "pricing": "Free: 50 leads/month, Pro: higher limits"
+      "description": "AI-powered multi-step discovery wizard that finds and verifies real potential buyer companies based on your specific product and target markets.",
+      "url": "https://www.loxtr.com/en/radar"
     },
     {
       "name": "LOX Predict - Freight Rate Forecasting",
       "category": "Logistics Intelligence",
       "description": "6-month container shipping rate forecasts with confidence intervals, trend analysis, multi-carrier route optimization, and AI-generated market insights.",
-      "url": "https://www.loxtr.com/predict-system",
-      "pricing": "Free with rate limits"
+      "url": "https://www.loxtr.com/predict-system"
     },
     {
       "name": "LOXTR CRM - Trade Sales Automation",
       "category": "Sales & CRM",
-      "description": "Purpose-built CRM for international trade featuring lead management (list/grid/kanban), AI email generation in any language, campaign automation, smart segments, and supply chain intelligence.",
-      "url": "https://www.loxtr.com/crm/dashboard",
-      "pricing": "Free tier available"
-    },
-    {
-      "name": "Industry Intelligence Pages",
-      "category": "Market Research",
-      "description": "Specialized trade intelligence for 9 industries including Textile, Automotive, Chemicals, Food, Machinery, Medical, Construction, Electronics, and Cosmetics. Each includes HS code databases, compliance requirements, and buyer profiles.",
-      "url": "https://www.loxtr.com/en/industries",
-      "pricing": "Free"
+      "description": "Purpose-built CRM for international trade featuring lead management, AI email generation, campaign automation, smart segments, and supply chain intelligence.",
+      "url": "https://www.loxtr.com/crm/dashboard"
     }
   ],
-  "api_available": true,
-  "integrations": ["Google Gemini AI", "Supabase", "Stripe", "Resend", "Scrapling"],
-  "technology_stack": {
-    "frontend": "React 19, TypeScript, Vite, Tailwind CSS",
-    "backend": "Vercel Serverless (Node.js/TypeScript)",
-    "database": "Supabase (PostgreSQL with RLS)",
-    "ai": "Google Gemini 2.0 Flash"
+  "contact": {
+    "email": "info@loxtr.com",
+    "phone": "+90 530 763 5710",
+    "address": "Sogutozu, Nergiz Str. No:7, F:13/N:25, 06560 Yenimahalle - Ankara / Turkey"
   }
 }
